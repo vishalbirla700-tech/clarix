@@ -2622,4 +2622,13 @@ window.addEventListener('load', function() {
 document.addEventListener('click', function(e) {
   var langDrop = document.getElementById('langDrop');
   if (langDrop && langDrop.classList.contains('open')) {
-    if (!
+    if (!e.target.closest('.lang-wrap')) { var d=document.getElementById('langDrop'); if(d) d.classList.remove('open'); }
+  }
+  var helpMenu = document.getElementById('helpMenu');
+  if (helpMenu && helpMenu.classList.contains('open')) {
+    if (!e.target.closest('.help-menu-wrap')) closeHelpMenu();
+  }
+});
+</script>
+</body>
+</html>
