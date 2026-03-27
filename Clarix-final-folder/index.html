@@ -737,15 +737,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
         <div class="tb-icon-btn" id="helpMenuBtn" onclick="toggleHelpMenu()" title="Help">?</div>
         <div class="help-menu" id="helpMenu">
           <div class="help-menu-header">Help & community</div>
-          <a href="mailto:vishalbirla700@gmail.com?subject=Clarix%20Idea:%20" class="help-menu-item" onclick="closeHelpMenu()">
+          <a href="/cdn-cgi/l/email-protection#4036293328212c2229322c2177707000272d21292c6e232f2d7f3335222a2523347d032c21322938657270092425217a657270" class="help-menu-item" onclick="closeHelpMenu()">
             <span class="help-menu-item-icon">💡</span>
             <div><div class="help-menu-item-title">Submit an idea</div><div class="help-menu-item-desc">Suggest a feature</div></div>
           </a>
-          <a href="mailto:vishalbirla700@gmail.com?subject=Clarix%20Bug:%20" class="help-menu-item" onclick="closeHelpMenu()">
+          <a href="/cdn-cgi/l/email-protection#32445b415a535e505b405e5305020272555f535b5e1c515d5f0d414750585751460f715e53405b4a17000270475508170002" class="help-menu-item" onclick="closeHelpMenu()">
             <span class="help-menu-item-icon">🐛</span>
             <div><div class="help-menu-item-title">Report a bug</div><div class="help-menu-item-desc">Something not working?</div></div>
           </a>
-          <a href="mailto:vishalbirla700@gmail.com?subject=Clarix%20Help:%20" class="help-menu-item" onclick="closeHelpMenu()">
+          <a href="/cdn-cgi/l/email-protection#0d7b647e656c616f647f616c3a3d3d4d6a606c6461236e6260327e786f67686e79304e616c7f6475283f3d4568617d37283f3d" class="help-menu-item" onclick="closeHelpMenu()">
             <span class="help-menu-item-icon">✉️</span>
             <div><div class="help-menu-item-title">Contact us</div><div class="help-menu-item-desc">We reply within 24 hours</div></div>
           </a>
@@ -1156,7 +1156,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 </div>
 
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Safe element helper
 function $$(id){return document.getElementById(id)||{style:{},classList:{add:function(){},remove:function(){},toggle:function(){}},textContent:'',innerHTML:'',value:'',focus:function(){}};}
 
@@ -2035,46 +2035,67 @@ function openPlatform(){
 }
 
 // ── Voice ────────────────────────────────────────────
+function resetMicBtn(){
+  isListening=false;
+  var btn=document.getElementById('micBtn');
+  if(btn){
+    btn.classList.remove('listening');
+    btn.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="6" height="9" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M2 8a6 6 0 0012 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><line x1="8" y1="14" x2="8" y2="15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  }
+}
+
 function toggleVoice(){
   if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){showToast('Voice not supported. Try Chrome.',true);return;}
   if(isListening){recognition.stop();return;}
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   recognition=new SR();
   recognition.lang=selectedLangCode;
-  recognition.continuous=false;recognition.interimResults=false;
-  recognition.onstart=()=>{isListening=true;document.getElementById('micBtn').classList.add('listening');document.getElementById('micBtn').textContent='⏹';showToast('Listening... speak now');};
-  recognition.onresult=async(e)=>{
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.maxAlternatives=1;
+
+  recognition.onstart=()=>{
+    isListening=true;
+    var btn=document.getElementById('micBtn');
+    if(btn){btn.classList.add('listening');btn.innerHTML='<span style="font-size:14px">⏹</span>';}
+    showToast('🎤 Listening... speak now');
+  };
+
+  recognition.onresult=(e)=>{
     const spokenText=e.results[0][0].transcript;
+    // Navigate to write page first
+    goPage('write', document.getElementById('nav-write'));
+    // Fill the textarea
     const ta=document.getElementById('promptInput');
-    ta.value=spokenText;isVoiceInput=true;
-    onInput(ta);
-    if(selectedLang!=='English'&&selectedLang!=='Hinglish'){
-      document.getElementById('dualOrigText').textContent=spokenText;
-      document.getElementById('dualLangLabel').querySelector('span').textContent=selectedLang.split(' — ')[0];
-      document.getElementById('dualCopyLang').textContent=selectedLang.split(' — ')[0];
-      document.getElementById('dualOutput').classList.add('visible');
-      document.getElementById('dualEngText').textContent='Translating...';
-      currentDualOrig=spokenText;
-      try{
-        const langCode=selectedLangCode.split('-')[0];
-        const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:'Translate to English only, return ONLY the translation:\n'+spokenText}]})});
-        const data=await res.json();
-        let translated=data.responseData?.translatedText||'';
-        if(!translated||translated===spokenText||translated.length<3){
-          translated='[Translation unavailable] Your text: '+spokenText;
-        }
-        translated=translated.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&#39;/g,"'");
-        currentDualEng=translated;
-        document.getElementById('dualEngText').textContent=translated;
-      }catch(err){
-        const fallback='Could not translate automatically. Your original: '+spokenText;
-        document.getElementById('dualEngText').textContent=fallback;
-        currentDualEng=fallback;
-      }
+    if(ta){
+      ta.value=spokenText;
+      isVoiceInput=true;
+      document.getElementById('charCount').textContent=spokenText.length;
+      document.getElementById('clearBtn').style.display='block';
+    }
+    showToast('✓ Heard: "'+spokenText.substring(0,40)+(spokenText.length>40?'...':'')+'"');
+    // Auto-enhance after short delay
+    setTimeout(function(){ processPrompt(spokenText); }, 400);
+  };
+
+  recognition.onend=()=>{
+    resetMicBtn();
+    // If nothing was heard, show guidance
+    var ta=document.getElementById('promptInput');
+    if(ta && !ta.value.trim()){
+      showToast('Nothing heard — try speaking louder or closer to mic 🎤', true);
     }
   };
-  recognition.onend=()=>{isListening=false;document.getElementById('micBtn').classList.remove('listening');document.getElementById('micBtn').textContent='🎤';};
-  recognition.onerror=()=>{isListening=false;document.getElementById('micBtn').classList.remove('listening');document.getElementById('micBtn').textContent='🎤';showToast('Could not hear. Try again.',true);};
+
+  recognition.onerror=(e)=>{
+    resetMicBtn();
+    var msg='Could not hear. Try again.';
+    if(e.error==='not-allowed') msg='Mic blocked — allow mic in browser settings';
+    else if(e.error==='no-speech') msg='No speech detected — try again 🎤';
+    else if(e.error==='network') msg='Network error — check connection';
+    showToast(msg, true);
+  };
+
   recognition.start();
 }
 
@@ -2601,14 +2622,4 @@ window.addEventListener('load', function() {
 document.addEventListener('click', function(e) {
   var langDrop = document.getElementById('langDrop');
   if (langDrop && langDrop.classList.contains('open')) {
-    if (!e.target.closest('.lang-wrap')) { var d=document.getElementById('langDrop'); if(d) d.classList.remove('open'); }
-  }
-  var helpMenu = document.getElementById('helpMenu');
-  if (helpMenu && helpMenu.classList.contains('open')) {
-    if (!e.target.closest('.help-menu-wrap')) closeHelpMenu();
-  }
-});
-
-</script>
-</body>
-</html>
+    if (!
