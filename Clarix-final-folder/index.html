@@ -1295,7 +1295,6 @@ function selectLang(name,code,flag){
   closeLangDrop();
   document.getElementById('promptInput').placeholder=PLACEHOLDERS[name]||PLACEHOLDERS['default'];
   if(recognition) recognition.lang=code;
-  // Re-process existing prompt with new language immediately
   const existing = document.getElementById('promptInput').value.trim();
   if(existing.length > 2) {
     showToast('Language changed to ' + name.split(' — ')[0] + ' — updating output...');
@@ -1316,24 +1315,56 @@ function toggleAutocorrect(){
   } catch(e){}
 }
 
+// ── FIX 1: setMode — Both mode now auto-selects Instagram & sets flags ──
 function setMode(mode){
   currentMode=mode;
   ['ai','social','both'].forEach(m=>document.getElementById('mode-'+m).classList.toggle('active',m===mode));
   const aiPills=document.getElementById('aiPills');
   const socPills=document.getElementById('socialPills');
   const lbl=document.getElementById('platformLabel');
-  bothAIChosen=false; bothSocialChosen=false;
   // Clear previous results when switching modes
   document.getElementById('liveResult').classList.remove('visible');
   var ao=document.getElementById('aiOutput'); if(ao) ao.classList.remove('visible');
   var so=document.getElementById('socialOutput'); if(so) so.classList.remove('visible');
   var du=document.getElementById('dualOutput'); if(du) du.classList.remove('visible');
-  if(mode==='ai'){aiPills.style.display='flex';socPills.style.display='none';lbl.textContent='Select AI platform';
-    selectPlatformByName('ChatGPT','ai');}
-  else if(mode==='social'){aiPills.style.display='none';socPills.style.display='flex';lbl.textContent='Select social platform';
-    selectPlatformByName('Instagram','social');}
-  else{aiPills.style.display='flex';socPills.style.display='flex';lbl.textContent='Select platform';
-    selectPlatformByName('ChatGPT','ai');}
+  if(mode==='ai'){
+    aiPills.style.display='flex';
+    socPills.style.display='none';
+    lbl.textContent='Select AI platform';
+    bothAIChosen=false;
+    bothSocialChosen=false;
+    selectPlatformByName('ChatGPT','ai');
+  } else if(mode==='social'){
+    aiPills.style.display='none';
+    socPills.style.display='flex';
+    lbl.textContent='Select social platform';
+    bothAIChosen=false;
+    bothSocialChosen=false;
+    selectPlatformByName('Instagram','social');
+  } else {
+    // BOTH mode — show both pill rows
+    aiPills.style.display='flex';
+    socPills.style.display='flex';
+    lbl.textContent='Select AI + Social platform';
+    // Auto-select ChatGPT on AI side if none active
+    var aiActive = document.querySelector('#aiPills .platform-pill.active');
+    if(!aiActive){
+      selectPlatformByName('ChatGPT','ai');
+    }
+    bothAIChosen=true; // ChatGPT already selected by default
+    // Auto-select Instagram on social side
+    var socActive = document.querySelector('#socialPills .platform-pill.active');
+    if(!socActive){
+      var firstSoc = document.querySelector('#socialPills .platform-pill:not(.custom-pill)');
+      if(firstSoc){ firstSoc.classList.add('active'); }
+    }
+    selectedSocialPlatform='Instagram';
+    bothSocialChosen=true;
+    document.getElementById('liveTag').textContent=selectedAIPlatform+' + '+selectedSocialPlatform;
+    // Update both open/copy button names
+    var bn=document.getElementById('bothAIName'); if(bn) bn.textContent=selectedAIPlatform;
+    var bs=document.getElementById('bothSocialName'); if(bs) bs.textContent=selectedSocialPlatform;
+  }
   const inp=document.getElementById('promptInput').value;
   if(inp.length>2) setTimeout(function(){ processPrompt(inp); }, 80);
 }
@@ -1347,7 +1378,10 @@ function selectPlatformByName(name,type){
 let selectedAIPlatform='ChatGPT';
 let selectedSocialPlatform='Instagram';
 
-function closeBothPopup(){document.getElementById('bothPopup').classList.remove('open');}
+function closeBothPopup(){
+  var pop = document.getElementById('bothPopupOverlay');
+  if(pop) pop.style.display='none';
+}
 
 function showBothPopup(missingType){
   try {
@@ -1388,15 +1422,14 @@ function selectPlatform(el,name,type){
       el.classList.add('active');
       selectedAIPlatform=name; selectedPlatform=name; selectedPlatformType=type;
       bothAIChosen=true;
-      if(!bothSocialChosen) showBothPopup('social');
     } else {
       document.querySelectorAll('#socialPills .platform-pill').forEach(p=>p.classList.remove('active'));
       el.classList.add('active');
       selectedSocialPlatform=name; bothSocialChosen=true;
-      if(!bothAIChosen) showBothPopup('ai');
     }
     document.getElementById('liveTag').textContent=selectedAIPlatform+' + '+selectedSocialPlatform;
-    if(bothAIChosen&&bothSocialChosen) closeBothPopup();
+    var bn=document.getElementById('bothAIName'); if(bn) bn.textContent=selectedAIPlatform;
+    var bs=document.getElementById('bothSocialName'); if(bs) bs.textContent=selectedSocialPlatform;
   } else {
     document.querySelectorAll('.platform-pill:not(.custom-pill)').forEach(p=>p.classList.remove('active'));
     el.classList.add('active');
@@ -1452,11 +1485,8 @@ function buildAIVariations(fixed,intent,platform){
   const base=nonLatinCheck
     ?''+fixed+'\n\nPlease understand this '+langName+' request and help accordingly. Respond in '+langName+' or English as appropriate.'
     :buildAIPrompt(fixed,intent,platform);
-  // Variation 1: Concise and direct
   const v1=base;
-  // Variation 2: Detailed with context
   const v2=base+' Please be thorough and provide step-by-step guidance where appropriate.';
-  // Variation 3: Specific tone
   const tones={ChatGPT:'Use a clear, structured format with headings if needed.',Claude:'Please think through this carefully and provide a well-reasoned response.',Gemini:'Provide a comprehensive answer with examples.',Grok:'Keep it direct and practical.',default:'Provide a clear and helpful response.'};
   const tone=tones[platform]||tones['default'];
   const v3=base+' '+tone;
@@ -1532,18 +1562,14 @@ function buildAIPrompt(fixed, intent, platform) {
     business:     'Write a professional business communication. Be clear, concise and results-focused.'
   };
   if (prompts[intent]) return prompts[intent] + (style ? ' ' + style : '');
-  // General fallback: clean input of suggestion chips, return structured request
   var stripped = fixed
     .replace(/[+]?\s*(Make shorter|Make formal|Add date|Add reason|Add context|Add examples|Add CTA|Add hashtags|Add emoji|Add numbers|Add achievement|Add language|Show code|Add error message|Add subject|Add exam date|Make structured|Add destination|Add duration|Add budget)[^.:]*[:.]?\s*/gi, '')
     .trim();
-  // If stripped text looks like non-English / Hinglish — don't pass it as prompt
-  // Return a generic English request instead
   var isEnglishLike = /^[a-zA-Z0-9\s.,!?'"()-]+$/.test(stripped) && stripped.split(' ').length > 3;
   if (!stripped || stripped.length < 3) {
     return 'Please help me with my request and provide a detailed, clear and well-structured response.' + (style ? ' ' + style : '');
   }
   if (!isEnglishLike) {
-    // Non-English input with no matching intent — generic English request
     return 'Please understand my request and help me accordingly. Provide a detailed, helpful and well-structured response in English.' + (style ? ' ' + style : '');
   }
   return stripped + '. Please provide a detailed, helpful and well-structured response.' + (style ? ' ' + style : '');
@@ -1567,8 +1593,8 @@ function buildSocialCaption(topic,intent,platform){
   const captions={
     instagram:{travel:`Just dropped everything and went 🌍✨ ${topic.replace(/[.!?]$/,'')} — and it was absolutely worth it. Some places just change you. Save this if you need a travel inspo reminder! 🗺️ #Travel #Wanderlust #ExploreMore`,food:`This was NOT planned but absolutely worth it 😍🍽️ ${topic.replace(/[.!?]$/,'')} — 10/10 would recommend. Tag someone you'd eat this with! #FoodLover #Foodie #MustTry`,motivational:`Monday reminder: You are closer than you think 💪✨ Keep going, keep growing. Drop a 🔥 if you needed this today! #Motivation #MindsetMatters #YouGotThis`,default:`${topic.replace(/[.!?]$/,'')} ✨ Sharing this because it genuinely made my day better. Save it for later! 💾 #lifestyle #vibes #inspo`},
     twitter:{default:`${topic.replace(/[.!?]$/,'')} — and honestly? Worth every second.`,motivational:`Quick reminder: Progress > perfection. Keep going. 🔥`,food:`${topic.replace(/[.!?]$/,'')} and I'm not taking any questions at this time 😂`},
-    linkedin:{default:`Excited to share: ${topic.replace(/[.!?]$/,'')}.\n\nThis experience taught me that showing up consistently matters more than being perfect.\n\nWhat's one thing you've learned recently? Drop it below 👇`,motivational:`${topic.replace(/[.!?]$/,'')}\n\nThe people who succeed aren't always the most talented — they're the most consistent.\n\nWhat keeps you motivated? Share below 👇`},
-    facebook:{default:`Can't believe I'm actually sharing this but here we go 😄\n\n${topic.replace(/[.!?]$/,'')}\n\nWould love to hear your thoughts — drop a comment!`},
+    linkedin:{default:`Excited to share: ${topic.replace(/[.!?]$/,'')}.\\n\\nThis experience taught me that showing up consistently matters more than being perfect.\\n\\nWhat's one thing you've learned recently? Drop it below 👇`,motivational:`${topic.replace(/[.!?]$/,'')}\\n\\nThe people who succeed aren't always the most talented — they're the most consistent.\\n\\nWhat keeps you motivated? Share below 👇`},
+    facebook:{default:`Can't believe I'm actually sharing this but here we go 😄\\n\\n${topic.replace(/[.!?]$/,'')}\\n\\nWould love to hear your thoughts — drop a comment!`},
     whatsapp:{default:`Hey! Just wanted to share — ${topic.replace(/[.!?]$/,'').toLowerCase()}. You should check it out! 😊`},
     youtube:{default:`In this video, I share everything about: ${topic.replace(/[.!?]$/,'')}. Watch till the end for the most important part! Don't forget to like and subscribe 🔔`},
     threads:{default:`${topic.replace(/[.!?]$/,'')} and I think that says everything 😌`},
@@ -1590,14 +1616,10 @@ function calcScores(text){
   return{before:Math.round((g+c+s)/3),after:{grammar:Math.min(97,g+20+Math.floor(Math.random()*6)),clarity:Math.min(95,c+18+Math.floor(Math.random()*6)),specific:Math.min(93,s+20+Math.floor(Math.random()*6))}};
 }
 
-// ── MAIN PROCESS ─────────────────────────────────────
 // ── CONTENT MODERATION ──────────────────────────────────
-// Basic pattern list - words that should never appear in output
 const BLOCKED_PATTERNS = [
   /\b(fuck|shit|bitch|bastard|asshole|cunt|dick|pussy|boobs|boob|tits|cock|penis|vagina|whore|slut|rape|nigger|faggot)\b/gi,
-  // Hindi/Marathi/regional abusive terms (romanised)
   /\b(madarchod|bhenchod|chutiya|gaand|randi|bhadwa|harami|saala|kutte|kamine|bsdk|mcs|bkl)\b/gi,
-  // Devanagari script abusive patterns (common ones)
   /[मभचगरभ][ाां][ड]|भड़व|[रहस]ंड[ी]/gi,
 ];
 
@@ -1619,9 +1641,6 @@ function onInput(el){
   document.getElementById('clearBtn').style.display=len>0?'block':'none';
   clearTimeout(debounceTimer);
   if(len<3){document.getElementById('liveResult').classList.remove('visible');return;}
-  // Show language picker if:
-  // 1. No language ever saved (brand new user), OR
-  // 2. Language was saved as English but user is typing Hinglish/Indian text
   const savedLang = localStorage.getItem('clarix-lang');
   const isTypingNonEnglish = /[a-z]/.test(el.value) && 
     /(nahi|nai|hai|hain|kar|karo|mujhe|mera|meri|tera|tumhara|aap|boss|chutti|bukar|thik|accha|acha|bahut|bohot|kya|kyun|kab|kaise|lagta|lagti|wala|wali|chahiye|chahte|bolo|batao|likho|bhejo|dedo|dena|lena|jao|aao|raho|hoga|hogi|hoge|padho|samjho)/i.test(el.value);
@@ -1652,7 +1671,6 @@ function isNonLatin(text){
   return /[ऀ-ॿ઀-૿଀-୿ఀ-౿ಀ-೿ഀ-ൿ؀-ۿ਀-੿ঀ-৿]/.test(text);
 }
 
-
 // ── Translation helper ────────────────────────────────
 async function translateToLang(text, targetLangCode){
   var langNames = {
@@ -1663,10 +1681,8 @@ async function translateToLang(text, targetLangCode){
   };
   var code = targetLangCode.split('-')[0];
   var langName = langNames[code] || code;
-  // Validate input is proper English before translating
   var isEnglish = /^[a-zA-Z0-9\s.,!?:;'"()\-]+$/.test(text.trim());
   if(!isEnglish) {
-    // Input is not clean English — translate differently
     text = 'Help me with this request: ' + text.replace(/[^a-zA-Z0-9\s.,!?]/g, ' ').trim();
   }
   try {
@@ -1711,11 +1727,10 @@ async function showDualOutput(englishText){
 }
 
 function processPrompt(input){
-  // Content moderation check
   const foulWarning = document.getElementById('foulWarning');
   if(containsFoulLanguage(input)) {
     if(foulWarning) foulWarning.style.display='block';
-    input = sanitizeOutput(input); // sanitize before processing
+    input = sanitizeOutput(input);
     setTimeout(()=>{ if(foulWarning) foulWarning.style.display='none'; }, 5000);
   } else {
     if(foulWarning) foulWarning.style.display='none';
@@ -1724,17 +1739,13 @@ function processPrompt(input){
   const nonLatin=isNonLatin(input);
   const detectedLang=detectLang(input);
 
-  // FIX 3: Show language detection badge for ALL languages
   const badge=document.getElementById('langDetectBadge');
   if(badge&&input.length>2){
     badge.textContent='Detected: '+detectedLang;
     badge.style.display='inline-block';
   }
 
-  // FIX 1: Non-Latin scripts skip English grammar rules
   const{fixed,fixes}=nonLatin?{fixed:input,fixes:[]}:applyFixes(input);
-  // For non-Latin (Hindi, Gujarati etc) — detect intent from romanized keywords
-  // even in non-Latin script we can check for common concepts
   let intent;
   if(nonLatin) {
     const lower = input.toLowerCase();
@@ -1746,7 +1757,6 @@ function processPrompt(input){
     else if(/instagram|whatsapp|twitter|social|post|caption/.test(lower)) intent='social';
     else intent='general';
   } else {
-    // For Latin-script Hinglish/romanised Indian languages — detect from common words
     const lower = input.toLowerCase();
     if(/thik nahi|bimar|bukar|bukhar|fever|sick|unwell|doctor|hospital|dawai|dawa|medicine|leave|chutti|chhutti|boss ko mail|mail kar|manager ko/.test(lower)) intent='email';
     else if(/linkedin|achievement|promotion|career|job|naukri/.test(lower)) intent='linkedin';
@@ -1759,11 +1769,9 @@ function processPrompt(input){
   const scores=calcScores(input);
   currentOriginal=input;
 
-  // Update tag
-  document.getElementById('liveTag').textContent=selectedPlatform;
+  document.getElementById('liveTag').textContent=currentMode==='both'?(selectedAIPlatform+' + '+selectedSocialPlatform):selectedPlatform;
   document.getElementById('openBtnName').textContent=selectedPlatform;
 
-  // Scores
   const scoreBefore=document.getElementById('scoreBefore');
   scoreBefore.textContent=scores.before;
   scoreBefore.style.color=scores.before>=75?'var(--green)':scores.before>=50?'var(--amber)':'var(--red)';
@@ -1785,21 +1793,15 @@ function processPrompt(input){
   setBar('bar-clarity','val-clarity',scores.after.clarity);
   setBar('bar-specific','val-specific',scores.after.specific);
 
-  // Fixes
   if(fixes.length>0){
     document.getElementById('fixChips').innerHTML=fixes.map(f=>`<span class="fix-chip"><span class="fix-old">${f.original}</span><span class="fix-arr">→</span><span class="fix-new">${f.corrected}</span></span>`).join('');
     document.getElementById('fixesWrap').style.display='block';
   } else document.getElementById('fixesWrap').style.display='none';
 
-  // Dual language output — show when non-English language is selected
-  // For AI tab: show always when non-English
-  // For Social tab: show only when user has explicitly selected a non-English language (not just detected)
   const isNonEngInput = nonLatin || (selectedLang && selectedLang !== 'English' && selectedLang !== 'Hinglish');
   const isAITab = (selectedPlatformType === 'ai') || (currentMode === 'ai') || (currentMode === 'both');
-  // Show dual when: non-English language explicitly selected (regardless of tab)
   const langExplicitlySelected = selectedLang && selectedLang !== 'English' && selectedLang !== 'Hinglish';
   if(isNonEngInput && (isAITab || langExplicitlySelected)) {
-    // Build clean English prompt from detected intent
     const fixedClean = fixed.replace(/[+]?\s*(Make shorter|Make formal|Add date|Add reason|Add context|Add examples|Add CTA|Add hashtags|Add emoji|Be specific|Specify format)[^.:]*[:.]?\s*/gi, '').trim();
     const rawEng = buildAIPrompt(fixedClean || fixed, intent, selectedPlatform);
     const cleanEng = rawEng
@@ -1811,11 +1813,7 @@ function processPrompt(input){
       .trim();
     currentDualEng = cleanEng;
     currentResult = cleanEng;
-    // Hide the manual dualOutput box
     document.getElementById('dualOutput').classList.remove('visible');
-    // showDualOutput uses MyMemory API to translate English → Tamil/Marathi/Telugu etc
-    // This gives REAL translated text in the selected language script
-    // ── LANGUAGE OUTPUT ─────────────────────────────────────────
     var lo = typeof LANGUAGES !== "undefined" ? LANGUAGES.find(function(l){ return l.name===selectedLang; }) : null;
     if(lo && selectedLang !== "English" && selectedLang !== "Hinglish") {
       var ls  = selectedLang.split(" — ")[0];
@@ -1829,7 +1827,6 @@ function processPrompt(input){
       if(detEl) detEl.textContent = cleanEng;
       if(dotEl) dotEl.textContent = "Translating to " + ls + "...";
       if(dualEl) dualEl.classList.add("visible");
-      // Single Claude API call: translate cleanEng to selected language
       clearTimeout(window._txTimer);
       (function(targetDotEl, engText, langName) {
         window._txTimer = setTimeout(function() {
@@ -1866,8 +1863,6 @@ function processPrompt(input){
     document.getElementById('dualOutput').classList.remove('visible');
   }
 
-
-  // Safe helpers
   const safeText=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
   const safeShow=(id)=>{const el=document.getElementById(id);if(el)el.classList.add('visible');};
   const safeHide=(id)=>{const el=document.getElementById(id);if(el)el.classList.remove('visible');};
@@ -1875,12 +1870,10 @@ function processPrompt(input){
 
   try{
   if(currentMode==='both'){
-    // Show AI variations
     safeText('aiOutputName',selectedAIPlatform);
     const aiVars=buildAIVariations(fixed,intent,selectedAIPlatform);
     renderAIVariations(aiVars);
     safeShow('aiOutput');
-    // Show Social output
     const socStyle=SOCIAL_STYLES[selectedSocialPlatform]||SOCIAL_STYLES['Instagram'];
     const socCaption=socStyle.caption(fixed,intent);
     const socPrompt=socStyle.prompt(fixed,intent);
@@ -1892,18 +1885,14 @@ function processPrompt(input){
     safeShow('socialOutput');
     currentResult=aiVars[0];
     currentSocialResult=socCaption;
-    // Update action buttons for Both mode
     safeText('copyBtn','⎘ Copy AI prompt');
     safeText('openBtnName',selectedAIPlatform);
     safeDisp('bothOpenWrap','flex');
     safeDisp('bothCopyWrap','flex');
     safeText('bothAIName',selectedAIPlatform);
     safeText('bothSocialName',selectedSocialPlatform);
-    safeText('bothOpenAI','Open '+selectedAIPlatform+' →');
-    safeText('bothOpenSocial','Open '+selectedSocialPlatform+' →');
   } else if(selectedPlatformType==='ai'){
     safeText('aiOutputName',selectedPlatform);
-    // For non-Latin input, use intent-based prompt; otherwise use variations
     let variations;
     if(nonLatin) {
       const enhancedBase = buildAIPrompt(fixed, intent, selectedPlatform);
@@ -1923,8 +1912,6 @@ function processPrompt(input){
     const style=SOCIAL_STYLES[selectedPlatform]||SOCIAL_STYLES['Instagram'];
     let caption, prompt;
     if(isNonEngInput) {
-      // Non-English: caption shows enhanced English social output
-      // showDualOutput will handle showing it in the selected language
       caption = style.caption(fixed || input, intent);
       prompt = style.prompt(fixed || input, intent);
     } else {
@@ -1946,7 +1933,6 @@ function processPrompt(input){
   }
   }catch(err){console.error('Clarix output error:',err);}
 
-  // Suggestion chips
   const suggestWrap = document.getElementById('suggestWrap');
   if(suggestWrap && typeof intent !== 'undefined') {
     const suggestions = {
@@ -1967,13 +1953,8 @@ function processPrompt(input){
   }
 
   document.getElementById('liveResult').classList.add('visible');
-  // showDualOutput (called above) handles the translated language output
-  // It uses MyMemory API to properly translate English → selected language (Tamil, Marathi etc)
-  // Nothing extra needed here — dualOutput is hidden, dualLangOutput is managed by showDualOutput
 
-  // Stats
   stats.count++;stats.scores.push(afterOverall);
-  // Track recent prompts for sidebar
   if(!window._recentPrompts) window._recentPrompts=[];
   if(currentOriginal) { window._recentPrompts.unshift(currentOriginal); if(window._recentPrompts.length>8) window._recentPrompts.pop(); }
   localStorage.setItem('clarix-stats',JSON.stringify(stats));
@@ -1981,15 +1962,12 @@ function processPrompt(input){
   if(stats.scores.length>100) stats.scores=stats.scores.slice(-100);
   localStorage.setItem('clarix-stats',JSON.stringify(stats));
   updateHomeStats();
-renderFAQ();
-// Check if returning from library with a goto instruction
-var libGoto = sessionStorage.getItem('clarix-goto');
-if(libGoto) {
-  sessionStorage.removeItem('clarix-goto');
-  setTimeout(function(){ goPage(libGoto, document.getElementById('nav-'+libGoto)); }, 100);
-}
-
-// Scrollers use pure CSS animation (marqueeLeft / marqueeRight keyframes)
+  renderFAQ();
+  var libGoto = sessionStorage.getItem('clarix-goto');
+  if(libGoto) {
+    sessionStorage.removeItem('clarix-goto');
+    setTimeout(function(){ goPage(libGoto, document.getElementById('nav-'+libGoto)); }, 100);
+  }
 }
 
 function showOutputTab(tab,btn){
@@ -2070,7 +2048,6 @@ function toggleVoice(){
     const ta=document.getElementById('promptInput');
     ta.value=spokenText;isVoiceInput=true;
     onInput(ta);
-    // Translate to English if non-English language selected
     if(selectedLang!=='English'&&selectedLang!=='Hinglish'){
       document.getElementById('dualOrigText').textContent=spokenText;
       document.getElementById('dualLangLabel').querySelector('span').textContent=selectedLang.split(' — ')[0];
@@ -2080,15 +2057,12 @@ function toggleVoice(){
       currentDualOrig=spokenText;
       try{
         const langCode=selectedLangCode.split('-')[0];
-        // Try MyMemory first
         const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:'Translate to English only, return ONLY the translation:\n'+spokenText}]})});
         const data=await res.json();
         let translated=data.responseData?.translatedText||'';
-        // Fallback: if translation looks wrong (same as input or too short), show guidance
         if(!translated||translated===spokenText||translated.length<3){
           translated='[Translation unavailable] Your text: '+spokenText;
         }
-        // Remove HTML entities
         translated=translated.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&#39;/g,"'");
         currentDualEng=translated;
         document.getElementById('dualEngText').textContent=translated;
@@ -2104,7 +2078,7 @@ function toggleVoice(){
   recognition.start();
 }
 
-// ── Custom platform ───────────────────────────────────
+// ── FIX 2: Custom platform — removed "document.document" typo ──
 function openModal(){
   var m=document.getElementById('customPlatModal');
   if(m){m.classList.add('open');m.style.display='flex';}
@@ -2120,14 +2094,21 @@ function closeModal(){
 }
 
 function addCustomPlatform(){
-  const name=document.document.getElementById('customPlatName') || ($$("customInput")||{}).value.trim();
+  var nameEl = document.getElementById('customPlatName');
+  var name = nameEl ? nameEl.value.trim() : '';
   if(!name) return;
-  if(!customPlatforms.includes(name)){customPlatforms.push(name);localStorage.setItem('clarix-customs',JSON.stringify(customPlatforms));addPlatformPill(name);}
+  if(!customPlatforms.includes(name)){
+    customPlatforms.push(name);
+    localStorage.setItem('clarix-customs',JSON.stringify(customPlatforms));
+    addPlatformPill(name);
+  }
   closeModal();
   showToast(name+' added!');
 }
+
 function addPlatformPill(name){
   const wrap=document.querySelector('.platform-wrap');
+  if(!wrap) return;
   const addBtn=wrap.querySelector('.custom-pill');
   const pill=document.createElement('div');
   pill.className='platform-pill';
@@ -2141,17 +2122,12 @@ function appendSuggestion(text) {
   const inp = document.getElementById('promptInput');
   if(!inp) return;
   const current = inp.value.trim();
-  // For non-Latin input, do NOT append suggestion text to the prompt
-  // Instead show a toast and let user know what will be applied
   if(isNonLatin(current)) {
-    // Apply suggestion as a modifier to the INTENT, not to the raw text
     currentSuggestionMod = text;
     showToast('Applied: ' + text + ' — generating updated output...');
-    // Re-process with the modifier
     processPromptWithMod(current, text);
     return;
   }
-  // For English: append normally
   const sep = current && !current.endsWith('.') ? '. ' : ' ';
   inp.value = current + (current ? sep : '') + text + ': ';
   inp.focus();
@@ -2161,7 +2137,6 @@ function appendSuggestion(text) {
 let currentSuggestionMod = '';
 
 function processPromptWithMod(input, mod) {
-  // Map suggestion to English instruction
   const modMap = {
     'Make shorter': 'Keep the response brief and concise.',
     'Make formal': 'Use formal and professional language.',
@@ -2174,12 +2149,10 @@ function processPromptWithMod(input, mod) {
     'Add emoji': 'Add appropriate emojis.',
   };
   const modInstruction = modMap[mod] || mod + '.';
-  // Get current English output and append modifier
   const engEl = document.getElementById('dualEngText');
   if(engEl && engEl.textContent) {
     const basePrompt = engEl.textContent.replace(/\. Keep the response.*$|\. Use formal.*$|\. Include the.*$|\. Provide a.*$|\. Include relevant.*$/i, '');
     engEl.textContent = basePrompt.trim() + ' ' + modInstruction;
-    const copyEng = ($$("dualCopyEng")||{});
     showToast('Updated: ' + mod + ' ✓');
   }
 }
@@ -2196,7 +2169,6 @@ function clearAll(){
 
 function loadTemplate(text,mode){
   goPage('write', document.getElementById('nav-write'));
-  // Clear previous result
   var lr=document.getElementById('liveResult');
   if(lr) lr.classList.remove('visible');
   var ao=document.getElementById('aiOutput'); if(ao) ao.classList.remove('visible');
@@ -2216,7 +2188,6 @@ function saveToLibrary(){
 }
 
 function renderLibrary(){
-  // Redirects to new renderLibCards
   renderLibCards();
 }
 
@@ -2232,9 +2203,15 @@ function loadFromLibrary(id){
 function goPage(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(function(n){n.classList.remove('active');});
-  document.getElementById('page-'+name).classList.add('active');el.classList.add('active');
-  if(name==='library') renderLibrary();
-  if(name==='profile') updateProfile();
+  var page = document.getElementById('page-'+name);
+  if(page) page.classList.add('active');
+  var navEl = (el && el.classList) ? el : document.getElementById('nav-'+name);
+  if(navEl) navEl.classList.add('active');
+  setTimeout(function() {
+    if (name === 'library') renderLibCards();
+    if (name === 'apps') { var ag=document.getElementById('aiAppsGrid'); if(ag&&!ag.children.length) renderAppsGrid(); }
+    if (name === 'profile') updateProfile();
+  }, 80);
   window.scrollTo(0,0);
 }
 
@@ -2257,12 +2234,13 @@ function updateProfile(){
   document.getElementById('profile-saved').textContent=library.length;
   if(stats.scores.length){const avg=Math.round(stats.scores.reduce((a,b)=>a+b,0)/stats.scores.length);document.getElementById('profile-avg').textContent=avg;}
 }
+
 // ── LANGUAGE NUDGE ───────────────────────────────────────
 let langNudgeShown = false;
 let pendingInputAfterLang = '';
 
 function showLangNudge(pendingText) {
-  if(langNudgeShown) return; // only show once per session
+  if(langNudgeShown) return;
   pendingInputAfterLang = pendingText;
   document.getElementById('langNudge').classList.add('open');
 }
@@ -2271,9 +2249,7 @@ function nudgeSelectLang(name, code, flag) {
   document.getElementById('langNudge').classList.remove('open');
   langNudgeShown = true;
   selectLang(name, code, flag);
-  // Mark that user explicitly chose a language
   localStorage.setItem('clarix-lang-chosen', '1');
-  // If there's pending input, process it now with the selected language
   if(pendingInputAfterLang) {
     setTimeout(function() {
       const inp = document.getElementById('promptInput');
@@ -2287,8 +2263,6 @@ function nudgeSelectLang(name, code, flag) {
 function nudgeSkip() {
   document.getElementById('langNudge').classList.remove('open');
   langNudgeShown = true;
-  // Set English in memory but do NOT save to localStorage
-  // So next visit the popup shows again
   selectedLang = 'English';
   selectedLangCode = 'en-GB';
   document.getElementById('langBadge').textContent = '🇬🇧 English';
@@ -2319,7 +2293,6 @@ function closeHelpMenu() {
   if(btn) { btn.style.background = 'var(--surface)'; btn.style.borderColor = 'var(--border)'; btn.style.color = 'var(--muted)'; }
 }
 
-// Close help menu when clicking outside
 document.addEventListener('click', function(e) {
   var wrap = document.getElementById('helpMenu').closest('.help-menu-wrap') || document.getElementById('helpMenu');
   if(wrap && !wrap.contains(e.target)) closeHelpMenu();
@@ -2367,18 +2340,14 @@ renderLangOptions();
 updateHomeStats();
 
 // ── NEW LAYOUT FUNCTIONS ─────────────────────────────────────
-
-// Greeting
 function setGreeting() {
   var h = new Date().getHours();
   var name = localStorage.getItem('clarix-username') || '';
   var g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
   var el = document.getElementById('homeGreeting');
   if (el) el.textContent = name ? (g + ', ' + name + '!') : (g + '!');
-  // Update profile name
   var pn = document.getElementById('profileName');
   if (pn && name) pn.textContent = name;
-  // Update sidebar user
   var sn = document.getElementById('sbUserName');
   if (sn && name) sn.textContent = name;
   var sa = document.getElementById('sbUserAvatar');
@@ -2388,7 +2357,6 @@ function setGreeting() {
 function promptUsername() {
   var existing = localStorage.getItem('clarix-username');
   if (existing) return;
-  // Show custom name modal instead of browser prompt()
   document.getElementById('nameModal').style.display = 'flex';
   setTimeout(function(){ document.getElementById('nameInput').focus(); }, 200);
 }
@@ -2401,7 +2369,6 @@ function saveUsername() {
   localStorage.setItem('clarix-lang-chosen', '1');
 }
 
-// Sidebar toggle
 function toggleSidebar() {
   var sb = document.getElementById('sidebar');
   sb.classList.toggle('collapsed');
@@ -2416,38 +2383,16 @@ function toggleSidebar() {
   }
 }
 
-// Mobile sidebar
 function openMobileSidebar() {
   document.getElementById('sidebar').classList.add('mobile-open');
 }
 
-// Start new chat
 function startNewChat() {
   clearAll();
   goPage('write', document.getElementById('nav-write'));
 }
 
-// Navigate pages
-function goPage(name, el) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.sb-item').forEach(function(n){ n.classList.remove('active'); });
-  var page = document.getElementById('page-' + name);
-  if (page) page.classList.add('active');
-  var navEl = (el && el.classList) ? el : document.getElementById('nav-' + name);
-  if (navEl) navEl.classList.add('active');
-  setTimeout(function() {
-    if (name === 'library') renderLibCards();
-    if (name === 'apps') { var ag=document.getElementById('aiAppsGrid'); if(ag&&!ag.children.length) renderAppsGrid(); }
-    if (name === 'profile') updateProfile();
-  }, 80);
-  window.scrollTo(0, 0);
-}
-
 // ── APPS GRID ────────────────────────────────────────────────
-// AI_APPS moved to top
-
-// SOCIAL_APPS moved to top
-
 function renderAppsGrid() {
   var aiGrid = document.getElementById('aiAppsGrid');
   var socGrid = document.getElementById('socialAppsGrid');
@@ -2485,8 +2430,6 @@ function selectAppAndWrite(el) {
 }
 
 // ── LIBRARY CARDS ────────────────────────────────────────────
-// LIB_CARDS moved to top of script
-
 function renderLibCards() {
   var container = document.getElementById('libCardsContainer');
   console.log('renderLibCards called, container:', container, 'LIB_CARDS:', LIB_CARDS ? LIB_CARDS.length : 'undefined');
@@ -2523,9 +2466,8 @@ function renderLibCards() {
       html += '<rect width="260" height="130" fill="url(#' + tid + ')"/>';
       html += '<circle cx="200" cy="20" r="50" fill="rgba(255,255,255,0.1)"/>';
       html += '<circle cx="40" cy="110" r="40" fill="rgba(0,0,0,0.08)"/>';
-      // Use first letter of category instead of emoji for reliability
-var letter = card.cat.charAt(0).toUpperCase();
-html += '<text x="130" y="88" text-anchor="middle" font-size="52" font-weight="800" fill="rgba(255,255,255,0.4)" font-family="Georgia,serif">' + letter + '</text>';
+      var letter = card.cat.charAt(0).toUpperCase();
+      html += '<text x="130" y="88" text-anchor="middle" font-size="52" font-weight="800" fill="rgba(255,255,255,0.4)" font-family="Georgia,serif">' + letter + '</text>';
       html += '</svg>';
       html += '<button class="lib-card-btn" data-idx="' + idx + '">✦ Use prompt</button>';
       html += '</div>';
@@ -2541,7 +2483,6 @@ html += '<text x="130" y="88" text-anchor="middle" font-size="52" font-weight="8
 
   container.innerHTML = html;
 
-  // Attach events after render
   container.querySelectorAll('.lib-card').forEach(function(el) {
     el.addEventListener('click', function() {
       var idx = parseInt(el.getAttribute('data-idx'));
@@ -2569,11 +2510,9 @@ html += '<text x="130" y="88" text-anchor="middle" font-size="52" font-weight="8
 function loadLibCardByIdx(idx) {
   var card = LIB_CARDS[idx];
   if (!card) return;
-  // Clear previous result first
   document.getElementById('liveResult').classList.remove('visible');
   var ao=document.getElementById('aiOutput'); if(ao) ao.classList.remove('visible');
   var so=document.getElementById('socialOutput'); if(so) so.classList.remove('visible');
-  // Switch to AI mode for library cards
   setMode('ai');
   document.getElementById('promptInput').value = card.prompt;
   onInput(document.getElementById('promptInput'));
@@ -2587,9 +2526,7 @@ function copyLibCardByIdx(idx) {
   navigator.clipboard.writeText(card.prompt).then(function(){ showToast('Prompt copied!'); });
 }
 
-
 function showAllLibCards(section) {
-  // Show all cards in the section by scrolling to it
   var grids = document.querySelectorAll('.lib-grid');
   var sections = ['email','social','coding','business','study'];
   var idx = sections.indexOf(section);
@@ -2641,16 +2578,13 @@ window.addEventListener('load', function() {
   renderLangOptions();
   if (!localStorage.getItem('clarix-username')) { setTimeout(promptUsername, 1000); }
   updateHomeStats();
-  // Pre-render library cards so they're ready
   setTimeout(function(){ renderLibCards(); }, 100);
 
-  // Scrollers
   var platTrack = document.getElementById('platTrack');
   var langTrack = document.getElementById('langTrack');
   if (platTrack) platTrack.style.animationPlayState = 'running';
   if (langTrack) langTrack.style.animationPlayState = 'running';
 
-  // sessionStorage goto
   var libGoto = sessionStorage.getItem('clarix-goto');
   if (libGoto) {
     sessionStorage.removeItem('clarix-goto');
@@ -2658,7 +2592,6 @@ window.addEventListener('load', function() {
     setTimeout(function(){ goPage(libGoto, navEl); }, 100);
   }
 
-  // Show lang nudge if not chosen
   if (!localStorage.getItem('clarix-lang-chosen')) {
     setTimeout(function(){ showLangNudge(); }, 2000);
   }
