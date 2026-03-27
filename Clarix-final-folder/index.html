@@ -1,0 +1,2687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clarix™ — India's First Prompt Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Google Analytics GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D7KKQCFSLB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-D7KKQCFSLB');
+</script>
+<style>
+/* ── RESET & BASE ── */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --sb:#1a1a22;--sb2:#222230;--sb-border:rgba(255,255,255,0.07);
+  --sb-text:#aaa;--sb-text-act:#fff;--sb-act:rgba(255,112,67,0.15);
+  --ac:#ff7043;--ac2:#e8530a;--ac-bg:#fff3f0;--ac-border:#ffcdc4;
+  --bg:#f5f5f7;--surface:#ffffff;--border:#ebebeb;--border2:#e0e0e0;
+  --text:#1a1a1a;--muted:#666;--hint:#999;
+  --green:#00897b;--green-bg:#e8f5f3;
+  --amber:#f57c00;--amber-bg:#fff8e1;
+  --red:#d32f2f;--red-bg:#fce4e4;
+  --r:12px;--rs:8px;
+  --sb-width:240px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sb-width);background:var(--sb);
+  display:flex;flex-direction:column;flex-shrink:0;
+  height:100vh;position:relative;z-index:10;
+  transition:width .25s ease;
+}
+.sidebar.collapsed{width:56px}
+
+/* Logo */
+.sb-logo{
+  padding:14px 14px 12px;display:flex;align-items:center;gap:9px;
+  border-bottom:1px solid var(--sb-border);flex-shrink:0;
+}
+.sb-logo-icon{
+  width:28px;height:28px;background:var(--ac);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:14px;font-weight:800;flex-shrink:0;
+}
+.sb-logo-text{
+  font-family:'Syne',sans-serif;font-size:18px;font-weight:800;
+  background:linear-gradient(135deg,#ff7043,#ff9a76);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  white-space:nowrap;
+}
+.sb-logo-tm{font-size:8px;color:var(--ac);font-weight:700;margin-top:-10px;-webkit-text-fill-color:var(--ac)}
+.sidebar.collapsed .sb-logo-text,.sidebar.collapsed .sb-logo-tm{display:none}
+
+/* New chat button */
+.sb-new{
+  margin:12px 10px 6px;background:var(--ac);color:#fff;border:none;
+  border-radius:10px;padding:10px 12px;font-size:13px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:8px;
+  font-family:'DM Sans',sans-serif;transition:all .15s;flex-shrink:0;
+}
+.sb-new:hover{background:var(--ac2)}
+.sb-new-icon{font-size:16px;flex-shrink:0}
+.sidebar.collapsed .sb-new span{display:none}
+.sidebar.collapsed .sb-new{justify-content:center;padding:10px}
+
+/* Search */
+.sb-search{
+  margin:0 10px 8px;background:rgba(255,255,255,0.06);
+  border:1px solid var(--sb-border);border-radius:8px;
+  padding:8px 10px;display:flex;align-items:center;gap:7px;
+  color:#666;font-size:12px;cursor:pointer;flex-shrink:0;transition:all .15s;
+}
+.sb-search:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.12)}
+.sidebar.collapsed .sb-search-text{display:none}
+.sidebar.collapsed .sb-search{justify-content:center}
+
+/* Section label */
+.sb-sec{
+  padding:8px 14px 4px;font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.09em;color:#444;flex-shrink:0;
+}
+.sidebar.collapsed .sb-sec{display:none}
+
+/* Nav item */
+.sb-item{
+  padding:9px 14px;font-size:13px;color:var(--sb-text);cursor:pointer;
+  display:flex;align-items:center;gap:9px;border-radius:8px;
+  margin:1px 6px;transition:all .15s;flex-shrink:0;white-space:nowrap;
+}
+.sb-item:hover{background:rgba(255,255,255,0.07);color:var(--sb-text-act)}
+.sb-item.active{background:var(--sb-act);color:var(--ac)}
+.sb-item-icon{font-size:16px;width:18px;text-align:center;flex-shrink:0}
+.sidebar.collapsed .sb-item span:last-child{display:none}
+.sidebar.collapsed .sb-item{justify-content:center;padding:9px}
+
+/* Divider */
+.sb-div{border:none;border-top:1px solid var(--sb-border);margin:8px 10px}
+
+/* Recent chats */
+.sb-recents{
+  flex:1;overflow-y:auto;padding:0 6px;
+  scrollbar-width:thin;scrollbar-color:#333 transparent;
+}
+.sb-recents::-webkit-scrollbar{width:4px}
+.sb-recents::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+.sb-recent-item{
+  padding:7px 8px;color:#555;cursor:pointer;border-radius:6px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;
+  transition:all .15s;
+}
+.sb-recent-item:hover{color:#999;background:rgba(255,255,255,0.04)}
+.sidebar.collapsed .sb-recents{display:none}
+
+/* Collapse button */
+.sb-collapse{
+  padding:12px 14px;border-top:1px solid var(--sb-border);
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  color:#444;font-size:12px;transition:all .15s;flex-shrink:0;
+}
+.sb-collapse:hover{color:#888}
+.sidebar.collapsed .sb-collapse span{display:none}
+
+/* ── MAIN AREA ── */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0}
+
+/* Top bar */
+.topbar{
+  padding:12px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);flex-shrink:0;
+}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-model{
+  font-size:16px;font-weight:700;color:var(--text);
+  display:flex;align-items:center;gap:8px;font-family:'Syne',sans-serif;
+}
+.tb-badge{
+  font-size:10px;background:var(--ac-bg);color:var(--ac);
+  padding:3px 9px;border-radius:10px;font-weight:600;font-family:'DM Sans',sans-serif;
+}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-btn{
+  padding:6px 14px;border-radius:8px;font-size:12px;font-weight:500;
+  cursor:pointer;border:1px solid var(--border2);background:var(--surface);
+  color:var(--muted);transition:all .15s;font-family:'DM Sans',sans-serif;
+}
+.tb-btn:hover{border-color:var(--ac);color:var(--ac)}
+.tb-icon-btn{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--surface);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:15px;color:var(--muted);transition:all .15s;
+}
+.tb-icon-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+/* ── PAGES ── */
+.page{display:none;flex:1;overflow-y:auto;flex-direction:column}
+.page.active{display:flex}
+
+/* ── HOME PAGE ── */
+.home-wrap{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:32px 24px;text-align:center;
+}
+.home-icon{
+  width:56px;height:56px;background:var(--ac);border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;margin:0 auto 18px;box-shadow:0 8px 24px rgba(255,112,67,0.25);
+}
+.home-greeting{
+  font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,32px);
+  font-weight:800;color:var(--text);letter-spacing:-0.8px;margin-bottom:8px;
+}
+.home-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:420px;margin:0 auto 28px}
+
+/* Quick prompt cards */
+.quick-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+  max-width:500px;width:100%;margin-bottom:24px;
+}
+.qcard{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;text-align:left;
+  cursor:pointer;transition:all .18s;
+}
+.qcard:hover{border-color:var(--ac);box-shadow:0 4px 16px rgba(255,112,67,0.1);transform:translateY(-1px)}
+.qcard-icon{font-size:22px;margin-bottom:8px;font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif}
+.qcard-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.qcard-desc{font-size:11px;color:var(--hint);line-height:1.4}
+
+/* Scroller */
+.scroller-section{width:100%;max-width:600px;margin-bottom:6px}
+.scroller-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.09em;color:var(--hint);margin-bottom:8px;text-align:center}
+.scroller-wrap{overflow:hidden;position:relative;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,black 10%,black 90%,transparent 100%);
+  mask-image:linear-gradient(to right,transparent 0,black 10%,black 90%,transparent 100%)}
+.scroller-track{display:flex;gap:8px;will-change:transform}
+.scroller-track.go-left{animation:marqueeLeft 28s linear infinite}
+.scroller-track.go-right{animation:marqueeRight 22s linear infinite}
+@keyframes marqueeLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes marqueeRight{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+.plat-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;background:var(--surface);border:1px solid var(--border2);font-size:11px;font-weight:500;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.lang-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;background:var(--ac-bg);border:1px solid var(--ac-border);font-size:11px;font-weight:500;color:var(--ac);white-space:nowrap;flex-shrink:0}
+
+/* ── WRITE PAGE ── */
+.write-wrap{
+  flex:1;display:flex;flex-direction:column;
+  padding:20px;gap:16px;max-width:800px;width:100%;margin:0 auto;
+}
+.write-header{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.3px}
+.write-sub{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* Mode selector */
+.mode-tabs{display:flex;gap:6px;background:var(--bg);border-radius:var(--r);padding:4px}
+.mode-tab{flex:1;padding:8px;border-radius:8px;font-size:13px;font-weight:500;text-align:center;cursor:pointer;color:var(--muted);transition:all .15s}
+.mode-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+
+/* Platform pills */
+.plat-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.plat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint);margin-bottom:10px}
+.plat-scroll{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.plat-scroll::-webkit-scrollbar{display:none}
+.platform-pill{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 14px;
+  border-radius:20px;border:1px solid var(--border2);background:var(--surface);
+  font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;
+  white-space:nowrap;flex-shrink:0;transition:all .15s;
+}
+.platform-pill:hover{border-color:var(--ac);color:var(--ac)}
+.platform-pill.active{background:var(--ac-bg);border-color:var(--ac-border);color:var(--ac)}
+.custom-pill{border-style:dashed}
+
+/* Input card */
+.input-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.input-top{padding:14px 14px 0}
+.input-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.input-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint)}
+.char-cnt{font-size:11px;color:var(--hint)}
+.prompt-textarea{
+  width:100%;background:transparent;border:none;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;
+  padding:0 0 14px;resize:none;min-height:100px;outline:none;
+}
+.prompt-textarea::placeholder{color:var(--hint)}
+.input-footer{
+  padding:10px 14px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.input-actions{display:flex;align-items:center;gap:8px}
+.input-right{display:flex;align-items:center;gap:6px}
+.lang-badge-pill{
+  font-size:11px;padding:4px 10px;border-radius:20px;
+  background:var(--amber-bg);color:var(--amber);
+  border:1px solid rgba(245,124,0,0.2);font-weight:500;cursor:pointer;
+}
+.detect-badge{
+  font-size:11px;padding:3px 9px;border-radius:20px;
+  background:var(--amber-bg);color:var(--amber);
+  border:1px solid rgba(245,124,0,0.2);display:none;
+}
+.clear-btn{
+  font-size:12px;color:var(--muted);cursor:pointer;padding:5px 10px;
+  border-radius:6px;border:1px solid var(--border);background:transparent;
+  font-family:'DM Sans',sans-serif;transition:all .15s;
+}
+.clear-btn:hover{border-color:var(--red);color:var(--red)}
+.mic-btn{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--surface);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:16px;transition:all .15s;
+}
+.mic-btn:hover{background:var(--ac-bg);border-color:var(--ac)}
+.mic-btn.recording{background:var(--red-bg);border-color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.enhance-btn{
+  background:var(--ac);color:#fff;border:none;padding:9px 22px;
+  border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;
+  font-weight:600;cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;gap:6px;
+}
+.enhance-btn:hover{background:var(--ac2);transform:translateY(-1px)}
+.enhance-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+
+/* Live result */
+.live-result{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.live-result.visible{display:block}
+.live-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.live-status{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--green)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.live-platform{font-size:11px;color:var(--hint);padding:3px 9px;border-radius:20px;border:1px solid var(--border)}
+
+/* Score compare */
+.score-compare{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.score-box{text-align:center}
+.score-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800}
+.score-lbl{font-size:10px;color:var(--hint);margin-top:2px}
+.score-arrow{font-size:20px;color:var(--hint);flex:1;text-align:center}
+.score-bars{padding:12px 16px;border-bottom:1px solid var(--border)}
+.sbar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.sbar-row:last-child{margin-bottom:0}
+.sbar-lbl{font-size:12px;color:var(--muted);width:76px;flex-shrink:0}
+.sbar-bg{flex:1;height:5px;background:#eee;border-radius:3px;overflow:hidden}
+.sbar-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.34,1.56,.64,1)}
+.sbar-val{font-size:12px;font-weight:500;width:28px;text-align:right}
+
+/* Suggestion chips */
+.suggest-wrap{padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border)}
+.suggest-chip{
+  display:inline-flex;align-items:center;gap:4px;background:var(--ac-bg);
+  border:1px solid var(--ac-border);border-radius:20px;padding:5px 12px;
+  font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;transition:all .15s;
+}
+.suggest-chip:hover{background:var(--ac);color:#fff}
+.fix-wrap{padding:10px 16px;border-bottom:1px solid var(--border)}
+.fix-chip{
+  display:inline-flex;align-items:center;gap:5px;background:var(--ac-bg);
+  border:1px solid var(--ac-border);border-radius:20px;padding:4px 10px;
+  margin:2px;font-size:11px;
+}
+.fix-old{color:var(--red);text-decoration:line-through}
+.fix-arr{color:var(--hint)}
+.fix-new{color:var(--green);font-weight:500}
+
+/* Output sections */
+.dual-output{padding:14px 16px;border-bottom:1px solid var(--border);display:none}
+.dual-output.visible{display:block}
+.dual-lang-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--amber);margin-bottom:8px}
+.dual-text-box{
+  background:#fafafa;border:1px solid var(--border);border-radius:var(--rs);
+  padding:12px;font-size:13px;line-height:1.6;color:var(--text);margin-bottom:8px;
+}
+.dual-copy-row{display:flex;gap:6px}
+.dual-copy-btn{
+  flex:1;padding:8px;border-radius:var(--rs);font-size:12px;font-weight:500;
+  cursor:pointer;border:1px solid var(--border);background:var(--surface);
+  color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;
+}
+.dual-copy-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+/* AI Output */
+.ai-output{display:none;border-bottom:1px solid var(--border)}
+.ai-output.visible{display:block}
+.ai-output-header{padding:12px 16px 0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint)}
+.ai-vars-wrap{padding:10px 16px;display:flex;flex-direction:column;gap:8px}
+.ai-var{
+  border:1.5px solid var(--border);border-radius:var(--rs);padding:12px;
+  cursor:pointer;transition:all .15s;
+}
+.ai-var:hover{border-color:var(--ac-border)}
+.ai-var.selected{border-color:var(--ac);background:var(--ac-bg)}
+.ai-var-label{font-size:10px;font-weight:600;color:var(--hint);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em}
+.ai-var-text{font-size:13px;line-height:1.6;color:var(--text)}
+
+/* Social output */
+.social-output{display:none;border-bottom:1px solid var(--border)}
+.social-output.visible{display:block}
+.output-tabs{display:flex;border-bottom:1px solid var(--border)}
+.output-tab{
+  flex:1;padding:10px;font-size:12px;font-weight:500;text-align:center;
+  cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;
+}
+.output-tab.active{color:var(--ac);border-bottom-color:var(--ac)}
+.output-pane{display:none;padding:14px 16px}
+.output-pane.active{display:block}
+.output-text{
+  background:#fafafa;border:1px solid var(--border);border-radius:var(--rs);
+  padding:12px;font-size:13px;line-height:1.65;color:var(--text);min-height:60px;
+}
+
+/* Action row */
+.action-wrap{padding:12px 16px;display:flex;gap:8px;flex-wrap:wrap}
+.copy-btn{
+  flex:1;min-width:140px;padding:10px;border-radius:var(--rs);font-size:13px;
+  font-weight:600;cursor:pointer;background:var(--ac);color:#fff;border:none;
+  font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.copy-btn:hover{background:var(--ac2)}
+.open-btn{
+  padding:10px 16px;border-radius:var(--rs);font-size:13px;font-weight:500;
+  cursor:pointer;background:var(--surface);color:var(--text);
+  border:1px solid var(--border2);font-family:'DM Sans',sans-serif;transition:all .15s;
+}
+.open-btn:hover{border-color:var(--ac);color:var(--ac)}
+.save-btn{
+  padding:10px 16px;border-radius:var(--rs);font-size:13px;font-weight:500;
+  cursor:pointer;background:var(--surface);color:var(--muted);
+  border:1px solid var(--border2);font-family:'DM Sans',sans-serif;transition:all .15s;
+}
+.save-btn:hover{border-color:var(--green);color:var(--green)}
+
+/* ── APPS PAGE ── */
+.apps-wrap{padding:24px;max-width:960px;margin:0 auto;width:100%}
+.apps-hero{margin-bottom:28px}
+.apps-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px}
+.apps-sub{font-size:13px;color:var(--muted)}
+.apps-section-title{
+  font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;letter-spacing:-0.2px;
+}
+.apps-section-count{font-size:11px;color:var(--hint);font-weight:400}
+.apps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:28px}
+
+/* App tile */
+.app-tile{
+  border-radius:16px;overflow:hidden;cursor:pointer;
+  transition:all .28s cubic-bezier(.34,1.56,.64,1);
+  background:var(--surface);border:1.5px solid var(--border);
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);position:relative;
+}
+.app-tile:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 20px 48px rgba(0,0,0,0.1)}
+.app-tile:hover .tile-cta{opacity:1;transform:translateY(0)}
+.app-tile:hover .app-tile-vis svg{transform:scale(1.06)}
+.app-tile-vis{height:120px;position:relative;overflow:hidden}
+.app-tile-vis svg{width:100%;height:100%;transition:transform .3s ease}
+.tile-cta{
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%) translateY(8px);
+  background:rgba(255,112,67,0.92);color:#fff;border:none;border-radius:50px;
+  padding:7px 18px;font-size:11px;font-weight:700;cursor:pointer;
+  opacity:0;transition:all .22s;white-space:nowrap;z-index:3;
+  box-shadow:0 4px 16px rgba(255,112,67,0.4);font-family:'DM Sans',sans-serif;
+}
+.tile-badge{
+  position:absolute;top:8px;right:8px;z-index:3;
+  font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;
+  text-transform:uppercase;letter-spacing:0.05em;
+}
+.app-tile-info{padding:11px 13px 13px}
+.app-tile-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.app-tile-desc{font-size:11px;color:var(--hint);line-height:1.4;margin-bottom:8px}
+.app-tile-foot{display:flex;align-items:center;justify-content:space-between}
+.app-tile-tag{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600}
+.app-tile-use{font-size:11px;font-weight:600;color:var(--ac);opacity:0.7}
+.app-tile:hover .app-tile-use{opacity:1}
+
+/* ── LIBRARY PAGE ── */
+.library-wrap{padding:24px;max-width:1100px;margin:0 auto;width:100%}
+.lib-top{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.lib-search{
+  flex:1;min-width:200px;display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--border2);border-radius:50px;
+  padding:9px 16px;transition:all .2s;
+}
+.lib-search:focus-within{border-color:var(--ac)}
+.lib-search input{flex:1;border:none;outline:none;font-size:13px;font-family:'DM Sans',sans-serif;background:transparent;color:var(--text)}
+.lib-search input::placeholder{color:var(--hint)}
+.lib-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.lib-filter-btn{
+  padding:6px 16px;border-radius:20px;font-size:12px;font-weight:500;
+  cursor:pointer;border:1px solid var(--border2);background:var(--surface);
+  color:var(--muted);transition:all .15s;font-family:'DM Sans',sans-serif;
+}
+.lib-filter-btn:hover{border-color:var(--ac);color:var(--ac)}
+.lib-filter-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+.lib-section-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;letter-spacing:-0.3px;display:flex;align-items:center;justify-content:space-between}
+.lib-see-all{font-size:12px;color:var(--ac);cursor:pointer;font-weight:500}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+
+/* Library card */
+.lib-card{
+  border-radius:14px;overflow:hidden;cursor:pointer;
+  transition:all .22s;position:relative;
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+.lib-card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(0,0,0,0.12);border-color:transparent}
+.lib-card:hover .lib-card-btn{opacity:1;transform:translateY(0)}
+.lib-card-thumb{height:130px;position:relative;overflow:hidden}
+.lib-card-thumb svg{width:100%;height:100%;transition:transform .3s ease}
+.lib-card:hover .lib-card-thumb svg{transform:scale(1.06)}
+.lib-card-btn{
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%) translateY(8px);
+  background:rgba(255,255,255,0.95);color:var(--ac);border:none;border-radius:50px;
+  padding:7px 16px;font-size:11px;font-weight:700;cursor:pointer;
+  opacity:0;transition:all .22s;white-space:nowrap;z-index:3;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);font-family:'DM Sans',sans-serif;
+}
+.lib-card-body{padding:11px 13px 12px}
+.lib-card-cat{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint);margin-bottom:4px}
+.lib-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.3}
+.lib-card-desc{font-size:11px;color:var(--hint);line-height:1.4;margin-bottom:8px}
+.lib-card-foot{display:flex;align-items:center;justify-content:space-between}
+.lib-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.lb-free{background:#e8f5f3;color:#0f6e56}
+.lb-adv{background:#ede9fe;color:#5b21b6}
+.lb-pro{background:#fff8e1;color:#854f0b}
+.lib-copy{font-size:11px;color:var(--hint);cursor:pointer;padding:3px 8px;border-radius:6px;border:1px solid var(--border);transition:all .15s}
+.lib-copy:hover{color:var(--ac);border-color:var(--ac)}
+
+/* ── PROFILE PAGE ── */
+.profile-wrap{padding:28px 24px;max-width:500px;margin:0 auto;width:100%;text-align:center}
+.profile-avatar{
+  width:72px;height:72px;border-radius:50%;
+  background:var(--ac-bg);border:2px solid var(--ac-border);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;font-family:'Syne',sans-serif;font-size:26px;font-weight:700;color:var(--ac);
+}
+.profile-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:4px}
+.profile-role{font-size:13px;color:var(--muted)}
+.profile-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;
+  background:var(--border);margin:20px 0;border-radius:var(--r);
+  overflow:hidden;border:1px solid var(--border);
+}
+.profile-stat{background:var(--surface);padding:14px;text-align:center}
+.profile-stat-num{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--ac);display:block}
+.profile-stat-lbl{font-size:10px;color:var(--hint);margin-top:2px}
+
+/* ── MODALS & OVERLAYS ── */
+.overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  z-index:500;align-items:center;justify-content:center;padding:20px;
+}
+.overlay.open{display:flex}
+.modal{
+  background:var(--surface);border-radius:16px;padding:24px;
+  width:100%;max-width:400px;
+  animation:modalIn .25s ease;
+}
+@keyframes modalIn{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+
+/* Lang nudge */
+.lang-nudge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.lang-nudge-btn{
+  padding:10px 6px;border-radius:10px;border:1px solid var(--border);
+  background:#fafafa;cursor:pointer;transition:all .15s;text-align:center;
+}
+.lang-nudge-btn:hover{border-color:var(--ac);background:var(--ac-bg)}
+.lang-nudge-btn .flag{font-size:18px;display:block;margin-bottom:3px}
+.lang-nudge-btn .lname{font-size:11px;font-weight:500;color:var(--text)}
+.lang-nudge-skip{
+  width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);
+  background:#f5f5f5;color:var(--muted);font-family:'DM Sans',sans-serif;
+  font-size:13px;cursor:pointer;transition:all .15s;margin-top:4px;
+}
+.lang-nudge-skip:hover{background:#eee;color:var(--text)}
+
+/* Help menu */
+.help-menu-wrap{position:relative}
+.help-menu{
+  display:none;position:absolute;right:0;top:40px;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12);width:220px;z-index:200;overflow:hidden;
+}
+.help-menu.open{display:block}
+.help-menu-header{padding:8px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--hint);border-bottom:1px solid var(--border)}
+.help-menu-item{
+  display:flex;align-items:center;gap:10px;padding:11px 14px;
+  text-decoration:none;color:var(--text);transition:background .15s;
+  border-bottom:1px solid var(--border);
+}
+.help-menu-item:last-child{border-bottom:none}
+.help-menu-item:hover{background:#f8f8f8}
+.help-menu-item-icon{font-size:18px}
+.help-menu-item-title{font-size:13px;font-weight:500}
+.help-menu-item-desc{font-size:11px;color:var(--hint)}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--green-bg);border:1px solid rgba(0,137,123,0.3);color:var(--green);
+  padding:10px 20px;border-radius:24px;font-size:13px;font-weight:500;
+  opacity:0;transition:all .3s;z-index:300;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Disclaimer */
+.disclaimer{
+  background:#fff8e1;border-bottom:1px solid #ffcc80;padding:7px 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:11px;color:#7a4f00;flex-shrink:0;
+}
+.disclaimer a{color:var(--ac);text-decoration:none}
+.disclaimer-close{cursor:pointer;font-size:16px;color:#999;flex-shrink:0}
+
+/* Foul warning */
+.foul-warning{
+  display:none;background:var(--red-bg);border-bottom:1px solid #ffcdd2;
+  padding:8px 16px;font-size:12px;color:var(--red);font-weight:500;flex-shrink:0;
+}
+
+/* Both popup */
+.both-popup{
+  display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:100;width:260px;text-align:center;
+}
+.both-popup.open{display:block}
+
+/* Mobile responsive */
+@media(max-width:768px){
+  .sidebar{
+    position:fixed;top:0;left:0;height:100vh;z-index:50;
+    transform:translateX(-100%);transition:transform .25s ease;
+  }
+  .sidebar.mobile-open{transform:translateX(0)}
+  .main{width:100%}
+  .quick-grid{grid-template-columns:1fr 1fr}
+  .apps-grid{grid-template-columns:repeat(2,1fr)}
+  .lib-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Scrollbars */
+.page::-webkit-scrollbar{width:6px}
+.page::-webkit-scrollbar-track{background:transparent}
+.page::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+
+/* Lang dropdown */
+.lang-drop{
+  display:none;position:absolute;top:36px;left:0;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12);width:240px;z-index:200;overflow:hidden;
+  max-height:300px;
+}
+.lang-drop.open{display:block}
+.lang-search-wrap{padding:10px;border-bottom:1px solid var(--border)}
+.lang-search-inp{
+  width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:8px;
+  font-size:13px;font-family:'DM Sans',sans-serif;outline:none;
+}
+.lang-search-inp:focus{border-color:var(--ac)}
+.lang-list{overflow-y:auto;max-height:200px}
+.lang-opt{padding:9px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s}
+.lang-opt:hover{background:#f5f5f5}
+.lang-opt.selected{color:var(--ac);font-weight:500}
+.lang-wrap{position:relative}
+
+/* Score pulse */
+@keyframes pulse-score{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+.score-pulse{animation:pulse-score .4s ease}
+
+/* Both copy/open rows */
+.both-copy-wrap,.both-open-wrap{display:flex;gap:6px;margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">✦</div>
+    <div class="sb-logo-text">clarix</div>
+    <div class="sb-logo-tm">™</div>
+  </div>
+
+  <button class="sb-new" onclick="startNewChat()">
+    <span class="sb-new-icon">✦</span>
+    <span>New chat</span>
+  </button>
+
+  <div class="sb-search" onclick="goPage('write',null)">
+    <span>🔍</span>
+    <span class="sb-search-text">Search chats</span>
+  </div>
+
+  <div class="sb-sec">Menu</div>
+  <div class="sb-item active" id="nav-home" onclick="goPage('home',this)">
+    <span class="sb-item-icon">⌂</span><span>Home</span>
+  </div>
+  <div class="sb-item" id="nav-write" onclick="goPage('write',this)">
+    <span class="sb-item-icon">✦</span><span>Write prompt</span>
+  </div>
+  <div class="sb-item" id="nav-library" onclick="goPage('library',this)">
+    <span class="sb-item-icon">✨</span><span>Inspire Me</span>
+  </div>
+  <div class="sb-item" id="nav-apps" onclick="goPage('apps',this)">
+    <span class="sb-item-icon">⚡</span><span>Apps</span>
+  </div>
+  <div class="sb-item" id="nav-projects" onclick="showToast('Projects coming soon! 🚀')">
+    <span class="sb-item-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>
+    </span><span>Projects</span>
+  </div>
+  <div class="sb-item" id="nav-profile" onclick="goPage('profile',this)">
+    <span class="sb-item-icon">◎</span><span>Profile</span>
+  </div>
+
+  <hr class="sb-div">
+  <div class="sb-sec">Your chats</div>
+  <div class="sb-recents" id="sbRecents">
+    <div class="sb-recent-item">Start your first prompt...</div>
+  </div>
+
+  <div style="padding:8px 12px;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:8px">
+    <div style="width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0" id="sbUserAvatar">V</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:12px;font-weight:500;color:#ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="sbUserName">Clarix User</div>
+      <div style="font-size:10px;color:#555">Free plan · Beta</div>
+    </div>
+  </div>
+  <div class="sb-collapse" onclick="toggleSidebar()" id="sbCollapseBtn">
+    <span id="sbCollapseIcon">◀</span>
+    <span id="sbCollapseText">Collapse</span>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer" id="disclaimerBanner">
+    <span>⚠️ <strong>Clarix AI</strong> enhances prompts automatically. Always review before use. Not legal/medical advice. <a href="terms.html">Terms</a></span>
+    <span class="disclaimer-close" onclick="document.getElementById('disclaimerBanner').style.display='none'">✕</span>
+  </div>
+  <div class="foul-warning" id="foulWarning">⚠️ Inappropriate language detected and removed from output.</div>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-icon-btn" onclick="toggleSidebar()" title="Toggle sidebar">☰</div>
+      <div class="tb-model">
+        Clarix <span class="tb-badge">Beta</span>
+      </div>
+    </div>
+    <div class="tb-right">
+      <!-- Language selector -->
+      <div class="lang-wrap">
+        <div class="tb-btn" id="langBadge" onclick="openLangDrop()" style="min-width:100px">🇬🇧 English</div>
+        <div class="lang-drop" id="langDrop">
+          <div class="lang-search-wrap">
+            <input class="lang-search-inp" id="langSearch" placeholder="Search language..." oninput="filterLangs(this.value)">
+          </div>
+          <div class="lang-list" id="langList"></div>
+        </div>
+      </div>
+      <!-- Help menu -->
+      <div class="help-menu-wrap">
+        <div class="tb-icon-btn" id="helpMenuBtn" onclick="toggleHelpMenu()" title="Help">?</div>
+        <div class="help-menu" id="helpMenu">
+          <div class="help-menu-header">Help & community</div>
+          <a href="mailto:vishalbirla700@gmail.com?subject=Clarix%20Idea:%20" class="help-menu-item" onclick="closeHelpMenu()">
+            <span class="help-menu-item-icon">💡</span>
+            <div><div class="help-menu-item-title">Submit an idea</div><div class="help-menu-item-desc">Suggest a feature</div></div>
+          </a>
+          <a href="mailto:vishalbirla700@gmail.com?subject=Clarix%20Bug:%20" class="help-menu-item" onclick="closeHelpMenu()">
+            <span class="help-menu-item-icon">🐛</span>
+            <div><div class="help-menu-item-title">Report a bug</div><div class="help-menu-item-desc">Something not working?</div></div>
+          </a>
+          <a href="mailto:vishalbirla700@gmail.com?subject=Clarix%20Help:%20" class="help-menu-item" onclick="closeHelpMenu()">
+            <span class="help-menu-item-icon">✉️</span>
+            <div><div class="help-menu-item-title">Contact us</div><div class="help-menu-item-desc">We reply within 24 hours</div></div>
+          </a>
+          <div class="help-menu-item" onclick="closeHelpMenu();showToast('Version 1.0 — March 2026 🎉');" style="cursor:pointer">
+            <span class="help-menu-item-icon">🚀</span>
+            <div><div class="help-menu-item-title">What's new</div><div class="help-menu-item-desc">Version 1.0 — March 2026</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HOME PAGE ══ -->
+  <div class="page active" id="page-home">
+    <div class="home-wrap">
+      <div class="home-icon">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+  </div>
+      <div class="home-greeting" id="homeGreeting">Good morning!</div>
+      <p class="home-sub">India's first prompt engine. Type rough in any language — get a perfect prompt for ChatGPT, Claude, Instagram, WhatsApp and 20+ platforms.</p>
+
+      <div class="quick-grid">
+        <div class="qcard" onclick="loadTemplate('help me write mail to boss for leave tomorrow bcoz fever')">
+          <div class="qcard-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#fff3f0"/><path d="M6 9a1 1 0 011-1h14a1 1 0 011 1v10a1 1 0 01-1 1H7a1 1 0 01-1-1V9z" stroke="#ff7043" stroke-width="1.5" fill="none"/><path d="M6 10l8 6 8-6" stroke="#ff7043" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="qcard-title">Write a sick leave email</div>
+          <div class="qcard-desc">Formal, polite, ready to send</div>
+        </div>
+        <div class="qcard" onclick="loadTemplate('Write a good linkedin post about my achievement that will get good engagement')">
+          <div class="qcard-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#e6f1fb"/><rect x="7" y="7" width="5" height="5" rx="1" fill="#0077b5"/><rect x="7" y="14" width="5" height="7" rx="1" fill="#0077b5"/><rect x="14" y="10" width="7" height="11" rx="1" fill="#0077b5" opacity="0.7"/></svg>
+          </div>
+          <div class="qcard-title">LinkedIn achievement post</div>
+          <div class="qcard-desc">Professional, engaging, viral</div>
+        </div>
+        <div class="qcard" onclick="loadTemplate('Help me debug this code and explain what is wrong step by step')">
+          <div class="qcard-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#e8f5f3"/><path d="M11 10l-4 4 4 4" stroke="#00897b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 10l4 4-4 4" stroke="#00897b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 8l-2 12" stroke="#00897b" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="qcard-title">Debug my code</div>
+          <div class="qcard-desc">Find errors, explain fixes</div>
+        </div>
+        <div class="qcard" onclick="loadTemplate('Write a whatsapp message to my friend asking to meet this weekend in a casual funny way')">
+          <div class="qcard-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#dcfce7"/><path d="M14 6a8 8 0 100 16 8 8 0 000-16z" stroke="#25d366" stroke-width="1.5" fill="none"/><path d="M10 14s1 2 4 2 4-2 4-2" stroke="#25d366" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="12" r="1" fill="#25d366"/><circle cx="17" cy="12" r="1" fill="#25d366"/></svg>
+          </div>
+          <div class="qcard-title">WhatsApp to a friend</div>
+          <div class="qcard-desc">Casual, fun, natural</div>
+        </div>
+      </div>
+
+      <!-- Home quick input bar -->
+      <div style="width:100%;max-width:560px;margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border2);border-radius:50px;padding:10px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:border-color .2s" id="homeInputWrap" onfocus-within="this.style.borderColor='var(--ac)'">
+          <span style="font-size:16px;color:var(--hint)">✦</span>
+          <input id="homeInput" placeholder="Type rough. Get perfect... Hinglish ok 🙏" 
+            style="flex:1;border:none;outline:none;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:transparent"
+            onkeydown="if(event.key==='Enter'&&this.value.trim()){var v=this.value;this.value='';loadTemplate(v);}"
+            oninput="document.getElementById('homeInputWrap').style.borderColor=this.value?'var(--ac)':'var(--border2)'">
+          <button onclick="toggleVoice()" id="homeMicBtn"
+            style="width:34px;height:34px;border:1px solid #e0e0e0;border-radius:50%;background:#f5f5f5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s"
+            title="Voice input">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="6" height="9" rx="3" stroke="#999" stroke-width="1.5" fill="none"/><path d="M2 8a6 6 0 0012 0" stroke="#999" stroke-width="1.5" stroke-linecap="round" fill="none"/><line x1="8" y1="14" x2="8" y2="15.5" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button onclick="if(document.getElementById('homeInput').value.trim()){loadTemplate(document.getElementById('homeInput').value)}" 
+            style="background:var(--ac);color:#fff;border:none;padding:7px 20px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;box-shadow:0 4px 12px rgba(255,112,67,0.3)">
+            Enhance →
+          </button>
+        </div>
+        
+      </div>
+
+      <div class="scroller-section">
+        <div class="scroller-label">Works with every platform</div>
+        <div class="scroller-wrap" style="margin-bottom:8px">
+          <div class="scroller-track go-left" id="platTrack">
+            <span class="plat-pill">🤖 ChatGPT</span><span class="plat-pill">🧠 Claude</span>
+            <span class="plat-pill">✨ Gemini</span><span class="plat-pill">⚡ Grok</span>
+            <span class="plat-pill">🔍 DeepSeek</span><span class="plat-pill">📡 Perplexity</span>
+            <span class="plat-pill">📸 Instagram</span><span class="plat-pill">💼 LinkedIn</span>
+            <span class="plat-pill">💬 WhatsApp</span><span class="plat-pill">🐦 Twitter/X</span>
+            <span class="plat-pill">▶️ YouTube</span><span class="plat-pill">📘 Facebook</span>
+            <span class="plat-pill">🤖 ChatGPT</span><span class="plat-pill">🧠 Claude</span>
+            <span class="plat-pill">✨ Gemini</span><span class="plat-pill">⚡ Grok</span>
+            <span class="plat-pill">🔍 DeepSeek</span><span class="plat-pill">📡 Perplexity</span>
+            <span class="plat-pill">📸 Instagram</span><span class="plat-pill">💼 LinkedIn</span>
+            <span class="plat-pill">💬 WhatsApp</span><span class="plat-pill">🐦 Twitter/X</span>
+            <span class="plat-pill">▶️ YouTube</span><span class="plat-pill">📘 Facebook</span>
+          </div>
+        </div>
+        <div class="scroller-wrap">
+          <div class="scroller-track go-right" id="langTrack">
+            <span class="lang-pill">🇮🇳 Hindi</span><span class="lang-pill">🇮🇳 Marathi</span>
+            <span class="lang-pill">🇮🇳 Gujarati</span><span class="lang-pill">🇮🇳 Tamil</span>
+            <span class="lang-pill">🇮🇳 Telugu</span><span class="lang-pill">🇬🇧 English</span>
+            <span class="lang-pill">🇮🇳 Bengali</span><span class="lang-pill">🇮🇳 Kannada</span>
+            <span class="lang-pill">🇫🇷 French</span><span class="lang-pill">🇩🇪 German</span>
+            <span class="lang-pill">🇮🇳 Hindi</span><span class="lang-pill">🇮🇳 Marathi</span>
+            <span class="lang-pill">🇮🇳 Gujarati</span><span class="lang-pill">🇮🇳 Tamil</span>
+            <span class="lang-pill">🇮🇳 Telugu</span><span class="lang-pill">🇬🇧 English</span>
+            <span class="lang-pill">🇮🇳 Bengali</span><span class="lang-pill">🇮🇳 Kannada</span>
+            <span class="lang-pill">🇫🇷 French</span><span class="lang-pill">🇩🇪 German</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ WRITE PAGE ══ -->
+  <div class="page" id="page-write">
+    <div class="write-wrap">
+      <div>
+        <div class="write-header">Write a prompt</div>
+        <div class="write-sub">Type anything rough — Hinglish, Hindi, English. Clarix enhances it instantly.</div>
+      </div>
+
+      <!-- Mode tabs -->
+      <div class="mode-tabs">
+        <div class="mode-tab active" id="mode-ai" onclick="setMode('ai')">🤖 AI</div>
+        <div class="mode-tab" id="mode-social" onclick="setMode('social')">📱 Social media</div>
+        <div class="mode-tab" id="mode-both" onclick="setMode('both')">⚡ Both</div>
+      </div>
+
+      <!-- Platform pills -->
+      <div class="plat-section">
+        <div class="plat-label" id="platformLabel">Select AI platform</div>
+        <div class="plat-scroll" id="aiPills">
+          <div class="platform-pill active" onclick="selectPlatform(this,'ChatGPT','ai')">🤖 ChatGPT</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Claude','ai')">🧠 Claude</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Gemini','ai')">✨ Gemini</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Grok','ai')">⚡ Grok</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'DeepSeek','ai')">🔍 DeepSeek</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Perplexity','ai')">📡 Perplexity</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Copilot','ai')">🪟 Copilot</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Meta AI','ai')">🦙 Meta AI</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Pi','ai')">🌀 Pi</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Poe','ai')">🎯 Poe</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Mistral','ai')">⭐ Mistral</div>
+          <div class="platform-pill custom-pill" onclick="openModal()">➕ Add your platform</div>
+        </div>
+        <div class="plat-scroll" id="socialPills" style="display:none;margin-top:8px">
+          <div class="platform-pill" onclick="selectPlatform(this,'Instagram','social')">📸 Instagram</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'WhatsApp','social')">💬 WhatsApp</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Twitter/X','social')">🐦 Twitter/X</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Facebook','social')">📘 Facebook</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'LinkedIn','social')">💼 LinkedIn</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'YouTube','social')">▶️ YouTube</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Snapchat','social')">👻 Snapchat</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Threads','social')">🧵 Threads</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Pinterest','social')">📌 Pinterest</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Reddit','social')">🤖 Reddit</div>
+          <div class="platform-pill custom-pill" onclick="openModal()">➕ Add platform</div>
+        </div>
+      </div>
+
+      <!-- Input card -->
+      <div class="input-card">
+        <div class="input-top">
+          <div class="input-label-row">
+            <span class="input-label">Your rough prompt</span>
+            <span class="char-cnt"><span id="charCount">0</span>/1000</span>
+          </div>
+          <textarea id="promptInput" class="prompt-textarea" placeholder="Type here or tap 🎤 to speak... Hinglish ok 🙏" oninput="onInput(this)" maxlength="1000"></textarea>
+        </div>
+        <div class="input-footer">
+          <div class="input-actions">
+            <button class="clear-btn" id="clearBtn" onclick="clearAll()" style="display:none">✕ Clear</button>
+            <span class="detect-badge" id="langDetectBadge"></span>
+          </div>
+          <div class="input-right">
+            <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Voice input">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="6" height="9" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M2 8a6 6 0 0012 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><line x1="8" y1="14" x2="8" y2="15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="enhance-btn" onclick="processPrompt(document.getElementById('promptInput').value)">
+              <span>✦</span> Enhance
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live result -->
+      <div class="live-result" id="liveResult">
+        <div class="live-header">
+          <div class="live-status"><div class="live-dot"></div>Ready to use</div>
+          <div class="live-platform" id="liveTag">ChatGPT</div>
+        </div>
+
+        <!-- Scores -->
+        <div class="score-compare">
+          <div class="score-box">
+            <div class="score-num" id="scoreBefore" style="color:var(--red)">0</div>
+            <div class="score-lbl">Original</div>
+          </div>
+          <div class="score-arrow">→</div>
+          <div class="score-box">
+            <div class="score-num" id="scoreAfter" style="color:var(--green)">0</div>
+            <div class="score-lbl">Enhanced</div>
+          </div>
+        </div>
+        <div class="score-bars">
+          <div class="sbar-row">
+            <span class="sbar-lbl">Grammar</span>
+            <div class="sbar-bg"><div class="sbar-fill" id="bar-grammar" style="width:0%"></div></div>
+            <span class="sbar-val" id="val-grammar">0</span>
+          </div>
+          <div class="sbar-row">
+            <span class="sbar-lbl">Clarity</span>
+            <div class="sbar-bg"><div class="sbar-fill" id="bar-clarity" style="width:0%"></div></div>
+            <span class="sbar-val" id="val-clarity">0</span>
+          </div>
+          <div class="sbar-row">
+            <span class="sbar-lbl">Specificity</span>
+            <div class="sbar-bg"><div class="sbar-fill" id="bar-specific" style="width:0%"></div></div>
+            <span class="sbar-val" id="val-specific">0</span>
+          </div>
+        </div>
+
+        <!-- Suggestion chips -->
+        <div class="suggest-wrap" id="suggestWrap" style="display:none"></div>
+
+        <!-- Grammar fixes -->
+        <div class="fix-wrap" id="fixesWrap" style="display:none"><div id="fixChips"></div></div>
+
+        <!-- Dual language output -->
+        <div class="dual-output" id="dualOutput">
+          <div class="dual-lang-lbl"><span id="dualLangLabel"><span>Hindi</span> version</span></div>
+          <div class="dual-text-box" id="dualOrigText"></div>
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint);margin-bottom:8px">🇬🇧 English (translated)</div>
+          <div class="dual-text-box" id="dualEngText"></div>
+          <div class="dual-copy-row">
+            <button class="dual-copy-btn" id="dualCopyLang" onclick="copyDual('orig')">Copy Hindi</button>
+            <button class="dual-copy-btn" onclick="copyDual('eng')">Copy English</button>
+            <button class="dual-copy-btn" onclick="copyDual('both')">Copy Both</button>
+          </div>
+        </div>
+
+        <!-- AI output -->
+        <div class="ai-output" id="aiOutput">
+          <div class="ai-output-header">Output for <span id="aiOutputName">ChatGPT</span></div>
+          <div class="ai-vars-wrap" id="aiVariationsWrap"></div>
+        </div>
+
+        <!-- Social output -->
+        <div class="social-output" id="socialOutput">
+          <div class="output-tabs">
+            <div class="output-tab active" onclick="showOutputTab('caption',this)">📝 Caption</div>
+            <div class="output-tab" onclick="showOutputTab('prompt',this)">🤖 AI Prompt</div>
+            <div class="output-tab" onclick="showOutputTab('both',this)">⚡ Both</div>
+          </div>
+          <div class="output-pane active" id="pane-caption">
+            <div class="output-text" id="socialCaption"></div>
+          </div>
+          <div class="output-pane" id="pane-prompt">
+            <div class="output-text" id="socialPrompt"></div>
+          </div>
+          <div class="output-pane" id="pane-both">
+            <div class="output-text" id="socialBothCaption" style="margin-bottom:10px"></div>
+            <div class="output-text" id="socialBothPrompt"></div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-wrap">
+          <div id="bothCopyWrap" class="both-copy-wrap" style="display:none;width:100%">
+            <button class="copy-btn" onclick="copyResult()">⎘ Copy AI prompt</button>
+            <button class="copy-btn" onclick="copySocialResult()" style="background:var(--green)">⎘ Copy caption</button>
+          </div>
+          <button class="copy-btn" id="copyBtn" onclick="copyResult()">⎘ Copy enhanced prompt</button>
+          <div id="bothOpenWrap" class="both-open-wrap" style="display:none;width:100%">
+            <button class="open-btn" onclick="openBothPlatform('ai')">Open <span id="bothAIName">ChatGPT</span> →</button>
+            <button class="open-btn" onclick="openBothPlatform('social')">Open <span id="bothSocialName">Instagram</span> →</button>
+          </div>
+          <button class="open-btn" id="openBtn" onclick="openPlatform()">Open <span id="openBtnName">ChatGPT</span> →</button>
+          <button class="save-btn" onclick="saveToLibrary()">💾 Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ APPS PAGE ══ -->
+  <div class="page" id="page-apps">
+    <div class="apps-wrap">
+      <div class="apps-hero">
+        <div class="apps-title">⚡ Apps</div>
+        <div class="apps-sub">Choose a platform — Clarix optimises your prompt specifically for it</div>
+      </div>
+
+      <div class="apps-section-title">🤖 AI platforms <span class="apps-section-count">11 platforms</span></div>
+      <div class="apps-grid" id="aiAppsGrid"></div>
+
+      <div class="apps-section-title">📱 Social media <span class="apps-section-count">10 platforms</span></div>
+      <div class="apps-grid" id="socialAppsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ══ LIBRARY PAGE ══ -->
+  <div class="page" id="page-library" data-loaded="false" onmouseenter="if(document.getElementById('libCardsContainer').innerHTML.trim()==='')renderLibCards()">
+    <div class="library-wrap">
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px;color:var(--text)">✨ Inspire Me</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Ready-made prompts for every need — click any to use instantly</div>
+      <div class="lib-top">
+        <div class="lib-search">
+          <span>🔍</span>
+          <input id="libSearch" placeholder="Search inspirations..." oninput="filterLibCards(this.value)">
+        </div>
+      </div>
+      <div class="lib-filter-row">
+        <button class="lib-filter-btn active" onclick="setLibFilter('all',this)">All</button>
+        <button class="lib-filter-btn" onclick="setLibFilter('email',this)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:4px;vertical-align:-1px"><rect x="1" y="2.5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M1 4l5 3.5L11 4" stroke="currentColor" stroke-width="1.2"/></svg>Email</button>
+        <button class="lib-filter-btn" onclick="setLibFilter('social',this)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:4px;vertical-align:-1px"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="6" cy="6" r="1.5" fill="currentColor"/></svg>Social</button>
+        <button class="lib-filter-btn" onclick="setLibFilter('coding',this)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:4px;vertical-align:-1px"><path d="M4 3L1 6l3 3M8 3l3 3-3 3M6.5 2l-1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Coding</button>
+        <button class="lib-filter-btn" onclick="setLibFilter('business',this)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:4px;vertical-align:-1px"><rect x="1" y="4" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M4 4V3a2 2 0 114 0v1" stroke="currentColor" stroke-width="1.2"/></svg>Business</button>
+        <button class="lib-filter-btn" onclick="setLibFilter('study',this)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:4px;vertical-align:-1px"><path d="M2 9L6 2l4 7H2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/></svg>Study</button>
+      </div>
+      <div id="libCardsContainer"></div>
+    </div>
+  </div>
+
+  <!-- ══ PROFILE PAGE ══ -->
+  <div class="page" id="page-profile">
+    <div class="profile-wrap">
+      <div class="profile-avatar">C</div>
+      <div class="profile-name" id="profileName">Clarix User</div>
+      <div class="profile-role">Beta · Free plan</div>
+      <div class="profile-stats">
+        <div class="profile-stat"><span class="profile-stat-num" id="profile-total">0</span><div class="profile-stat-lbl">Total prompts</div></div>
+        <div class="profile-stat"><span class="profile-stat-num" id="profile-avg">—</span><div class="profile-stat-lbl">Avg score</div></div>
+        <div class="profile-stat"><span class="profile-stat-num" id="profile-saved">0</span><div class="profile-stat-lbl">Saved</div></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--ac-border);border-radius:var(--r);padding:18px;text-align:center;margin-top:8px">
+        <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--ac);margin-bottom:6px">Upgrade to Pro</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:14px">Unlimited prompts · Voice input · 10 languages · Team workspace</div>
+        <div style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px">₹299<span style="font-size:13px;color:var(--muted);font-weight:400">/month</span></div>
+        <button class="enhance-btn" style="width:100%;margin-top:10px;justify-content:center" onclick="showToast('Pro launch coming soon! 🚀')">Coming soon</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ══ OVERLAYS ══ -->
+<!-- Lang nudge -->
+<div class="overlay" id="langNudge">
+  <div class="modal">
+    <div style="font-size:36px;text-align:center;margin-bottom:12px">🌐</div>
+    <div class="modal-title" style="text-align:center">Select your language</div>
+    <div class="modal-sub" style="text-align:center">Clarix works best when it knows your language</div>
+    <div class="lang-nudge-grid">
+      <div class="lang-nudge-btn" onclick="nudgeSelectLang('English — en-GB','en-GB','🇬🇧')"><span class="flag">🇬🇧</span><span class="lname">English</span></div>
+      <div class="lang-nudge-btn" onclick="nudgeSelectLang('Hindi — hi-IN','hi-IN','🇮🇳')"><span class="flag">🇮🇳</span><span class="lname">Hindi</span></div>
+      <div class="lang-nudge-btn" onclick="nudgeSelectLang('Hinglish — hi-IN','hi-IN','🇮🇳')"><span class="flag">🇮🇳</span><span class="lname">Hinglish</span></div>
+      <div class="lang-nudge-btn" onclick="nudgeSelectLang('Marathi — mr-IN','mr-IN','🇮🇳')"><span class="flag">🇮🇳</span><span class="lname">Marathi</span></div>
+      <div class="lang-nudge-btn" onclick="nudgeSelectLang('Gujarati — gu-IN','gu-IN','🇮🇳')"><span class="flag">🇮🇳</span><span class="lname">Gujarati</span></div>
+      <div class="lang-nudge-btn" onclick="nudgeSelectLang('Tamil — ta-IN','ta-IN','🇮🇳')"><span class="flag">🇮🇳</span><span class="lname">Tamil</span></div>
+      <div class="lang-nudge-btn" onclick="nudgeSelectLang('Telugu — te-IN','te-IN','🇮🇳')"><span class="flag">🇮🇳</span><span class="lname">Telugu</span></div>
+      <div class="lang-nudge-btn" onclick="nudgeSelectLang('Bengali — bn-IN','bn-IN','🇮🇳')"><span class="flag">🇮🇳</span><span class="lname">Bengali</span></div>
+      <div class="lang-nudge-btn" onclick="nudgeSelectLang('Kannada — kn-IN','kn-IN','🇮🇳')"><span class="flag">🇮🇳</span><span class="lname">Kannada</span></div>
+    </div>
+    <button class="lang-nudge-skip" onclick="nudgeSkip()">Continue without selecting (English default)</button>
+  </div>
+</div>
+
+<!-- Custom platform modal -->
+<div class="overlay" id="customPlatModal">
+  <div class="modal">
+    <div class="modal-title">➕ Add your platform</div>
+    <div class="modal-sub">Add any AI or social media platform not listed</div>
+    <input id="customPlatName" placeholder="e.g. Notion AI, Discord..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px">
+    <input id="customPlatUrl" placeholder="URL (optional) e.g. https://notion.so" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:14px">
+    <div style="display:flex;gap:8px">
+      <button onclick="closeModal()" style="flex:1;padding:10px;border-radius:var(--rs);border:1px solid var(--border);background:#f5f5f5;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px">Cancel</button>
+      <button onclick="addCustomPlatform()" style="flex:2;padding:10px;border-radius:var(--rs);border:none;background:var(--ac);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600">Add platform</button>
+    </div>
+  </div>
+</div>
+
+<!-- Both mode popup -->
+<div style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:200;background:rgba(0,0,0,0.4)" id="bothPopupOverlay">
+  <div class="modal" id="bothPopup">
+    <div class="modal-title">Select both platforms</div>
+    <div class="modal-sub">Choose one AI platform and one social platform</div>
+    <button onclick="closeBothPopup()" style="width:100%;padding:10px;border-radius:var(--rs);border:1px solid var(--border);background:#f5f5f5;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif">OK</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Name modal -->
+<div id="nameModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:100%;max-width:360px;text-align:center;animation:modalIn .25s ease">
+    <div style="font-size:40px;margin-bottom:12px">👋</div>
+    <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:6px;color:#1a1a1a">Welcome to Clarix!</div>
+    <div style="font-size:13px;color:#999;margin-bottom:20px">What should we call you?</div>
+    <input id="nameInput" placeholder="Enter your name..." 
+      style="width:100%;padding:12px 16px;border:1.5px solid #e0e0e0;border-radius:50px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;text-align:center;margin-bottom:12px;transition:border-color .2s"
+      onfocus="this.style.borderColor='#ff7043'"
+      onblur="this.style.borderColor='#e0e0e0'"
+      onkeydown="if(event.key==='Enter')saveUsername()">
+    <button onclick="saveUsername()" 
+      style="width:100%;background:#ff7043;color:#fff;border:none;padding:13px;border-radius:50px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">
+      Let's go ✦
+    </button>
+    <div onclick="document.getElementById('nameModal').style.display='none'" 
+      style="margin-top:12px;font-size:12px;color:#bbb;cursor:pointer">Skip for now</div>
+  </div>
+</div>
+
+
+<script>
+// Safe element helper
+function $$(id){return document.getElementById(id)||{style:{},classList:{add:function(){},remove:function(){},toggle:function(){}},textContent:'',innerHTML:'',value:'',focus:function(){}};}
+
+var SOCIAL_APPS = [
+  { name:'Instagram', tag:'Meta', tagColor:'#fce7f3', tagText:'#9d174d', url:'https://instagram.com', mode:'social',
+    svg:'<rect width="260" height="120" fill="#1a0a14"/><circle cx="260" cy="0" r="110" fill="#e1306c" opacity="0.2"/><circle cx="0" cy="120" r="90" fill="#f77737" opacity="0.15"/><defs><linearGradient id="ig3" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="50%" stop-color="#e1306c"/><stop offset="100%" stop-color="#833ab4"/></linearGradient></defs><rect x="88" y="18" width="84" height="84" rx="20" fill="none" stroke="url(#ig3)" stroke-width="2.5" opacity="0.8"/><circle cx="130" cy="60" r="22" fill="none" stroke="url(#ig3)" stroke-width="2" opacity="0.7"/><circle cx="130" cy="60" r="10" fill="#e1306c" opacity="0.3"/><circle cx="160" cy="28" r="5" fill="#e1306c" opacity="0.7"/>' },
+  { name:'WhatsApp', tag:'Meta', tagColor:'#dcfce7', tagText:'#166534', url:'https://web.whatsapp.com', mode:'social',
+    svg:'<rect width="260" height="120" fill="#0a1a0a"/><circle cx="130" cy="60" r="80" fill="#25d366" opacity="0.07"/><rect x="52" y="22" width="110" height="30" rx="14" fill="#25d366" opacity="0.22"/><polygon points="52,52 52,60 62,52" fill="#25d366" opacity="0.22"/><rect x="98" y="65" width="110" height="28" rx="13" fill="#128c7e" opacity="0.2"/><polygon points="208,65 208,73 198,65" fill="#128c7e" opacity="0.2"/><circle cx="78" cy="37" r="5" fill="#25d366" opacity="0.55"/><circle cx="94" cy="37" r="5" fill="#25d366" opacity="0.55"/><circle cx="110" cy="37" r="5" fill="#25d366" opacity="0.55"/><circle cx="135" cy="79" r="5" fill="#128c7e" opacity="0.5"/><circle cx="151" cy="79" r="5" fill="#128c7e" opacity="0.5"/><circle cx="167" cy="79" r="5" fill="#128c7e" opacity="0.5"/>' },
+  { name:'LinkedIn', tag:'Professional', tagColor:'#dbeafe', tagText:'#1e40af', url:'https://linkedin.com', mode:'social',
+    svg:'<rect width="260" height="120" fill="#040e18"/><circle cx="0" cy="0" r="100" fill="#0077b5" opacity="0.2"/><rect x="72" y="82" width="16" height="34" rx="3" fill="#0077b5" opacity="0.5"/><rect x="94" y="62" width="16" height="54" rx="3" fill="#0077b5" opacity="0.65"/><rect x="116" y="44" width="16" height="72" rx="3" fill="#0077b5" opacity="0.75"/><rect x="138" y="28" width="16" height="88" rx="3" fill="#0077b5" opacity="0.85"/><rect x="160" y="14" width="16" height="102" rx="3" fill="#0ea5e9" opacity="0.75"/><path d="M80,79 L120,38 L156,58 L196,14" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" opacity="0.9"/><circle cx="196" cy="14" r="4" fill="#38bdf8"/>' },
+  { name:'Twitter/X', tag:'xAI', tagColor:'#f3f4f6', tagText:'#374151', url:'https://twitter.com', mode:'social',
+    svg:'<rect width="260" height="120" fill="#0d0d0d"/><circle cx="130" cy="60" r="80" fill="#fff" opacity="0.03"/><text x="130" y="78" text-anchor="middle" fill="white" font-size="54" font-weight="900" opacity="0.6">𝕏</text>' },
+  { name:'YouTube', tag:'Google', tagColor:'#fee2e2', tagText:'#991b1b', url:'https://youtube.com', mode:'social',
+    svg:'<rect width="260" height="120" fill="#0d0000"/><circle cx="130" cy="60" r="70" fill="#ff0000" opacity="0.1"/><rect x="70" y="30" width="120" height="60" rx="12" fill="#ff0000" opacity="0.2" stroke="#ff0000" stroke-width="1.5" opacity="0.4"/><polygon points="112,42 112,78 158,60" fill="#ff4444" opacity="0.7"/>' },
+  { name:'Facebook', tag:'Meta', tagColor:'#dbeafe', tagText:'#1e40af', url:'https://facebook.com', mode:'social',
+    svg:'<rect width="260" height="120" fill="#050f2c"/><circle cx="260" cy="0" r="120" fill="#1877f2" opacity="0.15"/><circle cx="130" cy="60" r="42" fill="none" stroke="#1877f2" stroke-width="2" opacity="0.4"/><text x="134" y="76" text-anchor="middle" fill="#1877f2" font-size="52" font-weight="900" opacity="0.5">f</text>' },
+  { name:'Threads', tag:'Meta', tagColor:'#f3f4f6', tagText:'#374151', url:'https://threads.net', mode:'social',
+    svg:'<rect width="260" height="120" fill="#111"/><path d="M130,20 Q165,20 175,45 Q185,68 165,80 Q145,92 125,82 Q105,72 108,50 Q111,30 130,28" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.5" stroke-linecap="round"/><circle cx="130" cy="95" r="5" fill="#fff" opacity="0.4"/>' },
+  { name:'Pinterest', tag:'Pinterest', tagColor:'#fee2e2', tagText:'#991b1b', url:'https://pinterest.com', mode:'social',
+    svg:'<rect width="260" height="120" fill="#1a0505"/><circle cx="130" cy="50" r="38" fill="none" stroke="#e60023" stroke-width="2" opacity="0.4"/><circle cx="130" cy="50" r="22" fill="#e60023" opacity="0.2"/><text x="130" y="60" text-anchor="middle" fill="#e60023" font-size="30" font-weight="900" opacity="0.6">P</text><line x1="130" y1="72" x2="130" y2="100" stroke="#e60023" stroke-width="2" opacity="0.3" stroke-linecap="round"/>' },
+];
+
+
+var AI_APPS = [
+  { name:'ChatGPT', tag:'OpenAI', tagColor:'#d1fae5', tagText:'#065f46', badge:'Popular', badgeColor:'#d1fae5', badgeText:'#065f46', url:'https://chat.openai.com', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#0d1117"/><circle cx="220" cy="-15" r="90" fill="#10a37f" opacity="0.2"/><line x1="0" y1="30" x2="260" y2="30" stroke="#10a37f" stroke-width="0.4" opacity="0.25"/><line x1="0" y1="60" x2="260" y2="60" stroke="#10a37f" stroke-width="0.4" opacity="0.25"/><line x1="0" y1="90" x2="260" y2="90" stroke="#10a37f" stroke-width="0.4" opacity="0.25"/><line x1="65" y1="0" x2="65" y2="120" stroke="#10a37f" stroke-width="0.4" opacity="0.25"/><line x1="130" y1="0" x2="130" y2="120" stroke="#10a37f" stroke-width="0.4" opacity="0.25"/><line x1="195" y1="0" x2="195" y2="120" stroke="#10a37f" stroke-width="0.4" opacity="0.25"/><g transform="translate(90,14)"><circle cx="40" cy="46" r="32" fill="none" stroke="#10a37f" stroke-width="2"/><path d="M22,30 L40,20 L58,30 L58,52 L40,62 L22,52 Z" fill="#10a37f" opacity="0.15" stroke="#10a37f" stroke-width="1.2"/><circle cx="40" cy="46" r="12" fill="#10a37f" opacity="0.3"/><text x="40" y="50" text-anchor="middle" fill="#10a37f" font-size="11" font-weight="700" font-family="monospace">GPT</text></g>' },
+  { name:'Claude', tag:'Anthropic', tagColor:'#fff3f0', tagText:'#993c1d', url:'https://claude.ai', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#1a0f0a"/><circle cx="260" cy="0" r="100" fill="#cc785c" opacity="0.22"/><circle cx="0" cy="120" r="75" fill="#cc785c" opacity="0.15"/><path d="M0,60 Q65,16 130,60 Q195,104 260,60" fill="none" stroke="#cc785c" stroke-width="1" opacity="0.4"/><path d="M0,74 Q65,30 130,74 Q195,118 260,74" fill="none" stroke="#cc785c" stroke-width="0.6" opacity="0.25"/><g transform="translate(98,14)"><circle cx="32" cy="46" r="30" fill="#cc785c" opacity="0.1" stroke="#cc785c" stroke-width="1.5"/><path d="M16,34 Q32,21 48,34 Q56,46 48,59 Q32,68 16,59 Q8,46 16,34Z" fill="#cc785c" opacity="0.22"/><circle cx="32" cy="46" r="10" fill="#cc785c" opacity="0.45"/><text x="32" y="50" text-anchor="middle" fill="#e8a88a" font-size="11" font-weight="700">◆</text></g>' },
+  { name:'Gemini', tag:'Google', tagColor:'#e6f1fb', tagText:'#185fa5', url:'https://gemini.google.com', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#0a0f1a"/><circle cx="0" cy="0" r="90" fill="#4285f4" opacity="0.15"/><ellipse cx="130" cy="60" rx="38" ry="48" fill="none" stroke="#4285f4" stroke-width="1.5" opacity="0.7"/><ellipse cx="130" cy="60" rx="52" ry="34" fill="none" stroke="#fbbc04" stroke-width="1.2" opacity="0.5" transform="rotate(30,130,60)"/><ellipse cx="130" cy="60" rx="28" ry="40" fill="none" stroke="#34a853" stroke-width="0.8" opacity="0.4" transform="rotate(60,130,60)"/><circle cx="130" cy="60" r="10" fill="#4285f4" opacity="0.35"/><circle cx="130" cy="60" r="5" fill="#4285f4" opacity="0.6"/>' },
+  { name:'Grok', tag:'xAI', tagColor:'#f3f4f6', tagText:'#374151', url:'https://grok.x.ai', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#0d0d0d"/><line x1="0" y1="45" x2="80" y2="45" stroke="#fff" stroke-width="0.8" opacity="0.15"/><line x1="80" y1="45" x2="80" y2="80" stroke="#fff" stroke-width="0.8" opacity="0.15"/><line x1="80" y1="80" x2="180" y2="80" stroke="#fff" stroke-width="0.8" opacity="0.15"/><line x1="180" y1="45" x2="260" y2="45" stroke="#fff" stroke-width="0.8" opacity="0.15"/><line x1="180" y1="45" x2="180" y2="80" stroke="#fff" stroke-width="0.8" opacity="0.15"/><circle cx="80" cy="45" r="3.5" fill="#fff" opacity="0.3"/><circle cx="80" cy="80" r="3.5" fill="#fff" opacity="0.3"/><circle cx="180" cy="45" r="3.5" fill="#fff" opacity="0.3"/><circle cx="180" cy="80" r="3.5" fill="#fff" opacity="0.3"/><text x="130" y="74" text-anchor="middle" fill="white" font-size="44" font-weight="900" opacity="0.65">𝕏</text>' },
+  { name:'DeepSeek', tag:'DeepSeek AI', tagColor:'#e6f1fb', tagText:'#0c447c', url:'https://chat.deepseek.com', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#060c1a"/><circle cx="130" cy="60" r="80" fill="#1e90ff" opacity="0.07"/><circle cx="130" cy="60" r="50" fill="none" stroke="#1e90ff" stroke-width="1" opacity="0.3"/><circle cx="130" cy="60" r="30" fill="none" stroke="#1e90ff" stroke-width="1.5" opacity="0.5"/><circle cx="130" cy="60" r="14" fill="#1e90ff" opacity="0.25"/><circle cx="130" cy="60" r="6" fill="#1e90ff" opacity="0.6"/><circle cx="80" cy="30" r="4" fill="#1e90ff" opacity="0.4"/><circle cx="180" cy="30" r="4" fill="#1e90ff" opacity="0.4"/><circle cx="60" cy="80" r="3" fill="#1e90ff" opacity="0.3"/><circle cx="200" cy="80" r="3" fill="#1e90ff" opacity="0.3"/><line x1="80" y1="30" x2="116" y2="54" stroke="#1e90ff" stroke-width="0.8" opacity="0.3"/><line x1="180" y1="30" x2="144" y2="54" stroke="#1e90ff" stroke-width="0.8" opacity="0.3"/>' },
+  { name:'Perplexity', tag:'Perplexity AI', tagColor:'#e1f5f5', tagText:'#0e6b6b', url:'https://perplexity.ai', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#0a1a18"/><circle cx="0" cy="120" r="100" fill="#20b2aa" opacity="0.12"/><rect x="85" y="20" width="90" height="80" rx="8" fill="none" stroke="#20b2aa" stroke-width="1.5" opacity="0.4"/><line x1="100" y1="40" x2="160" y2="40" stroke="#20b2aa" stroke-width="2" stroke-linecap="round" opacity="0.7"/><line x1="100" y1="55" x2="150" y2="55" stroke="#20b2aa" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><line x1="100" y1="68" x2="155" y2="68" stroke="#20b2aa" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><line x1="100" y1="81" x2="140" y2="81" stroke="#20b2aa" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/><circle cx="76" cy="40" r="7" fill="#20b2aa" opacity="0.5"/>' },
+  { name:'Midjourney', tag:'Image AI', tagColor:'#ede9fe', tagText:'#5b21b6', badge:'New', badgeColor:'#fef3c7', badgeText:'#92400e', url:'https://midjourney.com', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#0f0a1a"/><polygon points="0,120 55,50 90,88 130,30 168,70 205,22 260,78 260,120" fill="#7c3aed" opacity="0.15"/><polygon points="0,120 55,68 90,100 130,50 168,84 205,42 260,90 260,120" fill="#a78bfa" opacity="0.1"/><circle cx="200" cy="28" r="16" fill="#fbbf24" opacity="0.35"/><circle cx="200" cy="28" r="10" fill="#fbbf24" opacity="0.25"/><circle cx="50" cy="26" r="1.5" fill="#fff" opacity="0.7"/><circle cx="88" cy="18" r="1" fill="#fff" opacity="0.5"/><circle cx="168" cy="22" r="1.5" fill="#fff" opacity="0.6"/>' },
+  { name:'DALL·E', tag:'OpenAI', tagColor:'#d1fae5', tagText:'#065f46', url:'https://labs.openai.com', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#0a1a0f"/><circle cx="60" cy="55" r="45" fill="#10b981" opacity="0.12"/><circle cx="200" cy="70" r="55" fill="#6ee7b7" opacity="0.08"/><path d="M30,90 Q75,35 120,72 Q165,110 210,52" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" opacity="0.4"/><circle cx="50" cy="38" r="9" fill="#ef4444" opacity="0.5"/><circle cx="73" cy="33" r="7" fill="#f59e0b" opacity="0.5"/><circle cx="94" cy="36" r="8" fill="#10b981" opacity="0.5"/><circle cx="115" cy="32" r="6" fill="#3b82f6" opacity="0.5"/><text x="162" y="72" text-anchor="middle" fill="#6ee7b7" font-size="12" font-weight="700" font-family="monospace" opacity="0.8">DALL·E</text>' },
+];
+
+
+var LIB_CARDS = [
+  { cat:'Email · Business', title:'Professional sick leave', desc:'Formal leave request with all details', tier:'free', gradient:'linear-gradient(135deg,#fce7f3,#f9a8d4,#ec4899)', icon:'✉️', prompt:'Write a professional and polite sick leave email to my manager requesting leave for tomorrow. I am unwell with fever. Include: clear subject line, formal greeting, brief reason, expected return date, professional closing.' },
+  { cat:'Email · Career', title:'Salary negotiation', desc:'Negotiate compensation professionally', tier:'adv', gradient:'linear-gradient(135deg,#fef3c7,#fcd34d,#f59e0b)', icon:'💰', prompt:'Write a confident but respectful email negotiating a salary of [AMOUNT] for the [ROLE] position. Mention my experience, market research, and express continued interest in the role.' },
+  { cat:'Email · Networking', title:'Meeting request', desc:'Schedule meetings professionally', tier:'free', gradient:'linear-gradient(135deg,#dbeafe,#93c5fd,#3b82f6)', icon:'🤝', prompt:'Write a professional email requesting a meeting with [PERSON] to discuss [TOPIC]. Suggest [TIME] as a preferred slot and offer flexibility. Keep it concise and respectful.' },
+  { cat:'Email · Job', title:'Follow-up after interview', desc:'Post-interview thank you email', tier:'free', gradient:'linear-gradient(135deg,#dcfce7,#86efac,#22c55e)', icon:'🎯', prompt:'Write a warm, professional follow-up email after a job interview for the role of [ROLE] at [COMPANY]. Thank the interviewer, reiterate my interest, and mention one key point from the interview.' },
+  { cat:'Instagram · Travel', title:'Travel caption', desc:'Captivating post with hashtags', tier:'free', gradient:'linear-gradient(135deg,#fce7f3,#fbcfe8,#ec4899)', icon:'📸', prompt:'Write a captivating Instagram caption for a travel photo from [LOCATION]. Make it engaging, include a call to action, and add 10 relevant hashtags.' },
+  { cat:'LinkedIn · Career', title:'Achievement post', desc:'Share milestones professionally', tier:'free', gradient:'linear-gradient(135deg,#ede9fe,#c4b5fd,#8b5cf6)', icon:'💼', prompt:'Write an engaging LinkedIn post about my recent achievement: [ACHIEVEMENT]. Make it professional yet personal, highlight the journey, and end with a lesson or insight for my network.' },
+  { cat:'Instagram · Viral', title:'Reel hook line', desc:'Stop scrollers in 3 seconds', tier:'pro', gradient:'linear-gradient(135deg,#ffedd5,#fdba74,#f97316)', icon:'🔥', prompt:'Write 5 powerful hook lines for a [TOPIC] Instagram reel that will stop people from scrolling in the first 3 seconds. Make them curious, bold, and conversation-starting.' },
+  { cat:'Coding · Debug', title:'Debug my code', desc:'Find errors, get clear explanations', tier:'free', gradient:'linear-gradient(135deg,#f0fdf4,#86efac,#22c55e)', icon:'💻', prompt:'I have a bug in my [LANGUAGE] code. Here is the code: [CODE]. Please identify what is wrong, explain why it is happening, and provide the fixed version with comments.' },
+  { cat:'WhatsApp · Personal', title:'Message to a friend', desc:'Casual, fun, natural tone', tier:'free', gradient:'linear-gradient(135deg,#dcfce7,#6ee7b7,#10b981)', icon:'💬', prompt:'Write a casual and friendly WhatsApp message to my friend asking if they want to meet this weekend. Keep it light, fun, and natural. Maybe add a small joke or emoji.' },
+  { cat:'Business · Sales', title:'Cold outreach email', desc:'Pitch your product professionally', tier:'adv', gradient:'linear-gradient(135deg,#e0f2fe,#7dd3fc,#0ea5e9)', icon:'📧', prompt:'Write a concise cold outreach email introducing [PRODUCT/SERVICE] to [TARGET CUSTOMER]. Focus on the problem it solves, include one strong stat, and end with a clear call to action.' },
+  { cat:'Study · Planning', title:'Study plan creator', desc:'Structured exam preparation', tier:'free', gradient:'linear-gradient(135deg,#fef9c3,#fde047,#ca8a04)', icon:'📚', prompt:'Create a detailed [DAYS]-day study plan for my [SUBJECT] exam covering [TOPICS]. Include daily goals, revision sessions, practice tests, and breaks. Make it realistic and structured.' },
+  { cat:'Creative · Writing', title:'Story starter', desc:'Begin any creative writing piece', tier:'pro', gradient:'linear-gradient(135deg,#fae8ff,#e879f9,#a855f7)', icon:'✍️', prompt:'Write a compelling opening paragraph for a [GENRE] story set in [SETTING]. Introduce the main character [CHARACTER NAME], establish the mood, and end with a hook that makes readers want to continue.' },
+];
+
+
+
+// ── State ────────────────────────────────────────────
+let currentMode = 'ai';
+let bothAIChosen = false;
+let bothSocialChosen = false;
+let autocorrectEnabled = true;
+let selectedPlatform = 'ChatGPT';
+let selectedPlatformType = 'ai';
+let library = JSON.parse(localStorage.getItem('clarix-lib') || '[]');
+let stats = JSON.parse(localStorage.getItem('clarix-stats') || '{"count":0,"scores":[]}');
+let customPlatforms = JSON.parse(localStorage.getItem('clarix-customs') || '[]');
+let currentResult = '', currentOriginal = '', currentSocialResult = '';
+let currentDualOrig = '', currentDualEng = '';
+let debounceTimer = null;
+let recognition = null;
+let isListening = false;
+let selectedLang = 'English';
+let selectedLangCode = 'en-IN';
+let isVoiceInput = false;
+
+// ── Platform URLs ────────────────────────────────────
+const PLATFORM_URLS = {
+  'ChatGPT':'https://chat.openai.com','Claude':'https://claude.ai','Gemini':'https://gemini.google.com',
+  'Grok':'https://grok.x.com','DeepSeek':'https://chat.deepseek.com','Perplexity':'https://www.perplexity.ai',
+  'Copilot':'https://copilot.microsoft.com','Meta AI':'https://www.meta.ai','Pi':'https://pi.ai',
+  'Poe':'https://poe.com','Mistral':'https://chat.mistral.ai','Instagram':'https://www.instagram.com',
+  'WhatsApp':'https://web.whatsapp.com','Twitter/X':'https://twitter.com','Facebook':'https://www.facebook.com',
+  'LinkedIn':'https://www.linkedin.com','YouTube':'https://studio.youtube.com','Snapchat':'https://www.snapchat.com',
+  'Threads':'https://www.threads.net','Pinterest':'https://www.pinterest.com','Reddit':'https://www.reddit.com'
+};
+
+// ── Languages ────────────────────────────────────────
+const LANGUAGES = [
+  {name:'English',code:'en-IN',flag:'🇬🇧'},{name:'Hindi — हिंदी',code:'hi-IN',flag:'🇮🇳'},
+  {name:'Hinglish',code:'hi-IN',flag:'🇮🇳'},{name:'Tamil — தமிழ்',code:'ta-IN',flag:'🇮🇳'},
+  {name:'Telugu — తెలుగు',code:'te-IN',flag:'🇮🇳'},{name:'Marathi — मराठी',code:'mr-IN',flag:'🇮🇳'},
+  {name:'Bengali — বাংলা',code:'bn-IN',flag:'🇮🇳'},{name:'Gujarati — ગુજરાતી',code:'gu-IN',flag:'🇮🇳'},
+  {name:'Kannada — ಕನ್ನಡ',code:'kn-IN',flag:'🇮🇳'},{name:'Malayalam — മലയാളം',code:'ml-IN',flag:'🇮🇳'},
+  {name:'Punjabi — ਪੰਜਾਬੀ',code:'pa-IN',flag:'🇮🇳'},{name:'Urdu — اردو',code:'ur-IN',flag:'🇮🇳'},
+  {name:'Spanish',code:'es-ES',flag:'🇪🇸'},{name:'French',code:'fr-FR',flag:'🇫🇷'},
+  {name:'Arabic',code:'ar-SA',flag:'🇸🇦'},{name:'Portuguese',code:'pt-BR',flag:'🇧🇷'},
+  {name:'German',code:'de-DE',flag:'🇩🇪'},{name:'Japanese',code:'ja-JP',flag:'🇯🇵'},
+  {name:'Chinese',code:'zh-CN',flag:'🇨🇳'},{name:'Russian',code:'ru-RU',flag:'🇷🇺'}
+];
+
+const PLACEHOLDERS = {
+  'English':'Type rough here... e.g. "help me write mail to boss for leave tomorrow bcoz fever"',
+  'Hindi — हिंदी':'यहाँ लिखें... जैसे "बॉस को बुखार के कारण छुट्टी के लिए मेल लिखो"',
+  'Hinglish':'Type karo yahan... jaise "boss ko kal leave chahiye bcoz fever hai"',
+  'Tamil — தமிழ்':'இங்கே தட்டச்சு செய்யுங்கள்... எ.கா. "முதலாளிக்கு விடுப்பு மெயில் எழுது"',
+  'Telugu — తెలుగు':'ఇక్కడ టైప్ చేయండి... ఉదా. "బాస్‌కు సెలవు మెయిల్ రాయండి"',
+  'Marathi — मराठी':'इथे टाइप करा... उदा. "बॉसला उद्या रजेसाठी मेल लिहा"',
+  'Bengali — বাংলা':'এখানে টাইপ করুন... যেমন "বসকে ছুটির জন্য মেইল লিখুন"',
+  'Gujarati — ગુજરાતી':'અહીં ટાઇપ કરો... જેમ કે "બોસને રજા માટે મેઇલ લખો"',
+  'Kannada — ಕನ್ನಡ':'ಇಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ... ಉದಾ. "ಬಾಸ್‌ಗೆ ರಜೆ ಮೇಲ್ ಬರೆಯಿರಿ"',
+  'Malayalam — മലയാളം':'ഇവിടെ ടൈപ്പ് ചെയ്യൂ... ഉദാ. "ബോസിന് ലീവ് മെയിൽ എഴുതൂ"',
+  'Punjabi — ਪੰਜਾਬੀ':'ਇੱਥੇ ਲਿਖੋ... ਜਿਵੇਂ "ਬੌਸ ਨੂੰ ਛੁੱਟੀ ਲਈ ਮੇਲ ਲਿਖੋ"',
+  'Urdu — اردو':'یہاں لکھیں... مثلاً "باس کو چھٹی کے لیے میل لکھیں"',
+  'default':'Type rough here... e.g. "help me write mail to boss for leave tomorrow bcoz fever"'
+};
+
+// ── Language UI ──────────────────────────────────────
+function renderLangOptions(filter=''){
+  const dd = document.getElementById('langList');
+  if(!dd) return;
+  const list = LANGUAGES.filter(l=>l.name.toLowerCase().includes(filter.toLowerCase()));
+  dd.innerHTML = list.map(l=>`<div class="lang-opt ${l.name===selectedLang?'active':''}" onclick="selectLang('${l.name}','${l.code}','${l.flag}')">${l.flag} ${l.name}</div>`).join('');
+}
+function filterLangs(v){renderLangOptions(v)}
+function openLangDrop(){renderLangOptions(document.getElementById('langSearch').value);document.getElementById('langDrop').classList.add('open')}
+function closeLangDrop(){document.getElementById('langDrop').classList.remove('open')}
+function selectLang(name,code,flag){
+  selectedLang=name; selectedLangCode=code;
+  localStorage.setItem('clarix-lang',name);
+  document.getElementById('langBadge').textContent=flag+' '+name.split(' — ')[0];
+  document.getElementById('langSearch').value='';
+  closeLangDrop();
+  document.getElementById('promptInput').placeholder=PLACEHOLDERS[name]||PLACEHOLDERS['default'];
+  if(recognition) recognition.lang=code;
+  // Re-process existing prompt with new language immediately
+  const existing = document.getElementById('promptInput').value.trim();
+  if(existing.length > 2) {
+    showToast('Language changed to ' + name.split(' — ')[0] + ' — updating output...');
+    setTimeout(function(){ processPrompt(existing); }, 200);
+  }
+}
+
+// ── Mode selector ────────────────────────────────────
+function toggleAutocorrect(){
+  autocorrect = !autocorrect;
+  try {
+    var t=($$("autocorrectTrack")||{});
+    var th=($$("autocorrectThumb")||{});
+    var l=($$("autocorrectLabel")||{});
+    if(t) t.style.background = autocorrect ? 'var(--ac)' : '#ddd';
+    if(th) th.style.left = autocorrect ? '22px' : '2px';
+    if(l) l.textContent = autocorrect ? 'On' : 'Off';
+  } catch(e){}
+}
+
+function setMode(mode){
+  currentMode=mode;
+  ['ai','social','both'].forEach(m=>document.getElementById('mode-'+m).classList.toggle('active',m===mode));
+  const aiPills=document.getElementById('aiPills');
+  const socPills=document.getElementById('socialPills');
+  const lbl=document.getElementById('platformLabel');
+  bothAIChosen=false; bothSocialChosen=false;
+  // Clear previous results when switching modes
+  document.getElementById('liveResult').classList.remove('visible');
+  var ao=document.getElementById('aiOutput'); if(ao) ao.classList.remove('visible');
+  var so=document.getElementById('socialOutput'); if(so) so.classList.remove('visible');
+  var du=document.getElementById('dualOutput'); if(du) du.classList.remove('visible');
+  if(mode==='ai'){aiPills.style.display='flex';socPills.style.display='none';lbl.textContent='Select AI platform';
+    selectPlatformByName('ChatGPT','ai');}
+  else if(mode==='social'){aiPills.style.display='none';socPills.style.display='flex';lbl.textContent='Select social platform';
+    selectPlatformByName('Instagram','social');}
+  else{aiPills.style.display='flex';socPills.style.display='flex';lbl.textContent='Select platform';
+    selectPlatformByName('ChatGPT','ai');}
+  const inp=document.getElementById('promptInput').value;
+  if(inp.length>2) setTimeout(function(){ processPrompt(inp); }, 80);
+}
+
+function selectPlatformByName(name,type){
+  const allPills=document.querySelectorAll('.platform-pill:not(.custom-pill)');
+  allPills.forEach(p=>{if(p.textContent.replace(/[^a-zA-Z\/\s]/g,'').trim()===name||p.textContent.includes(name)){selectPlatform(p,name,type);}});
+}
+
+// ── Platform select ──────────────────────────────────
+let selectedAIPlatform='ChatGPT';
+let selectedSocialPlatform='Instagram';
+
+function closeBothPopup(){document.getElementById('bothPopup').classList.remove('open');}
+
+function showBothPopup(missingType){
+  try {
+    var pop = document.getElementById('bothPopupOverlay');
+    if(pop) pop.style.display='flex';
+  } catch(e){}
+}
+
+function quickPickSocial(name){
+  document.querySelectorAll('#socialPills .platform-pill').forEach(p=>{
+    const txt=p.textContent.trim().replace(/^[^a-zA-Z]+/,'');
+    p.classList.toggle('active',txt===name||p.textContent.includes(name));
+  });
+  selectedSocialPlatform=name; bothSocialChosen=true;
+  closeBothPopup();
+  document.getElementById('liveTag').textContent=selectedAIPlatform+' + '+selectedSocialPlatform;
+  const inp=document.getElementById('promptInput').value;
+  if(inp.length>2) processPrompt(inp);
+  showToast(selectedAIPlatform+' + '+selectedSocialPlatform+' ✓');
+}
+
+function quickPickAI(name){
+  document.querySelectorAll('#aiPills .platform-pill').forEach(p=>{
+    p.classList.toggle('active',p.textContent.includes(name));
+  });
+  selectedAIPlatform=name; selectedPlatform=name; bothAIChosen=true;
+  closeBothPopup();
+  document.getElementById('liveTag').textContent=selectedAIPlatform+' + '+selectedSocialPlatform;
+  const inp=document.getElementById('promptInput').value;
+  if(inp.length>2) processPrompt(inp);
+  showToast(selectedAIPlatform+' + '+selectedSocialPlatform+' ✓');
+}
+
+function selectPlatform(el,name,type){
+  if(currentMode==='both'){
+    if(type==='ai'){
+      document.querySelectorAll('#aiPills .platform-pill').forEach(p=>p.classList.remove('active'));
+      el.classList.add('active');
+      selectedAIPlatform=name; selectedPlatform=name; selectedPlatformType=type;
+      bothAIChosen=true;
+      if(!bothSocialChosen) showBothPopup('social');
+    } else {
+      document.querySelectorAll('#socialPills .platform-pill').forEach(p=>p.classList.remove('active'));
+      el.classList.add('active');
+      selectedSocialPlatform=name; bothSocialChosen=true;
+      if(!bothAIChosen) showBothPopup('ai');
+    }
+    document.getElementById('liveTag').textContent=selectedAIPlatform+' + '+selectedSocialPlatform;
+    if(bothAIChosen&&bothSocialChosen) closeBothPopup();
+  } else {
+    document.querySelectorAll('.platform-pill:not(.custom-pill)').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');
+    selectedPlatform=name; selectedPlatformType=type;
+    document.getElementById('liveTag').textContent=name;
+  }
+  document.getElementById('openBtnName').textContent=currentMode==='both'?selectedAIPlatform:name;
+  const inp=document.getElementById('promptInput').value;
+  if(inp.length>2) processPrompt(inp);
+}
+
+// ── Grammar rules ────────────────────────────────────
+const RULES=[[/\bbcoz\b/gi,'because'],[/\bbcz\b/gi,'because'],[/\bcoz\b/gi,'because'],
+  [/\bplz\b/gi,'please'],[/\bpls\b/gi,'please'],[/\bu r\b/gi,'you are'],[/\bur\b/g,'your'],
+  [/\btmrw\b/gi,'tomorrow'],[/\btmr\b/gi,'tomorrow'],[/\bthx\b/gi,'thanks'],
+  [/\bwanna\b/gi,'want to'],[/\bgonna\b/gi,'going to'],[/\bdunno\b/gi,"don't know"],
+  [/\bkinda\b/gi,'kind of'],[/\bgotta\b/gi,'got to'],[/\bi m\b/gi,"I'm"],
+  [/\bwld\b/gi,'would'],[/\bcud\b/gi,'could'],[/\bshud\b/gi,'should'],
+  [/\babt\b/gi,'about'],[/\bbtw\b/gi,'by the way'],[/\basap\b/gi,'as soon as possible'],
+  [/\bgr8\b/gi,'great'],[/\bcant\b/g,"can't"],[/\bdont\b/g,"don't"],[/\bwont\b/g,"won't"],
+  [/\bisnt\b/g,"isn't"],[/\barent\b/g,"aren't"],[/\bhavent\b/g,"haven't"],
+  [/\bim\b/g,"I'm"],[/\bi have\b/g,'I have'],[/\bi am\b/g,'I am'],
+  [/\bi need\b/g,'I need'],[/\bi want\b/g,'I want'],[/\bwat\b/gi,'what'],[/\blol\b/gi,'']];
+
+function applyFixes(text){
+  if(!autocorrectEnabled) return{fixed:text,fixes:[]};
+  const fixes=[];let fixed=text;
+  for(const [p,r] of RULES){const m=fixed.match(p);if(m&&r&&m[0].toLowerCase()!==r.toLowerCase()){fixes.push({original:m[0],corrected:r});fixed=fixed.replace(p,r);}}
+  fixed=fixed.replace(/(^\s*\w|[.!?]\s+\w)/g,c=>c.toUpperCase());
+  if(fixed.length>10&&!/[.!?]$/.test(fixed.trim())) fixed=fixed.trim()+'.';
+  return{fixed,fixes:fixes.slice(0,4)};
+}
+
+function detectIntent(t){
+  t=t.toLowerCase();
+  if(/mail|email|letter|leave|sick|boss|manager|office/.test(t)) return'email';
+  if(/linkedin|post|achievement|career|promotion/.test(t)) return'linkedin';
+  if(/debug|code|error|bug|fix|python|javascript/.test(t)) return'debug';
+  if(/study|exam|learn|syllabus|plan|chapter/.test(t)) return'study';
+  if(/explain|what is|how does|understand|concept/.test(t)) return'explain';
+  if(/whatsapp|friend|message|hangout|meet/.test(t)) return'whatsapp';
+  if(/travel|trip|vacation|journey/.test(t)) return'travel';
+  if(/food|recipe|restaurant|eat/.test(t)) return'food';
+  if(/motivat|inspire|monday|success/.test(t)) return'motivational';
+  return'general';
+}
+
+// ── AI prompt builder ────────────────────────────────
+function buildAIVariations(fixed,intent,platform){
+  const nonLatinCheck=isNonLatin(fixed);
+  const langName=detectLang(fixed);
+  const inputForBuild=nonLatinCheck?fixed:fixed;
+  const base=nonLatinCheck
+    ?''+fixed+'\n\nPlease understand this '+langName+' request and help accordingly. Respond in '+langName+' or English as appropriate.'
+    :buildAIPrompt(fixed,intent,platform);
+  // Variation 1: Concise and direct
+  const v1=base;
+  // Variation 2: Detailed with context
+  const v2=base+' Please be thorough and provide step-by-step guidance where appropriate.';
+  // Variation 3: Specific tone
+  const tones={ChatGPT:'Use a clear, structured format with headings if needed.',Claude:'Please think through this carefully and provide a well-reasoned response.',Gemini:'Provide a comprehensive answer with examples.',Grok:'Keep it direct and practical.',default:'Provide a clear and helpful response.'};
+  const tone=tones[platform]||tones['default'];
+  const v3=base+' '+tone;
+  return[v1,v2,v3];
+}
+
+let _aiVars=[];
+function renderAIVariations(variations){
+  _aiVars=variations;
+  const labels=['Version 1 — Concise','Version 2 — Detailed','Version 3 — Optimised'];
+  const wrap=document.getElementById('aiVariationsWrap');
+  if(!wrap) return;
+  wrap.innerHTML='';
+  variations.forEach((v,i)=>{
+    const card=document.createElement('div');
+    card.className='variation-card'+(i===0?' selected':'');
+    const labelDiv=document.createElement('div');
+    labelDiv.className='variation-label';
+    const lspan=document.createElement('span');
+    lspan.textContent=labels[i];
+    const btn=document.createElement('button');
+    btn.className='variation-select';
+    btn.id='var-btn-'+i;
+    btn.textContent=i===0?'✓ Selected':'Use this';
+    btn.addEventListener('click',(e)=>{e.stopPropagation();selectVariation(i);});
+    labelDiv.appendChild(lspan);
+    labelDiv.appendChild(btn);
+    const textDiv=document.createElement('div');
+    textDiv.className='variation-text';
+    textDiv.textContent=v;
+    card.appendChild(labelDiv);
+    card.appendChild(textDiv);
+    card.addEventListener('click',()=>selectVariation(i));
+    wrap.appendChild(card);
+  });
+}
+
+function selectVariation(index){
+  const text=_aiVars[index]||'';
+  document.querySelectorAll('.variation-card').forEach((el,i)=>{
+    el.classList.toggle('selected',i===index);
+    const btn=document.getElementById('var-btn-'+i);
+    if(btn) btn.textContent=i===index?'✓ Selected':'Use this';
+  });
+  currentResult=text;
+  showToast('Version '+(index+1)+' selected ✓');
+}
+
+function buildAIPrompt(fixed, intent, platform) {
+  var platformStyle = {
+    ChatGPT:    'Format the response clearly with headers and bullet points where helpful.',
+    Claude:     'Provide full context. Think step by step and explain your reasoning.',
+    Gemini:     'Be concise and structured. Use clear sections.',
+    Grok:       'Be direct, conversational and to the point.',
+    DeepSeek:   'Be technically precise. Include code examples if relevant.',
+    Perplexity: 'Be factual and well-structured.',
+    Copilot:    'Format clearly with steps and examples.',
+    Mistral:    'Be precise and well-structured.'
+  };
+  var style = platformStyle[platform] || '';
+  var prompts = {
+    email:        'Write a professional and polite email to my manager requesting sick leave for tomorrow. I am unwell with fever. Include: clear subject line, formal greeting, brief reason, expected return date, professional closing.',
+    linkedin:     'Write an engaging LinkedIn post about a recent professional achievement. Strong opening hook, authentic story, key learnings, end with a question to drive engagement.',
+    debug:        'Review the code I will share, identify all issues, provide the corrected version, and explain each fix clearly.',
+    study:        'Create a structured study plan for an upcoming exam. Include day-by-day schedule, topic breakdown, time allocation, and revision strategy.',
+    explain:      'Explain this topic clearly for a complete beginner. Use simple language, real-world examples and a step-by-step approach.',
+    whatsapp:     'Write a casual, warm and friendly WhatsApp message. Keep it short, natural and conversational.',
+    travel:       'Write a vivid travel description highlighting the best experiences, atmosphere, local culture, food, and personal moments.',
+    food:         'Describe this food or recipe in an engaging, mouth-watering way. Include flavours, textures and why people should try it.',
+    motivational: 'Write an inspiring and uplifting message that motivates people to take action and believe in themselves.',
+    social:       'Write an engaging social media post that is attention-grabbing, relatable and shareable.',
+    health:       'Provide clear, helpful health and wellness advice. Be informative, supportive and practical.',
+    business:     'Write a professional business communication. Be clear, concise and results-focused.'
+  };
+  if (prompts[intent]) return prompts[intent] + (style ? ' ' + style : '');
+  // General fallback: clean input of suggestion chips, return structured request
+  var stripped = fixed
+    .replace(/[+]?\s*(Make shorter|Make formal|Add date|Add reason|Add context|Add examples|Add CTA|Add hashtags|Add emoji|Add numbers|Add achievement|Add language|Show code|Add error message|Add subject|Add exam date|Make structured|Add destination|Add duration|Add budget)[^.:]*[:.]?\s*/gi, '')
+    .trim();
+  // If stripped text looks like non-English / Hinglish — don't pass it as prompt
+  // Return a generic English request instead
+  var isEnglishLike = /^[a-zA-Z0-9\s.,!?'"()-]+$/.test(stripped) && stripped.split(' ').length > 3;
+  if (!stripped || stripped.length < 3) {
+    return 'Please help me with my request and provide a detailed, clear and well-structured response.' + (style ? ' ' + style : '');
+  }
+  if (!isEnglishLike) {
+    // Non-English input with no matching intent — generic English request
+    return 'Please understand my request and help me accordingly. Provide a detailed, helpful and well-structured response in English.' + (style ? ' ' + style : '');
+  }
+  return stripped + '. Please provide a detailed, helpful and well-structured response.' + (style ? ' ' + style : '');
+}
+
+// ── Social content builder ───────────────────────────
+const SOCIAL_STYLES={
+  Instagram:{caption:(t,i)=>buildSocialCaption(t,i,'instagram'),prompt:(t,i)=>`Write an engaging Instagram caption about: ${t}. Include 3-5 relevant hashtags, 1-2 emojis, keep it under 150 words, conversational and authentic.`},
+  'Twitter/X':{caption:(t,i)=>buildSocialCaption(t,i,'twitter'),prompt:(t,i)=>`Write a punchy, engaging tweet about: ${t}. Under 280 characters, no hashtags unless essential, conversational and shareable.`},
+  Facebook:{caption:(t,i)=>buildSocialCaption(t,i,'facebook'),prompt:(t,i)=>`Write a Facebook post about: ${t}. Conversational, 2-3 short paragraphs, end with a question to encourage comments.`},
+  LinkedIn:{caption:(t,i)=>buildSocialCaption(t,i,'linkedin'),prompt:(t,i)=>`Write a professional LinkedIn post about: ${t}. Strong opening hook, share a key insight or story, end with a question or CTA. 150-250 words.`},
+  WhatsApp:{caption:(t,i)=>buildSocialCaption(t,i,'whatsapp'),prompt:(t,i)=>`Write a casual WhatsApp message about: ${t}. Short, warm, natural — like texting a close friend or group.`},
+  YouTube:{caption:(t,i)=>buildSocialCaption(t,i,'youtube'),prompt:(t,i)=>`Write a YouTube video description about: ${t}. Include what viewers will learn, key points, and a call to subscribe.`},
+  Threads:{caption:(t,i)=>buildSocialCaption(t,i,'threads'),prompt:(t,i)=>`Write a Threads post about: ${t}. Conversational, authentic, 1-3 sentences max. Like a casual thought.`},
+  Snapchat:{caption:(t,i)=>buildSocialCaption(t,i,'snapchat'),prompt:(t,i)=>`Write a fun, casual Snapchat caption about: ${t}. Very short, playful, with 1-2 emojis.`},
+  Pinterest:{caption:(t,i)=>buildSocialCaption(t,i,'pinterest'),prompt:(t,i)=>`Write a Pinterest pin description about: ${t}. Descriptive, inspiring, include keywords, 2-3 sentences.`},
+  Reddit:{caption:(t,i)=>buildSocialCaption(t,i,'reddit'),prompt:(t,i)=>`Write a Reddit post about: ${t}. Informative or discussion-starting, honest and direct, no corporate tone.`}
+};
+
+function buildSocialCaption(topic,intent,platform){
+  const captions={
+    instagram:{travel:`Just dropped everything and went 🌍✨ ${topic.replace(/[.!?]$/,'')} — and it was absolutely worth it. Some places just change you. Save this if you need a travel inspo reminder! 🗺️ #Travel #Wanderlust #ExploreMore`,food:`This was NOT planned but absolutely worth it 😍🍽️ ${topic.replace(/[.!?]$/,'')} — 10/10 would recommend. Tag someone you'd eat this with! #FoodLover #Foodie #MustTry`,motivational:`Monday reminder: You are closer than you think 💪✨ Keep going, keep growing. Drop a 🔥 if you needed this today! #Motivation #MindsetMatters #YouGotThis`,default:`${topic.replace(/[.!?]$/,'')} ✨ Sharing this because it genuinely made my day better. Save it for later! 💾 #lifestyle #vibes #inspo`},
+    twitter:{default:`${topic.replace(/[.!?]$/,'')} — and honestly? Worth every second.`,motivational:`Quick reminder: Progress > perfection. Keep going. 🔥`,food:`${topic.replace(/[.!?]$/,'')} and I'm not taking any questions at this time 😂`},
+    linkedin:{default:`Excited to share: ${topic.replace(/[.!?]$/,'')}.\n\nThis experience taught me that showing up consistently matters more than being perfect.\n\nWhat's one thing you've learned recently? Drop it below 👇`,motivational:`${topic.replace(/[.!?]$/,'')}\n\nThe people who succeed aren't always the most talented — they're the most consistent.\n\nWhat keeps you motivated? Share below 👇`},
+    facebook:{default:`Can't believe I'm actually sharing this but here we go 😄\n\n${topic.replace(/[.!?]$/,'')}\n\nWould love to hear your thoughts — drop a comment!`},
+    whatsapp:{default:`Hey! Just wanted to share — ${topic.replace(/[.!?]$/,'').toLowerCase()}. You should check it out! 😊`},
+    youtube:{default:`In this video, I share everything about: ${topic.replace(/[.!?]$/,'')}. Watch till the end for the most important part! Don't forget to like and subscribe 🔔`},
+    threads:{default:`${topic.replace(/[.!?]$/,'')} and I think that says everything 😌`},
+    snapchat:{default:`${topic.replace(/[.!?]$/,'')} 🔥😎`},
+    pinterest:{default:`✨ ${topic.replace(/[.!?]$/,'')} — save this for later inspiration! Perfect for anyone who loves discovering new ideas.`},
+    reddit:{default:`So I wanted to share something that genuinely surprised me: ${topic.replace(/[.!?]$/,'').toLowerCase()}. Curious if anyone else has had a similar experience?`}
+  };
+  const platCaptions=captions[platform]||captions.instagram;
+  return platCaptions[intent]||platCaptions['default']||platCaptions.default;
+}
+
+// ── Score calc ───────────────────────────────────────
+function calcScores(text){
+  const words=text.trim().split(/\s+/).length;
+  const informal=(text.match(/\b(bcoz|plz|ur|thx|wanna|gonna|lol|bcz|coz|gr8)\b/gi)||[]).length;
+  const g=Math.min(85,Math.max(20,85-informal*18));
+  const c=words<5?25:words<10?48:65;
+  const s=words<6?22:words<12?44:62;
+  return{before:Math.round((g+c+s)/3),after:{grammar:Math.min(97,g+20+Math.floor(Math.random()*6)),clarity:Math.min(95,c+18+Math.floor(Math.random()*6)),specific:Math.min(93,s+20+Math.floor(Math.random()*6))}};
+}
+
+// ── MAIN PROCESS ─────────────────────────────────────
+// ── CONTENT MODERATION ──────────────────────────────────
+// Basic pattern list - words that should never appear in output
+const BLOCKED_PATTERNS = [
+  /\b(fuck|shit|bitch|bastard|asshole|cunt|dick|pussy|boobs|boob|tits|cock|penis|vagina|whore|slut|rape|nigger|faggot)\b/gi,
+  // Hindi/Marathi/regional abusive terms (romanised)
+  /\b(madarchod|bhenchod|chutiya|gaand|randi|bhadwa|harami|saala|kutte|kamine|bsdk|mcs|bkl)\b/gi,
+  // Devanagari script abusive patterns (common ones)
+  /[मभचगरभ][ाां][ड]|भड़व|[रहस]ंड[ी]/gi,
+];
+
+function containsFoulLanguage(text) {
+  return BLOCKED_PATTERNS.some(p => p.test(text));
+}
+
+function sanitizeOutput(text) {
+  let clean = text;
+  BLOCKED_PATTERNS.forEach(p => {
+    clean = clean.replace(p, '[removed]');
+  });
+  return clean;
+}
+
+function onInput(el){
+  const len=el.value.length;
+  document.getElementById('charCount').textContent=len;
+  document.getElementById('clearBtn').style.display=len>0?'block':'none';
+  clearTimeout(debounceTimer);
+  if(len<3){document.getElementById('liveResult').classList.remove('visible');return;}
+  // Show language picker if:
+  // 1. No language ever saved (brand new user), OR
+  // 2. Language was saved as English but user is typing Hinglish/Indian text
+  const savedLang = localStorage.getItem('clarix-lang');
+  const isTypingNonEnglish = /[a-z]/.test(el.value) && 
+    /(nahi|nai|hai|hain|kar|karo|mujhe|mera|meri|tera|tumhara|aap|boss|chutti|bukar|thik|accha|acha|bahut|bohot|kya|kyun|kab|kaise|lagta|lagti|wala|wali|chahiye|chahte|bolo|batao|likho|bhejo|dedo|dena|lena|jao|aao|raho|hoga|hogi|hoge|padho|samjho)/i.test(el.value);
+  const langExplicitlyChosen = localStorage.getItem('clarix-lang-chosen') === '1';
+  if((!savedLang || (!langExplicitlyChosen && isTypingNonEnglish)) && !langNudgeShown && len >= 5) {
+    showLangNudge(el.value);
+    return;
+  }
+  debounceTimer=setTimeout(()=>processPrompt(el.value),300);
+}
+
+function detectLang(text){
+  if(/[઀-૿]/.test(text)) return 'Gujarati';
+  if(/[ऀ-ॿ]/.test(text)) return 'Hindi';
+  if(/[஀-௿]/.test(text)) return 'Tamil';
+  if(/[ఀ-౿]/.test(text)) return 'Telugu';
+  if(/[ಀ-೿]/.test(text)) return 'Kannada';
+  if(/[ഀ-ൿ]/.test(text)) return 'Malayalam';
+  if(/[ঀ-৿]/.test(text)) return 'Bengali';
+  if(/[਀-੿]/.test(text)) return 'Punjabi';
+  if(/[؀-ۿ]/.test(text)) return 'Urdu';
+  if(/[a-zA-Z]/.test(text)&&/\b(hai|hain|ka|ki|ke|mein|ko|se|ne|bcoz|plz|yaar|bhai|karo|kya)\b/.test(text)) return 'Hinglish';
+  if(/[a-zA-Z]/.test(text)) return 'English';
+  return selectedLang.split(' — ')[0];
+}
+
+function isNonLatin(text){
+  return /[ऀ-ॿ઀-૿଀-୿ఀ-౿ಀ-೿ഀ-ൿ؀-ۿ਀-੿ঀ-৿]/.test(text);
+}
+
+
+// ── Translation helper ────────────────────────────────
+async function translateToLang(text, targetLangCode){
+  var langNames = {
+    hi:'Hindi', mr:'Marathi', gu:'Gujarati', ta:'Tamil', te:'Telugu',
+    bn:'Bengali', kn:'Kannada', ml:'Malayalam', pa:'Punjabi',
+    ur:'Urdu', fr:'French', es:'Spanish', de:'German', ar:'Arabic',
+    zh:'Chinese', ja:'Japanese', ko:'Korean', pt:'Portuguese', ru:'Russian'
+  };
+  var code = targetLangCode.split('-')[0];
+  var langName = langNames[code] || code;
+  // Validate input is proper English before translating
+  var isEnglish = /^[a-zA-Z0-9\s.,!?:;'"()\-]+$/.test(text.trim());
+  if(!isEnglish) {
+    // Input is not clean English — translate differently
+    text = 'Help me with this request: ' + text.replace(/[^a-zA-Z0-9\s.,!?]/g, ' ').trim();
+  }
+  try {
+    var res = await fetch('/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        messages: [{
+          role: 'user',
+          content: 'Translate this English text to ' + langName + '. Return ONLY the ' + langName + ' translation, no English, no explanations:\n\n' + text
+        }]
+      })
+    });
+    var data = await res.json();
+    var result = (data.content && data.content[0] && data.content[0].text) || '';
+    return result.trim() || text;
+  } catch(e) { return text; }
+}
+
+async function showDualOutput(englishText){
+  const langObj = LANGUAGES.find(l=>l.name===selectedLang);
+  if(!langObj || selectedLang==='English' || selectedLang==='Hinglish'){
+    // No translation needed — hide dual, show English in main output
+    safeHide('dualLangOutput');
+    return;
+  }
+  const langCode = langObj.code.split('-')[0];
+  const langShort = selectedLang.split(' — ')[0];
+  // Show loading state
+  const dualEl = document.getElementById('dualOutput');
+  if(dualEl){
+    dualEl.style.display='block';
+    document.getElementById('dualLangLabel').textContent = langShort + ' version (translating...)';
+    document.getElementById('dualOrigText').textContent = '...';
+    document.getElementById('dualCopyLang').textContent = 'Copy ' + langShort;
+  }
+  // Translate
+  const translated = await translateToLang(englishText, langCode);
+  if(dualEl){
+    document.getElementById('dualLangLabel').textContent = langShort + ' version';
+    document.getElementById('dualOrigText').textContent = translated;
+  }
+}
+
+function processPrompt(input){
+  // Content moderation check
+  const foulWarning = document.getElementById('foulWarning');
+  if(containsFoulLanguage(input)) {
+    if(foulWarning) foulWarning.style.display='block';
+    input = sanitizeOutput(input); // sanitize before processing
+    setTimeout(()=>{ if(foulWarning) foulWarning.style.display='none'; }, 5000);
+  } else {
+    if(foulWarning) foulWarning.style.display='none';
+  }
+
+  const nonLatin=isNonLatin(input);
+  const detectedLang=detectLang(input);
+
+  // FIX 3: Show language detection badge for ALL languages
+  const badge=document.getElementById('langDetectBadge');
+  if(badge&&input.length>2){
+    badge.textContent='Detected: '+detectedLang;
+    badge.style.display='inline-block';
+  }
+
+  // FIX 1: Non-Latin scripts skip English grammar rules
+  const{fixed,fixes}=nonLatin?{fixed:input,fixes:[]}:applyFixes(input);
+  // For non-Latin (Hindi, Gujarati etc) — detect intent from romanized keywords
+  // even in non-Latin script we can check for common concepts
+  let intent;
+  if(nonLatin) {
+    const lower = input.toLowerCase();
+    if(/बीमार|बुखार|अस्वस्थ|मेल|ईमेल|छुट्टी|leave|mail|boss|manager|sick/.test(lower)) intent='email';
+    else if(/linkedin|उपलब्धि|achievement|career|promotion/.test(lower)) intent='linkedin';
+    else if(/code|debug|error|bug|python|javascript|कोड|गलती/.test(lower)) intent='debug';
+    else if(/study|exam|पढ़|परीक्षा|syllabus/.test(lower)) intent='study';
+    else if(/travel|trip|यात्रा|journey/.test(lower)) intent='travel';
+    else if(/instagram|whatsapp|twitter|social|post|caption/.test(lower)) intent='social';
+    else intent='general';
+  } else {
+    // For Latin-script Hinglish/romanised Indian languages — detect from common words
+    const lower = input.toLowerCase();
+    if(/thik nahi|bimar|bukar|bukhar|fever|sick|unwell|doctor|hospital|dawai|dawa|medicine|leave|chutti|chhutti|boss ko mail|mail kar|manager ko/.test(lower)) intent='email';
+    else if(/linkedin|achievement|promotion|career|job|naukri/.test(lower)) intent='linkedin';
+    else if(/code|debug|error|bug|program/.test(lower)) intent='debug';
+    else if(/exam|padhai|study|padhna|syllabus|test|result/.test(lower)) intent='study';
+    else if(/travel|trip|ghumna|safar|journey|ticket/.test(lower)) intent='travel';
+    else if(/instagram|whatsapp|twitter|facebook|post|caption|share/.test(lower)) intent='social';
+    else intent = detectIntent(input);
+  }
+  const scores=calcScores(input);
+  currentOriginal=input;
+
+  // Update tag
+  document.getElementById('liveTag').textContent=selectedPlatform;
+  document.getElementById('openBtnName').textContent=selectedPlatform;
+
+  // Scores
+  const scoreBefore=document.getElementById('scoreBefore');
+  scoreBefore.textContent=scores.before;
+  scoreBefore.style.color=scores.before>=75?'var(--green)':scores.before>=50?'var(--amber)':'var(--red)';
+  const afterOverall=Math.round((scores.after.grammar+scores.after.clarity+scores.after.specific)/3);
+  const scoreAfter=document.getElementById('scoreAfter');
+  scoreAfter.textContent=afterOverall;
+  scoreAfter.style.color='var(--green)';
+  scoreAfter.classList.add('score-pulse');
+  setTimeout(()=>scoreAfter.classList.remove('score-pulse'),400);
+
+  const setBar=(id,vid,val)=>{
+    const color=val>=75?'var(--green)':val>=50?'var(--amber)':'var(--red)';
+    document.getElementById(id).style.width=val+'%';
+    document.getElementById(id).style.background=color;
+    document.getElementById(vid).textContent=val;
+    document.getElementById(vid).style.color=color;
+  };
+  setBar('bar-grammar','val-grammar',scores.after.grammar);
+  setBar('bar-clarity','val-clarity',scores.after.clarity);
+  setBar('bar-specific','val-specific',scores.after.specific);
+
+  // Fixes
+  if(fixes.length>0){
+    document.getElementById('fixChips').innerHTML=fixes.map(f=>`<span class="fix-chip"><span class="fix-old">${f.original}</span><span class="fix-arr">→</span><span class="fix-new">${f.corrected}</span></span>`).join('');
+    document.getElementById('fixesWrap').style.display='block';
+  } else document.getElementById('fixesWrap').style.display='none';
+
+  // Dual language output — show when non-English language is selected
+  // For AI tab: show always when non-English
+  // For Social tab: show only when user has explicitly selected a non-English language (not just detected)
+  const isNonEngInput = nonLatin || (selectedLang && selectedLang !== 'English' && selectedLang !== 'Hinglish');
+  const isAITab = (selectedPlatformType === 'ai') || (currentMode === 'ai') || (currentMode === 'both');
+  // Show dual when: non-English language explicitly selected (regardless of tab)
+  const langExplicitlySelected = selectedLang && selectedLang !== 'English' && selectedLang !== 'Hinglish';
+  if(isNonEngInput && (isAITab || langExplicitlySelected)) {
+    // Build clean English prompt from detected intent
+    const fixedClean = fixed.replace(/[+]?\s*(Make shorter|Make formal|Add date|Add reason|Add context|Add examples|Add CTA|Add hashtags|Add emoji|Be specific|Specify format)[^.:]*[:.]?\s*/gi, '').trim();
+    const rawEng = buildAIPrompt(fixedClean || fixed, intent, selectedPlatform);
+    const cleanEng = rawEng
+      .replace(/\[user (wrote|typed) in [^\]]+\]:\s*/gi, '')
+      .replace(/Be specific and direct\..*$/i, '')
+      .replace(/Specify format and length\..*$/i, '')
+      .replace(/Provide full context.*$/i, '')
+      .replace(/State the output type.*$/i, '')
+      .trim();
+    currentDualEng = cleanEng;
+    currentResult = cleanEng;
+    // Hide the manual dualOutput box
+    document.getElementById('dualOutput').classList.remove('visible');
+    // showDualOutput uses MyMemory API to translate English → Tamil/Marathi/Telugu etc
+    // This gives REAL translated text in the selected language script
+    // ── LANGUAGE OUTPUT ─────────────────────────────────────────
+    var lo = typeof LANGUAGES !== "undefined" ? LANGUAGES.find(function(l){ return l.name===selectedLang; }) : null;
+    if(lo && selectedLang !== "English" && selectedLang !== "Hinglish") {
+      var ls  = selectedLang.split(" — ")[0];
+      var lc  = lo.code.split("-")[0];
+      var dualEl  = document.getElementById("dualOutput");
+      var dotEl   = document.getElementById("dualOrigText");
+      var detEl   = document.getElementById("dualEngText");
+      var dualLbl = document.getElementById("dualLangLabel");
+      if(dualLbl){ var sp=dualLbl.querySelector("span"); if(sp) sp.textContent=ls; }
+      var dlc = document.getElementById("dualCopyLang"); if(dlc) dlc.textContent=ls;
+      if(detEl) detEl.textContent = cleanEng;
+      if(dotEl) dotEl.textContent = "Translating to " + ls + "...";
+      if(dualEl) dualEl.classList.add("visible");
+      // Single Claude API call: translate cleanEng to selected language
+      clearTimeout(window._txTimer);
+      (function(targetDotEl, engText, langName) {
+        window._txTimer = setTimeout(function() {
+          var translPrompt = "You are a translator. Translate the following English text to " + langName + ".\n"
+            + "Rules:\n"
+            + "1. Return ONLY the " + langName + " translation\n"
+            + "2. Do NOT include any English text\n"
+            + "3. Do NOT explain anything\n"
+            + "4. Do NOT add any prefix or label\n"
+            + "5. Just the " + langName + " translation only\n\n"
+            + "English text to translate:\n" + engText;
+          fetch("/api/claude", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "claude-sonnet-4-20250514",
+              max_tokens: 400,
+              messages: [{ role: "user", content: translPrompt }]
+            })
+          })
+          .then(function(r){ return r.json(); })
+          .then(function(d){
+            var t = d.content && d.content[0] && d.content[0].text;
+            console.log("Translation result:", t);
+            if(targetDotEl) targetDotEl.textContent = t ? t.trim() : engText;
+          })
+          .catch(function(e){ 
+            console.error("Translation error:", e);
+            if(targetDotEl) targetDotEl.textContent = engText; 
+          });
+        }, 800);
+      })(dotEl, cleanEng, ls);
+    } else {
+      document.getElementById("dualOutput").classList.remove("visible");
+    }
+  } else {
+    document.getElementById('dualOutput').classList.remove('visible');
+  }
+
+
+  // Safe helpers
+  const safeText=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+  const safeShow=(id)=>{const el=document.getElementById(id);if(el)el.classList.add('visible');};
+  const safeHide=(id)=>{const el=document.getElementById(id);if(el)el.classList.remove('visible');};
+  const safeDisp=(id,val)=>{const el=document.getElementById(id);if(el)el.style.display=val;};
+
+  try{
+  if(currentMode==='both'){
+    // Show AI variations
+    safeText('aiOutputName',selectedAIPlatform);
+    const aiVars=buildAIVariations(fixed,intent,selectedAIPlatform);
+    renderAIVariations(aiVars);
+    safeShow('aiOutput');
+    // Show Social output
+    const socStyle=SOCIAL_STYLES[selectedSocialPlatform]||SOCIAL_STYLES['Instagram'];
+    const socCaption=socStyle.caption(fixed,intent);
+    const socPrompt=socStyle.prompt(fixed,intent);
+    safeText('socialOutputName',selectedSocialPlatform);
+    safeText('socialCaption',socCaption);
+    safeText('socialPrompt',socPrompt);
+    safeText('socialBothCaption',socCaption);
+    safeText('socialBothPrompt',socPrompt);
+    safeShow('socialOutput');
+    currentResult=aiVars[0];
+    currentSocialResult=socCaption;
+    // Update action buttons for Both mode
+    safeText('copyBtn','⎘ Copy AI prompt');
+    safeText('openBtnName',selectedAIPlatform);
+    safeDisp('bothOpenWrap','flex');
+    safeDisp('bothCopyWrap','flex');
+    safeText('bothAIName',selectedAIPlatform);
+    safeText('bothSocialName',selectedSocialPlatform);
+    safeText('bothOpenAI','Open '+selectedAIPlatform+' →');
+    safeText('bothOpenSocial','Open '+selectedSocialPlatform+' →');
+  } else if(selectedPlatformType==='ai'){
+    safeText('aiOutputName',selectedPlatform);
+    // For non-Latin input, use intent-based prompt; otherwise use variations
+    let variations;
+    if(nonLatin) {
+      const enhancedBase = buildAIPrompt(fixed, intent, selectedPlatform);
+      variations = [enhancedBase, enhancedBase + ' Please keep the response concise and easy to understand.', enhancedBase + ' Provide step-by-step guidance.'];
+    } else {
+      variations = buildAIVariations(fixed, intent, selectedPlatform);
+    }
+    renderAIVariations(variations);
+    safeShow('aiOutput');
+    document.getElementById('socialOutput').classList.remove('visible');
+    currentResult=variations[0];
+    safeText('copyBtn','⎘ Copy selected version');
+    safeText('openBtnName',selectedPlatform);
+    safeDisp('bothOpenWrap','none');
+    safeDisp('bothCopyWrap','none');
+  } else {
+    const style=SOCIAL_STYLES[selectedPlatform]||SOCIAL_STYLES['Instagram'];
+    let caption, prompt;
+    if(isNonEngInput) {
+      // Non-English: caption shows enhanced English social output
+      // showDualOutput will handle showing it in the selected language
+      caption = style.caption(fixed || input, intent);
+      prompt = style.prompt(fixed || input, intent);
+    } else {
+      caption = style.caption(fixed, intent);
+      prompt = style.prompt(fixed, intent);
+    }
+    safeText('socialOutputName',selectedPlatform);
+    safeText('socialCaption',caption);
+    safeText('socialPrompt',prompt);
+    safeText('socialBothCaption',caption);
+    safeText('socialBothPrompt',prompt);
+    safeShow('socialOutput');
+    document.getElementById('aiOutput').classList.remove('visible');
+    currentResult=caption;
+    safeText('copyBtn','⎋ Copy for '+selectedPlatform);
+    document.getElementById('openBtn').innerHTML='Open <span id="openBtnName">'+selectedPlatform+'</span> →';
+    safeDisp('bothOpenWrap','none');
+    safeDisp('bothCopyWrap','none');
+  }
+  }catch(err){console.error('Clarix output error:',err);}
+
+  // Suggestion chips
+  const suggestWrap = document.getElementById('suggestWrap');
+  if(suggestWrap && typeof intent !== 'undefined') {
+    const suggestions = {
+      email:['Add date','Add reason','Make formal','Make shorter'],
+      linkedin:['Add achievement','Add numbers','Make professional','Add CTA'],
+      debug:['Add error message','Add language','Add expected output','Show code'],
+      study:['Add subject','Add exam date','Make structured','Add difficulty'],
+      travel:['Add destination','Add duration','Add budget','Make detailed'],
+      social:['Add hashtags','Add emoji','Make casual','Add CTA'],
+      general:['Make shorter','Make formal','Add examples','Add context'],
+    };
+    const chips = suggestions[intent] || suggestions.general;
+    suggestWrap.innerHTML = chips.map(function(s) {
+      return '<div class="suggest-chip" onclick="appendSuggestion(\'' + s + '\')">'
+        + '<span class="suggest-chip-icon">+</span>' + s + '</div>';
+    }).join('');
+    suggestWrap.style.display = 'flex';
+  }
+
+  document.getElementById('liveResult').classList.add('visible');
+  // showDualOutput (called above) handles the translated language output
+  // It uses MyMemory API to properly translate English → selected language (Tamil, Marathi etc)
+  // Nothing extra needed here — dualOutput is hidden, dualLangOutput is managed by showDualOutput
+
+  // Stats
+  stats.count++;stats.scores.push(afterOverall);
+  // Track recent prompts for sidebar
+  if(!window._recentPrompts) window._recentPrompts=[];
+  if(currentOriginal) { window._recentPrompts.unshift(currentOriginal); if(window._recentPrompts.length>8) window._recentPrompts.pop(); }
+  localStorage.setItem('clarix-stats',JSON.stringify(stats));
+  updateHomeStats();
+  if(stats.scores.length>100) stats.scores=stats.scores.slice(-100);
+  localStorage.setItem('clarix-stats',JSON.stringify(stats));
+  updateHomeStats();
+renderFAQ();
+// Check if returning from library with a goto instruction
+var libGoto = sessionStorage.getItem('clarix-goto');
+if(libGoto) {
+  sessionStorage.removeItem('clarix-goto');
+  setTimeout(function(){ goPage(libGoto, document.getElementById('nav-'+libGoto)); }, 100);
+}
+
+// Scrollers use pure CSS animation (marqueeLeft / marqueeRight keyframes)
+}
+
+function showOutputTab(tab,btn){
+  document.querySelectorAll('.output-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.output-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pane-'+tab).classList.add('active');
+  if(tab==='caption') currentResult=document.getElementById('socialCaption').textContent;
+  else if(tab==='prompt') currentResult=document.getElementById('socialPrompt').textContent;
+  else currentResult=document.getElementById('socialCaption').textContent+'\n\n---AI PROMPT---\n\n'+document.getElementById('socialPrompt').textContent;
+}
+
+// ── Copy functions ────────────────────────────────────
+function copyAIResult(){
+  if(!currentResult) return;
+  navigator.clipboard.writeText(currentResult).then(()=>showToast('AI prompt copied! Open '+selectedAIPlatform+' and paste ✓'));
+}
+function copySocialResult(){
+  if(!currentSocialResult) return;
+  navigator.clipboard.writeText(currentSocialResult).then(()=>showToast('Social content copied! Open '+selectedSocialPlatform+' and paste ✓'));
+}
+function openBothPlatform(which){
+  const name=which==='ai'?selectedAIPlatform:selectedSocialPlatform;
+  const url=PLATFORM_URLS[name];
+  if(url){window.open(url,'_blank');showToast('Opening '+name+'... paste there ✓');}
+}
+function copyDualLang(){
+  const t = ($$("dualLangText")||document.createElement('div')).textContent;
+  if(t && t!=='...') navigator.clipboard.writeText(t).then(()=>showToast('Copied '+selectedLang.split(' — ')[0]+' version ✓'));
+}
+function copyDualEng(){
+  const t = ($$("dualEngOutputText")||document.createElement('div')).textContent;
+  if(t) navigator.clipboard.writeText(t).then(()=>showToast('Copied English version ✓'));
+}
+function copyDualBoth(){
+  const lang = ($$("dualLangText")||document.createElement('div')).textContent;
+  const eng = ($$("dualEngOutputText")||document.createElement('div')).textContent;
+  const langShort = selectedLang.split(' — ')[0];
+  const both = langShort+':\n'+lang+'\n\nEnglish:\n'+eng;
+  navigator.clipboard.writeText(both).then(()=>showToast('Copied both versions ✓'));
+}
+function copyResult(){
+  if(!currentResult) return;
+  navigator.clipboard.writeText(currentResult).then(()=>{
+    const btn=document.getElementById('copyBtn');
+    const orig=btn.textContent;
+    btn.classList.add('copied');btn.textContent='✓ Copied!';
+    showToast('Copied! Open '+selectedPlatform+' and paste ✓');
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent=orig;},2500);
+  });
+}
+
+function copyDual(which){
+  let text='';
+  if(which==='orig') text=currentDualOrig;
+  else if(which==='eng') text=currentDualEng;
+  else text=currentDualOrig+'\n\n(English)\n'+currentDualEng;
+  navigator.clipboard.writeText(text).then(()=>showToast('Copied!'));
+}
+
+function openPlatform(){
+  const url=PLATFORM_URLS[selectedPlatform];
+  if(url){window.open(url,'_blank');showToast('Opening '+selectedPlatform+'... paste there ✓');}
+  else showToast('Open '+selectedPlatform+' and paste your content');
+}
+
+// ── Voice ────────────────────────────────────────────
+function toggleVoice(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){showToast('Voice not supported. Try Chrome.',true);return;}
+  if(isListening){recognition.stop();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.lang=selectedLangCode;
+  recognition.continuous=false;recognition.interimResults=false;
+  recognition.onstart=()=>{isListening=true;document.getElementById('micBtn').classList.add('listening');document.getElementById('micBtn').textContent='⏹';showToast('Listening... speak now');};
+  recognition.onresult=async(e)=>{
+    const spokenText=e.results[0][0].transcript;
+    const ta=document.getElementById('promptInput');
+    ta.value=spokenText;isVoiceInput=true;
+    onInput(ta);
+    // Translate to English if non-English language selected
+    if(selectedLang!=='English'&&selectedLang!=='Hinglish'){
+      document.getElementById('dualOrigText').textContent=spokenText;
+      document.getElementById('dualLangLabel').querySelector('span').textContent=selectedLang.split(' — ')[0];
+      document.getElementById('dualCopyLang').textContent=selectedLang.split(' — ')[0];
+      document.getElementById('dualOutput').classList.add('visible');
+      document.getElementById('dualEngText').textContent='Translating...';
+      currentDualOrig=spokenText;
+      try{
+        const langCode=selectedLangCode.split('-')[0];
+        // Try MyMemory first
+        const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:'Translate to English only, return ONLY the translation:\n'+spokenText}]})});
+        const data=await res.json();
+        let translated=data.responseData?.translatedText||'';
+        // Fallback: if translation looks wrong (same as input or too short), show guidance
+        if(!translated||translated===spokenText||translated.length<3){
+          translated='[Translation unavailable] Your text: '+spokenText;
+        }
+        // Remove HTML entities
+        translated=translated.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&#39;/g,"'");
+        currentDualEng=translated;
+        document.getElementById('dualEngText').textContent=translated;
+      }catch(err){
+        const fallback='Could not translate automatically. Your original: '+spokenText;
+        document.getElementById('dualEngText').textContent=fallback;
+        currentDualEng=fallback;
+      }
+    }
+  };
+  recognition.onend=()=>{isListening=false;document.getElementById('micBtn').classList.remove('listening');document.getElementById('micBtn').textContent='🎤';};
+  recognition.onerror=()=>{isListening=false;document.getElementById('micBtn').classList.remove('listening');document.getElementById('micBtn').textContent='🎤';showToast('Could not hear. Try again.',true);};
+  recognition.start();
+}
+
+// ── Custom platform ───────────────────────────────────
+function openModal(){
+  var m=document.getElementById('customPlatModal');
+  if(m){m.classList.add('open');m.style.display='flex';}
+  setTimeout(function(){var n=document.getElementById('customPlatName');if(n)n.focus();},200);
+}
+function closeModal(){
+  var m=document.getElementById('customPlatModal');
+  if(m) m.classList.remove('open');
+  var n=document.getElementById('customPlatName');
+  var u=document.getElementById('customPlatUrl');
+  if(n) n.value='';
+  if(u) u.value='';
+}
+
+function addCustomPlatform(){
+  const name=document.document.getElementById('customPlatName') || ($$("customInput")||{}).value.trim();
+  if(!name) return;
+  if(!customPlatforms.includes(name)){customPlatforms.push(name);localStorage.setItem('clarix-customs',JSON.stringify(customPlatforms));addPlatformPill(name);}
+  closeModal();
+  showToast(name+' added!');
+}
+function addPlatformPill(name){
+  const wrap=document.querySelector('.platform-wrap');
+  const addBtn=wrap.querySelector('.custom-pill');
+  const pill=document.createElement('div');
+  pill.className='platform-pill';
+  pill.innerHTML=`<span class="dot"></span>${name}`;
+  pill.onclick=()=>selectPlatform(pill,name,'ai');
+  addBtn.parentNode.insertBefore(pill,addBtn);
+}
+
+// ── Helpers ───────────────────────────────────────────
+function appendSuggestion(text) {
+  const inp = document.getElementById('promptInput');
+  if(!inp) return;
+  const current = inp.value.trim();
+  // For non-Latin input, do NOT append suggestion text to the prompt
+  // Instead show a toast and let user know what will be applied
+  if(isNonLatin(current)) {
+    // Apply suggestion as a modifier to the INTENT, not to the raw text
+    currentSuggestionMod = text;
+    showToast('Applied: ' + text + ' — generating updated output...');
+    // Re-process with the modifier
+    processPromptWithMod(current, text);
+    return;
+  }
+  // For English: append normally
+  const sep = current && !current.endsWith('.') ? '. ' : ' ';
+  inp.value = current + (current ? sep : '') + text + ': ';
+  inp.focus();
+  onInput(inp);
+}
+
+let currentSuggestionMod = '';
+
+function processPromptWithMod(input, mod) {
+  // Map suggestion to English instruction
+  const modMap = {
+    'Make shorter': 'Keep the response brief and concise.',
+    'Make formal': 'Use formal and professional language.',
+    'Add date': 'Include the specific date.',
+    'Add reason': 'Provide a clear reason.',
+    'Add examples': 'Include relevant examples.',
+    'Add context': 'Add more background context.',
+    'Add CTA': 'Include a clear call-to-action.',
+    'Add hashtags': 'Include relevant hashtags.',
+    'Add emoji': 'Add appropriate emojis.',
+  };
+  const modInstruction = modMap[mod] || mod + '.';
+  // Get current English output and append modifier
+  const engEl = document.getElementById('dualEngText');
+  if(engEl && engEl.textContent) {
+    const basePrompt = engEl.textContent.replace(/\. Keep the response.*$|\. Use formal.*$|\. Include the.*$|\. Provide a.*$|\. Include relevant.*$/i, '');
+    engEl.textContent = basePrompt.trim() + ' ' + modInstruction;
+    const copyEng = ($$("dualCopyEng")||{});
+    showToast('Updated: ' + mod + ' ✓');
+  }
+}
+
+function clearAll(){
+  const ta=document.getElementById('promptInput');
+  ta.value='';document.getElementById('charCount').textContent='0';
+  document.getElementById('clearBtn').style.display='none';
+  document.getElementById('liveResult').classList.remove('visible');
+  const sw=document.getElementById('suggestWrap');if(sw)sw.style.display='none';
+  const b=document.getElementById('langDetectBadge');if(b)b.style.display='none';
+  currentResult='';currentOriginal='';isVoiceInput=false;ta.focus();
+}
+
+function loadTemplate(text,mode){
+  goPage('write', document.getElementById('nav-write'));
+  // Clear previous result
+  var lr=document.getElementById('liveResult');
+  if(lr) lr.classList.remove('visible');
+  var ao=document.getElementById('aiOutput'); if(ao) ao.classList.remove('visible');
+  var so=document.getElementById('socialOutput'); if(so) so.classList.remove('visible');
+  if(mode) setMode(mode);
+  var ta=document.getElementById('promptInput');
+  if(ta){ ta.value=text||''; onInput(ta); }
+  window.scrollTo(0,0);
+}
+
+function saveToLibrary(){
+  if(!currentResult) return;
+  const overall=parseInt(document.getElementById('scoreAfter').textContent)||0;
+  const item={id:Date.now(),original:currentOriginal,enhanced:currentResult,model:selectedPlatform,score:overall,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'})};
+  library.unshift(item);if(library.length>50) library.pop();
+  localStorage.setItem('clarix-lib',JSON.stringify(library));showToast('Saved to library!');
+}
+
+function renderLibrary(){
+  // Redirects to new renderLibCards
+  renderLibCards();
+}
+
+function loadFromLibrary(id){
+  const item=library.find(i=>i.id==id);if(!item) return;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('page-write').classList.add('active');
+  var nw=document.getElementById('nav-write'); if(nw) nw.classList.add('active');
+  const ta=document.getElementById('promptInput');ta.value=item.original;isVoiceInput=false;onInput(ta);window.scrollTo(0,0);
+}
+
+function goPage(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');el.classList.add('active');
+  if(name==='library') renderLibrary();
+  if(name==='profile') updateProfile();
+  window.scrollTo(0,0);
+}
+
+function updateHomeStats(){
+  try {
+    var ep=($$("stat-prompts")||{});
+    var es=($$("stat-score")||{});
+    if(ep) ep.textContent=stats.count;
+    if(es&&stats.scores.length){var avg=Math.round(stats.scores.reduce(function(a,b){return a+b;},0)/stats.scores.length);es.textContent=avg;}
+    var rec=document.getElementById('sbRecents');
+    if(rec&&window._recentPrompts&&window._recentPrompts.length){
+      rec.innerHTML=window._recentPrompts.slice(0,6).map(function(p){
+        return '<div class="sb-recent-item">'+p.substring(0,36)+(p.length>36?'...':'')+'</div>';
+      }).join('');
+    }
+  } catch(e){}
+}
+function updateProfile(){
+  document.getElementById('profile-total').textContent=stats.count;
+  document.getElementById('profile-saved').textContent=library.length;
+  if(stats.scores.length){const avg=Math.round(stats.scores.reduce((a,b)=>a+b,0)/stats.scores.length);document.getElementById('profile-avg').textContent=avg;}
+}
+// ── LANGUAGE NUDGE ───────────────────────────────────────
+let langNudgeShown = false;
+let pendingInputAfterLang = '';
+
+function showLangNudge(pendingText) {
+  if(langNudgeShown) return; // only show once per session
+  pendingInputAfterLang = pendingText;
+  document.getElementById('langNudge').classList.add('open');
+}
+
+function nudgeSelectLang(name, code, flag) {
+  document.getElementById('langNudge').classList.remove('open');
+  langNudgeShown = true;
+  selectLang(name, code, flag);
+  // Mark that user explicitly chose a language
+  localStorage.setItem('clarix-lang-chosen', '1');
+  // If there's pending input, process it now with the selected language
+  if(pendingInputAfterLang) {
+    setTimeout(function() {
+      const inp = document.getElementById('promptInput');
+      if(inp && !inp.value) inp.value = pendingInputAfterLang;
+      processPrompt(pendingInputAfterLang);
+      pendingInputAfterLang = '';
+    }, 300);
+  }
+}
+
+function nudgeSkip() {
+  document.getElementById('langNudge').classList.remove('open');
+  langNudgeShown = true;
+  // Set English in memory but do NOT save to localStorage
+  // So next visit the popup shows again
+  selectedLang = 'English';
+  selectedLangCode = 'en-GB';
+  document.getElementById('langBadge').textContent = '🇬🇧 English';
+  if(recognition) recognition.lang = 'en-GB';
+  if(pendingInputAfterLang) {
+    setTimeout(function() {
+      processPrompt(pendingInputAfterLang);
+      pendingInputAfterLang = '';
+    }, 200);
+  }
+}
+
+// ── HELP MENU ─────────────────────────────────────────────
+function toggleHelpMenu() {
+  var m = document.getElementById('helpMenu');
+  var btn = document.getElementById('helpMenuBtn');
+  var open = m.style.display !== 'none';
+  m.style.display = open ? 'none' : 'block';
+  btn.style.background = open ? 'var(--surface)' : 'var(--accent-bg)';
+  btn.style.borderColor = open ? 'var(--border)' : 'var(--accent-border)';
+  btn.style.color = open ? 'var(--muted)' : 'var(--accent)';
+}
+
+function closeHelpMenu() {
+  var m = document.getElementById('helpMenu');
+  var btn = document.getElementById('helpMenuBtn');
+  if(m) m.style.display = 'none';
+  if(btn) { btn.style.background = 'var(--surface)'; btn.style.borderColor = 'var(--border)'; btn.style.color = 'var(--muted)'; }
+}
+
+// Close help menu when clicking outside
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('helpMenu').closest('.help-menu-wrap') || document.getElementById('helpMenu');
+  if(wrap && !wrap.contains(e.target)) closeHelpMenu();
+});
+
+// ── FAQ DATA ─────────────────────────────────────────────
+var FAQS = [
+  { q: 'What is Clarix?', a: 'India\'s first prompt engine. Clarix fixes grammar, boosts clarity and optimises your prompt for ChatGPT, Claude, Instagram, WhatsApp and 20+ platforms — in any language including Hindi, Hinglish, Marathi and Tamil.' },
+  { q: 'Is it completely free?', a: 'Yes! Clarix is 100% free to use. No signup, no credit card. A Pro plan with unlimited history and team features is coming soon.' },
+  { q: 'Which languages are supported?', a: 'English, Hindi, Hinglish, Marathi, Gujarati, Tamil, Telugu, Bengali, Kannada, Malayalam, Punjabi, Urdu and 8 more international languages.' },
+  { q: 'Is my data safe?', a: 'Your prompts are processed via the Anthropic Claude API and are not stored on our servers. We only save your library and preferences locally on your device.' },
+  { q: 'Which AI platforms does it work with?', a: 'ChatGPT, Claude, Gemini, Grok, DeepSeek, Perplexity, Copilot, Meta AI, Pi, Poe, Mistral — and all major social media platforms.' },
+];
+
+function renderFAQ() {
+  var el = ($$("faqList")||{}); if(!el) return;
+  el.innerHTML = FAQS.map(function(f, i) {
+    return '<div style="border:1px solid var(--border);border-radius:10px;margin-bottom:6px;overflow:hidden">'
+      + '<div onclick="toggleFAQ('+i+')" style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:var(--surface)">'
+      + '<span style="font-size:13px;font-weight:500;color:var(--text)">' + f.q + '</span>'
+      + '<span id="faq-icon-'+i+'" style="font-size:16px;color:var(--hint);transition:transform .2s">+</span>'
+      + '</div>'
+      + '<div id="faq-ans-'+i+'" style="display:none;padding:0 14px 12px;font-size:12px;color:var(--muted);line-height:1.6;background:var(--surface2)">' + f.a + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function toggleFAQ(i) {
+  var ans = document.getElementById('faq-ans-'+i);
+  var icon = document.getElementById('faq-icon-'+i);
+  var open = ans.style.display !== 'none';
+  ans.style.display = open ? 'none' : 'block';
+  icon.textContent = open ? '+' : '−';
+}
+
+function showToast(msg,isErr){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast'+(isErr?' err':'');t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── Init ─────────────────────────────────────────────
+customPlatforms.forEach(name=>addPlatformPill(name));
+renderLangOptions();
+updateHomeStats();
+
+// ── NEW LAYOUT FUNCTIONS ─────────────────────────────────────
+
+// Greeting
+function setGreeting() {
+  var h = new Date().getHours();
+  var name = localStorage.getItem('clarix-username') || '';
+  var g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  var el = document.getElementById('homeGreeting');
+  if (el) el.textContent = name ? (g + ', ' + name + '!') : (g + '!');
+  // Update profile name
+  var pn = document.getElementById('profileName');
+  if (pn && name) pn.textContent = name;
+  // Update sidebar user
+  var sn = document.getElementById('sbUserName');
+  if (sn && name) sn.textContent = name;
+  var sa = document.getElementById('sbUserAvatar');
+  if (sa && name) sa.textContent = name.charAt(0).toUpperCase();
+}
+
+function promptUsername() {
+  var existing = localStorage.getItem('clarix-username');
+  if (existing) return;
+  // Show custom name modal instead of browser prompt()
+  document.getElementById('nameModal').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('nameInput').focus(); }, 200);
+}
+
+function saveUsername() {
+  var name = document.getElementById('nameInput').value.trim();
+  if (name) localStorage.setItem('clarix-username', name);
+  document.getElementById('nameModal').style.display = 'none';
+  setGreeting();
+  localStorage.setItem('clarix-lang-chosen', '1');
+}
+
+// Sidebar toggle
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  sb.classList.toggle('collapsed');
+  var icon = document.getElementById('sbCollapseIcon');
+  var text = document.getElementById('sbCollapseText');
+  if (sb.classList.contains('collapsed')) {
+    if (icon) icon.textContent = '▶';
+    if (text) text.textContent = '';
+  } else {
+    if (icon) icon.textContent = '◀';
+    if (text) text.textContent = 'Collapse';
+  }
+}
+
+// Mobile sidebar
+function openMobileSidebar() {
+  document.getElementById('sidebar').classList.add('mobile-open');
+}
+
+// Start new chat
+function startNewChat() {
+  clearAll();
+  goPage('write', document.getElementById('nav-write'));
+}
+
+// Navigate pages
+function goPage(name, el) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.sb-item').forEach(function(n){ n.classList.remove('active'); });
+  var page = document.getElementById('page-' + name);
+  if (page) page.classList.add('active');
+  var navEl = (el && el.classList) ? el : document.getElementById('nav-' + name);
+  if (navEl) navEl.classList.add('active');
+  setTimeout(function() {
+    if (name === 'library') renderLibCards();
+    if (name === 'apps') { var ag=document.getElementById('aiAppsGrid'); if(ag&&!ag.children.length) renderAppsGrid(); }
+    if (name === 'profile') updateProfile();
+  }, 80);
+  window.scrollTo(0, 0);
+}
+
+// ── APPS GRID ────────────────────────────────────────────────
+// AI_APPS moved to top
+
+// SOCIAL_APPS moved to top
+
+function renderAppsGrid() {
+  var aiGrid = document.getElementById('aiAppsGrid');
+  var socGrid = document.getElementById('socialAppsGrid');
+  if (!aiGrid || !socGrid) return;
+
+  function makeTile(app) {
+    var d = document.createElement('div');
+    d.className = 'app-tile';
+    d.setAttribute('data-name', app.name);
+    d.setAttribute('data-mode', app.mode);
+    d.onclick = function(){ selectAppAndWrite(this); };
+    d.innerHTML =
+      '<div class="app-tile-vis"><svg viewBox="0 0 260 120" xmlns="http://www.w3.org/2000/svg">' + app.svg + '</svg>' +
+      (app.badge ? '<div class="tile-badge" style="background:' + app.badgeColor + ';color:' + app.badgeText + '">' + app.badge + '</div>' : '') +
+      '<button class="tile-cta">✦ Use</button></div>' +
+      '<div class="app-tile-info"><div class="app-tile-name">' + app.name + '</div>' +
+      '<div class="app-tile-foot"><span class="app-tile-tag" style="background:' + app.tagColor + ';color:' + app.tagText + '">' + app.tag + '</span>' +
+      '<span class="app-tile-use">Select →</span></div></div>';
+    return d;
+  }
+
+  aiGrid.innerHTML = '';
+  AI_APPS.forEach(function(app){ aiGrid.appendChild(makeTile(app)); });
+  socGrid.innerHTML = '';
+  SOCIAL_APPS.forEach(function(app){ socGrid.appendChild(makeTile(app)); });
+}
+
+function selectAppAndWrite(el) {
+  var name = el.getAttribute('data-name');
+  var mode = el.getAttribute('data-mode');
+  setMode(mode);
+  selectPlatformByName(name);
+  goPage('write', document.getElementById('nav-write'));
+  showToast('✦ ' + name + ' selected — type your prompt!');
+}
+
+// ── LIBRARY CARDS ────────────────────────────────────────────
+// LIB_CARDS moved to top of script
+
+function renderLibCards() {
+  var container = document.getElementById('libCardsContainer');
+  console.log('renderLibCards called, container:', container, 'LIB_CARDS:', LIB_CARDS ? LIB_CARDS.length : 'undefined');
+  if (!container) { console.error('libCardsContainer not found!'); return; }
+
+  var sections = [
+    { key:'email',   title:'Email prompts',     filter:function(c){ return c.cat.toLowerCase().indexOf('email') >= 0; } },
+    { key:'social',  title:'Social media',       filter:function(c){ return c.cat.toLowerCase().indexOf('instagram') >= 0 || c.cat.toLowerCase().indexOf('linkedin') >= 0 || c.cat.toLowerCase().indexOf('whatsapp') >= 0; } },
+    { key:'coding',  title:'Coding',             filter:function(c){ return c.cat.toLowerCase().indexOf('cod') >= 0 || c.cat.toLowerCase().indexOf('debug') >= 0; } },
+    { key:'business',title:'Business',           filter:function(c){ return c.cat.toLowerCase().indexOf('business') >= 0 || c.cat.toLowerCase().indexOf('sales') >= 0; } },
+    { key:'study',   title:'Study & Creative',   filter:function(c){ return c.cat.toLowerCase().indexOf('study') >= 0 || c.cat.toLowerCase().indexOf('creative') >= 0; } },
+  ];
+
+  var html = '';
+  sections.forEach(function(sec) {
+    var cards = LIB_CARDS.filter(sec.filter);
+    if (!cards.length) return;
+    html += '<div class="lib-section-title">' + sec.title + '<span class="lib-see-all" onclick="showAllLibCards(\'' + sec.key + '\')" style="cursor:pointer">See all →</span></div>';
+    html += '<div class="lib-grid" data-section="' + sec.key + '">';
+    cards.forEach(function(card, idx) {
+      var tid = 'lc' + idx + card.title.replace(/[^a-zA-Z]/g,'');
+      var colors = card.gradient.match(/#[a-f0-9]{6}/gi) || ['#fce7f3','#f9a8d4','#ec4899'];
+      var tierBadge = card.tier === 'free' ? '<span class="lib-badge lb-free">Free</span>' :
+                      card.tier === 'adv'  ? '<span class="lib-badge lb-adv">Advanced</span>' :
+                                             '<span class="lib-badge lb-pro">Pro</span>';
+      html += '<div class="lib-card" data-idx="' + idx + '" data-cat="' + card.cat.toLowerCase() + '" data-title="' + card.title + '">';
+      html += '<div class="lib-card-thumb">';
+      html += '<svg viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">';
+      html += '<defs><linearGradient id="' + tid + '" x1="0%" y1="100%" x2="100%" y2="0%">';
+      html += '<stop offset="0%" stop-color="' + colors[0] + '"/>';
+      html += '<stop offset="50%" stop-color="' + colors[1] + '"/>';
+      html += '<stop offset="100%" stop-color="' + colors[2] + '"/>';
+      html += '</linearGradient></defs>';
+      html += '<rect width="260" height="130" fill="url(#' + tid + ')"/>';
+      html += '<circle cx="200" cy="20" r="50" fill="rgba(255,255,255,0.1)"/>';
+      html += '<circle cx="40" cy="110" r="40" fill="rgba(0,0,0,0.08)"/>';
+      // Use first letter of category instead of emoji for reliability
+var letter = card.cat.charAt(0).toUpperCase();
+html += '<text x="130" y="88" text-anchor="middle" font-size="52" font-weight="800" fill="rgba(255,255,255,0.4)" font-family="Georgia,serif">' + letter + '</text>';
+      html += '</svg>';
+      html += '<button class="lib-card-btn" data-idx="' + idx + '">✦ Use prompt</button>';
+      html += '</div>';
+      html += '<div class="lib-card-body">';
+      html += '<div class="lib-card-cat">' + card.cat + '</div>';
+      html += '<div class="lib-card-title">' + card.title + '</div>';
+      html += '<div class="lib-card-desc">' + card.desc + '</div>';
+      html += '<div class="lib-card-foot">' + tierBadge + '<button class="lib-copy" data-idx="' + idx + '">Copy</button></div>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+
+  // Attach events after render
+  container.querySelectorAll('.lib-card').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var idx = parseInt(el.getAttribute('data-idx'));
+      if (!isNaN(idx)) loadLibCardByIdx(idx);
+    });
+  });
+  container.querySelectorAll('.lib-card-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var idx = parseInt(btn.getAttribute('data-idx'));
+      if (!isNaN(idx)) loadLibCardByIdx(idx);
+    });
+  });
+  container.querySelectorAll('.lib-copy').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var idx = parseInt(btn.getAttribute('data-idx'));
+      if (!isNaN(idx)) copyLibCardByIdx(idx);
+    });
+  });
+
+  window._libCurrentFilter = 'all';
+}
+
+function loadLibCardByIdx(idx) {
+  var card = LIB_CARDS[idx];
+  if (!card) return;
+  // Clear previous result first
+  document.getElementById('liveResult').classList.remove('visible');
+  var ao=document.getElementById('aiOutput'); if(ao) ao.classList.remove('visible');
+  var so=document.getElementById('socialOutput'); if(so) so.classList.remove('visible');
+  // Switch to AI mode for library cards
+  setMode('ai');
+  document.getElementById('promptInput').value = card.prompt;
+  onInput(document.getElementById('promptInput'));
+  goPage('write', document.getElementById('nav-write'));
+  showToast('✦ Prompt loaded — click Enhance!');
+}
+
+function copyLibCardByIdx(idx) {
+  var card = LIB_CARDS[idx];
+  if (!card) return;
+  navigator.clipboard.writeText(card.prompt).then(function(){ showToast('Prompt copied!'); });
+}
+
+
+function showAllLibCards(section) {
+  // Show all cards in the section by scrolling to it
+  var grids = document.querySelectorAll('.lib-grid');
+  var sections = ['email','social','coding','business','study'];
+  var idx = sections.indexOf(section);
+  if(idx >= 0 && grids[idx]) {
+    grids[idx].style.gridTemplateColumns = 'repeat(auto-fill,minmax(200px,1fr))';
+    grids[idx].querySelectorAll('.lib-card').forEach(function(c){ c.style.display=''; });
+    grids[idx].scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+}
+
+function setLibFilter(filter, el) {
+  document.querySelectorAll('.lib-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+  window._libCurrentFilter = filter;
+  filterLibCards(document.getElementById('libSearch').value || '');
+}
+
+function filterLibCards(query) {
+  var filter = window._libCurrentFilter || 'all';
+  var cards = document.querySelectorAll('.lib-card');
+  cards.forEach(function(card) {
+    var title = card.querySelector('.lib-card-title').textContent.toLowerCase();
+    var cat = card.querySelector('.lib-card-cat').textContent.toLowerCase();
+    var matchQ = !query || title.includes(query.toLowerCase()) || cat.includes(query.toLowerCase());
+    var matchF = filter === 'all' || cat.includes(filter);
+    card.style.display = (matchQ && matchF) ? '' : 'none';
+  });
+}
+
+function loadLibCard(el) {
+  var title = el.getAttribute('data-title');
+  var card = LIB_CARDS.find(function(c){ return c.title === title; });
+  if (!card) return;
+  document.getElementById('promptInput').value = card.prompt;
+  onInput(document.getElementById('promptInput'));
+  goPage('write', document.getElementById('nav-write'));
+}
+
+function copyLibCard(el) {
+  var title = el.getAttribute('data-title');
+  var card = LIB_CARDS.find(function(c){ return c.title === title; });
+  if (!card) return;
+  navigator.clipboard.writeText(card.prompt).then(function(){ showToast('Prompt copied!'); });
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+window.addEventListener('load', function() {
+  setGreeting();
+  renderLangOptions();
+  if (!localStorage.getItem('clarix-username')) { setTimeout(promptUsername, 1000); }
+  updateHomeStats();
+  // Pre-render library cards so they're ready
+  setTimeout(function(){ renderLibCards(); }, 100);
+
+  // Scrollers
+  var platTrack = document.getElementById('platTrack');
+  var langTrack = document.getElementById('langTrack');
+  if (platTrack) platTrack.style.animationPlayState = 'running';
+  if (langTrack) langTrack.style.animationPlayState = 'running';
+
+  // sessionStorage goto
+  var libGoto = sessionStorage.getItem('clarix-goto');
+  if (libGoto) {
+    sessionStorage.removeItem('clarix-goto');
+    var navEl = document.getElementById('nav-' + libGoto);
+    setTimeout(function(){ goPage(libGoto, navEl); }, 100);
+  }
+
+  // Show lang nudge if not chosen
+  if (!localStorage.getItem('clarix-lang-chosen')) {
+    setTimeout(function(){ showLangNudge(); }, 2000);
+  }
+});
+
+// Close overlays on outside click
+document.addEventListener('click', function(e) {
+  var langDrop = document.getElementById('langDrop');
+  if (langDrop && langDrop.classList.contains('open')) {
+    if (!e.target.closest('.lang-wrap')) { var d=document.getElementById('langDrop'); if(d) d.classList.remove('open'); }
+  }
+  var helpMenu = document.getElementById('helpMenu');
+  if (helpMenu && helpMenu.classList.contains('open')) {
+    if (!e.target.closest('.help-menu-wrap')) closeHelpMenu();
+  }
+});
+
+</script>
+</body>
+</html>

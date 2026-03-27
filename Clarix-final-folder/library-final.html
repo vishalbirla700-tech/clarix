@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clarix — Prompt Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f4f4; --bg2:#ffffff;
+  --sb:#1e1e1e; --sb-text:#cccccc; --sb-muted:#777777; --sb-border:rgba(255,255,255,0.07);
+  --tb:#ffffff; --tb-border:#e5e5e5;
+  --card:#ffffff; --card-border:#e5e5e5; --card-border-h:#ff7043;
+  --shadow:0 1px 3px rgba(0,0,0,0.08); --shadow-h:0 4px 14px rgba(0,0,0,0.13);
+  --text:#1a1a1a; --muted:#666666; --hint:#999999;
+  --ac:#ff7043; --ac2:#e8530a; --ac-bg:#fff3f0; --ac-br:#ffcdc4;
+  --gr:#00897b; --gr-bg:#e8f5f3; --gr-br:#b2dfdb;
+  --pu:#7b1fa2; --pu-bg:#f3e5f5; --pu-br:#ce93d8;
+  --am:#f57c00; --am-bg:#fff8e1; --am-br:#ffcc80;
+  --rd:#d32f2f;
+  --r:10px; --rs:7px; --sw:210px; --th:54px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+
+/* ── LAYOUT ── */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sb{width:var(--sw);flex-shrink:0;background:var(--sb);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.sb-logo{padding:16px 16px 14px;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;background:linear-gradient(135deg,#ff7043,#ff9a76);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border-bottom:1px solid var(--sb-border);flex-shrink:0}
+.sb-body{flex:1;min-height:0;overflow-y:scroll;overflow-x:hidden;padding:8px 0 16px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.30) rgba(255,255,255,0.05)}
+.sb-body::-webkit-scrollbar{width:4px}
+.sb-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.30);border-radius:2px}
+.sb-lbl{padding:13px 14px 4px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.10em;color:var(--sb-muted)}
+.sb-row{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:12px;color:var(--sb-text);cursor:pointer;transition:all .15s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-row:hover{color:#fff;background:rgba(255,255,255,0.05)}
+.sb-row.a{color:var(--ac);background:rgba(255,112,67,0.12);border-left-color:var(--ac)}
+.sb-row.ag{color:#4db6ac;background:rgba(77,182,172,0.1);border-left-color:#4db6ac}
+.sb-sub{padding:5px 14px 5px 28px;font-size:11px;color:var(--sb-muted);cursor:pointer;transition:all .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-sub:hover{color:var(--sb-text)}
+.sb-sub.a{color:#4db6ac}
+.sb-foot{border-top:1px solid var(--sb-border);padding:10px 14px;flex-shrink:0}
+.sb-cnt{display:flex;justify-content:space-between;font-size:10px;padding:2px 0}
+
+/* ── MAIN ── */
+.main{flex:1;min-width:0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── TOPBAR ── */
+.tb{background:var(--tb);border-bottom:1px solid var(--tb-border);padding:0 16px;height:var(--th);display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.tb-search{position:relative;flex:1;max-width:360px}
+.tb-search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--hint);pointer-events:none}
+.tb-search input{width:100%;background:#f5f5f5;border:1px solid var(--card-border);border-radius:20px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 14px 7px 32px;outline:none;transition:all .2s}
+.tb-search input:focus{border-color:var(--ac);background:#fff;box-shadow:0 0 0 3px rgba(255,112,67,0.08)}
+.tb-search input::placeholder{color:var(--hint)}
+.tb-filters{display:flex;gap:8px;margin-left:auto}
+.plat-btn{padding:6px 13px;border-radius:20px;border:1px solid var(--card-border);background:#fff;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;box-shadow:0 1px 2px rgba(0,0,0,0.05);white-space:nowrap}
+.plat-btn:hover{border-color:var(--ac);color:var(--ac)}
+.plat-btn.act{background:var(--ac);border-color:var(--ac);color:#fff}
+.tb-counts{display:flex;gap:5px;flex-shrink:0}
+.cnt{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500;white-space:nowrap}
+.cnt-f{background:var(--gr-bg);color:var(--gr);border:1px solid var(--gr-br)}
+.cnt-a{background:var(--pu-bg);color:var(--pu);border:1px solid var(--pu-br)}
+.cnt-p{background:var(--am-bg);color:var(--am);border:1px solid var(--am-br)}
+.lang-badge{display:none;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--ac-bg);color:var(--ac);border:1px solid var(--ac-br);font-weight:500}
+
+/* ── SCROLLABLE CONTENT ── */
+.scroll{flex:1;min-height:0;overflow-y:scroll;overflow-x:hidden;padding:22px 22px 40px;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.35) #f0f0f0}
+.scroll::-webkit-scrollbar{width:8px}
+.scroll::-webkit-scrollbar-track{background:#ebebeb;border-radius:4px}
+.scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.32);border-radius:4px}
+.scroll::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.50)}
+
+.gal-card{position:relative;border-radius:9px;overflow:hidden;aspect-ratio:2/3;cursor:pointer;background:#e0e0e0;box-shadow:var(--shadow);transition:all .2s}
+.gal-card:hover{box-shadow:var(--shadow-h);transform:translateY(-2px)}
+.gal-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.gal-card:hover img{transform:scale(1.04)}
+.gal-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.78));padding:18px 8px 8px;font-size:10px;font-weight:600;color:#fff}
+.gal-ov{position:absolute;inset:0;background:rgba(10,10,10,0.90);padding:9px;display:none;flex-direction:column;justify-content:space-between}
+.gal-card:hover .gal-ov{display:flex}
+.gal-ov-tier{font-size:8px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.gal-ov-prompt{font-size:9px;color:rgba(255,255,255,0.78);line-height:1.5;flex:1;overflow:hidden}
+.gal-ov-btn{margin-top:7px;padding:6px;border-radius:6px;background:var(--ac);color:#fff;font-size:9px;font-weight:700;text-align:center;cursor:pointer;transition:background .15s}
+.gal-ov-btn:hover{background:var(--ac2)}
+.gal-ov-btn.lk{background:var(--am-bg);color:var(--am);border:1px solid var(--am-br)}
+
+/* ── DIVIDER ── */
+.divider{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.divider-t{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--hint);white-space:nowrap}
+.divider-l{flex:1;height:1px;background:var(--card-border)}
+
+/* ── PROMPT CARDS ── */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);overflow:hidden;cursor:pointer;box-shadow:var(--shadow);transition:all .2s}
+.card:hover{border-color:var(--card-border-h);box-shadow:var(--shadow-h);transform:translateY(-2px)}
+.card.lk{opacity:.72}
+.card-img{width:100%;height:110px;position:relative;overflow:hidden;flex-shrink:0}
+.card-img img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;top:0;left:0}
+.card-body{padding:11px 12px 12px}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:3px}
+.card-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.badge{font-size:9px;padding:2px 6px;border-radius:6px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.bf{background:var(--gr-bg);color:var(--gr);border:1px solid var(--gr-br)}
+.ba{background:var(--pu-bg);color:var(--pu);border:1px solid var(--pu-br)}
+.bp{background:var(--am-bg);color:var(--am);border:1px solid var(--am-br)}
+.card-desc{font-size:11px;color:var(--muted);margin-bottom:8px}
+.card-prev{font-size:11px;color:var(--hint);font-style:italic;background:#f8f8f8;border-radius:5px;padding:7px 9px;margin-bottom:8px;line-height:1.5}
+.card-prev.adv{border-left:3px solid var(--pu);font-style:normal;color:var(--muted);background:var(--pu-bg)}
+.card-prev.pro{border-left:3px solid var(--am);font-style:normal;color:var(--muted);background:var(--am-bg)}
+.card-views{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.vbtn{padding:3px 9px;border-radius:20px;border:1px solid var(--card-border);background:#f5f5f5;font-size:10px;color:var(--muted);cursor:pointer;transition:all .15s}
+.vbtn:hover,.vbtn.s{border-color:var(--gr);background:var(--gr-bg);color:var(--gr)}
+.card-acts{display:flex;gap:6px}
+.btn{flex:1;padding:8px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;text-align:center;transition:all .2s}
+.btn-ac{background:var(--ac);color:#fff}
+.btn-ac:hover{background:var(--ac2)}
+.btn-lk{background:var(--am-bg);color:var(--am);border:1px solid var(--am-br) !important;cursor:default}
+.btn-cp{padding:8px 11px;border-radius:var(--rs);border:1px solid var(--card-border);background:#f5f5f5;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.btn-cp:hover{border-color:var(--gr);color:var(--gr);background:var(--gr-bg)}
+
+/* ── PHOTO SPLIT ── */
+.photo-wrap{flex:1;min-height:0;display:flex;overflow:hidden}
+.photo-cards{flex:1;min-width:0;overflow-y:scroll;overflow-x:hidden;padding:22px;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.35) #f0f0f0}
+.photo-cards::-webkit-scrollbar{width:8px}
+.photo-cards::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.32);border-radius:4px}
+.photo-panel{width:290px;flex-shrink:0;background:#fff;border-left:1px solid var(--card-border);overflow-y:scroll;padding:18px;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.35) #f0f0f0}
+.photo-panel::-webkit-scrollbar{width:8px}
+.photo-panel::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.32);border-radius:4px}
+.p-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--hint);margin-bottom:4px}
+.p-title{font-size:15px;font-weight:700;margin-bottom:3px}
+.p-sub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.up-zone{border:2px dashed var(--gr-br);border-radius:var(--r);padding:20px 14px;text-align:center;cursor:pointer;transition:all .2s;background:var(--gr-bg);margin-bottom:14px}
+.up-zone:hover{border-color:var(--gr);background:#d0f0ec}
+.up-icon{font-size:26px;margin-bottom:6px}
+.up-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.up-sub{font-size:11px;color:var(--muted);margin-bottom:10px}
+.up-btn{display:inline-block;padding:7px 18px;border-radius:20px;background:var(--gr);color:#fff;font-size:12px;font-weight:700}
+.p-preview{width:100%;max-height:150px;object-fit:cover;border-radius:var(--rs);margin-bottom:10px;display:none}
+.analysing{text-align:center;padding:12px;display:none}
+.dots{display:flex;justify-content:center;gap:4px;margin-bottom:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ac);animation:db 1.2s infinite ease-in-out}
+.dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}
+@keyframes db{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-7px);opacity:1}}
+.p-analysis{background:#f8f8f8;border-radius:var(--rs);border:1px solid var(--card-border);padding:10px 11px;font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:10px;display:none}
+.p-gen{background:var(--gr-bg);border:1px solid var(--gr-br);border-radius:var(--rs);padding:10px 11px;font-size:11px;color:var(--text);line-height:1.6;margin-bottom:10px;display:none}
+.p-copy-btn{width:100%;padding:10px;border-radius:var(--rs);background:var(--gr);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:none;margin-bottom:8px;display:none;transition:background .2s}
+.p-copy-btn:hover{background:#00766a}
+.p-style-row{display:none;gap:6px}
+.p-style-btn{flex:1;padding:7px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s;border:1px solid var(--card-border);background:#f5f5f5;color:var(--muted)}
+
+/* ── INSPIRE VIEW ── */
+.ins-wrap{padding:22px}
+.ins-hero{text-align:center;padding-bottom:18px}
+.ins-gal{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:22px}
+.ins-divider{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.ins-divider-l{flex:1;height:1px;background:var(--card-border)}
+.ins-divider-t{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--hint)}
+.ins-box{max-width:540px;margin:0 auto;background:#fff;border:1px solid var(--card-border);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.ins-label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.ins-input{width:100%;background:#f8f8f8;border:1px solid var(--card-border);border-radius:var(--rs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 12px;outline:none;margin-bottom:14px;transition:border-color .2s}
+.ins-input:focus{border-color:var(--ac);background:#fff}
+.ins-input::placeholder{color:var(--hint)}
+.ins-styles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.ins-style{padding:12px 8px;border-radius:var(--rs);border:1px solid var(--card-border);background:#f8f8f8;cursor:pointer;text-align:center;transition:all .15s}
+.ins-style:hover{border-color:var(--ac);background:var(--ac-bg)}
+.ins-style.s{border-color:var(--ac);background:var(--ac-bg);box-shadow:0 0 0 2px rgba(255,112,67,.12)}
+
+/* ── UPGRADE BANNER ── */
+.upgrade{background:var(--ac-bg);border:1px solid var(--ac-br);border-radius:var(--r);padding:16px 18px;text-align:center;margin-bottom:20px;display:none}
+.upgrade.show{display:block}
+
+/* ── MODAL ── */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center;padding:20px}
+.modal-ov.open{display:flex}
+.modal{background:#fff;border:1px solid var(--card-border);border-radius:14px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;scrollbar-width:thin;box-shadow:0 20px 60px rgba(0,0,0,0.18)}
+.modal-hdr{padding:15px 18px;border-bottom:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1}
+.modal-title{font-size:16px;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:50%;background:#f5f5f5;border:1px solid var(--card-border);color:var(--muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.modal-close:hover{background:#eee;color:var(--text)}
+.modal-body{padding:18px}
+.modal-tabs{display:flex;gap:6px;margin-bottom:14px}
+.mtab{flex:1;padding:8px;border-radius:var(--rs);border:1px solid var(--card-border);background:#f5f5f5;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s}
+.mtab.a{background:var(--ac-bg);border-color:var(--ac-br);color:var(--ac2)}
+.m-input{width:100%;background:#f8f8f8;border:1px solid var(--card-border);border-radius:var(--rs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 12px;outline:none;margin-bottom:12px;transition:border-color .2s}
+.m-input:focus{border-color:var(--ac);background:#fff}
+.m-input::placeholder{color:var(--hint)}
+.m-upload-zone{border:2px dashed var(--gr-br);border-radius:var(--rs);padding:18px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px;background:var(--gr-bg)}
+.m-upload-zone:hover{border-color:var(--gr)}
+.m-preview{width:100%;max-height:130px;object-fit:cover;border-radius:var(--rs);margin-bottom:8px;display:none}
+.m-analysis{background:#f8f8f8;border-radius:var(--rs);border:1px solid var(--card-border);padding:9px 11px;font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;display:none}
+.views-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--hint);font-weight:600;margin-bottom:8px}
+.m-views{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.m-view{background:#f8f8f8;border:1px solid var(--card-border);border-radius:var(--rs);padding:10px 12px;cursor:pointer;transition:all .15s}
+.m-view:hover{border-color:var(--gr-br)}
+.m-view.s{border-color:var(--gr);background:var(--gr-bg)}
+.m-view-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.m-view-name{font-size:13px;font-weight:500}
+.m-view-desc{font-size:11px;color:var(--muted)}
+.gen-btn{width:100%;padding:12px;border-radius:var(--rs);border:none;background:var(--ac);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px;transition:background .2s}
+.gen-btn:hover{background:var(--ac2)}
+.out-box{background:var(--gr-bg);border:1px solid var(--gr-br);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--text);line-height:1.7;margin-bottom:8px;display:none}
+.copy-out{width:100%;padding:10px;border-radius:var(--rs);border:1px solid var(--gr-br);background:var(--gr);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:none;transition:background .2s}
+.copy-out:hover{background:#00766a}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);padding:10px 20px;border-radius:24px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;max-width:90vw;text-align:center;white-space:nowrap;background:var(--gr-bg);border:1px solid var(--gr-br);color:var(--gr);box-shadow:var(--shadow-h)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:#fce4e4;border-color:#ffcdd2;color:var(--rd)}
+.empty{text-align:center;padding:60px 20px;color:var(--hint);font-size:14px}
+.tier-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--card-border);background:#fff;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;box-shadow:0 1px 2px rgba(0,0,0,0.05)}
+.tier-pill:hover{border-color:var(--ac);color:var(--ac)}
+.tier-pill.act{background:var(--ac);border-color:var(--ac);color:#fff}
+.soc-tile{background:#fff;border:1px solid var(--card-border);border-radius:var(--r);padding:20px 16px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+.soc-tile:hover{border-color:var(--ac);box-shadow:var(--shadow-h);transform:translateY(-2px)}
+.soc-tile-icon{font-size:32px;margin-bottom:8px}
+.soc-tile-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.soc-tile-count{font-size:11px;color:var(--hint)}
+.soc-tile-add{background:#fff;border:2px dashed var(--ac-br);border-radius:var(--r);padding:20px 16px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+.soc-tile-add:hover{border-color:var(--ac);background:var(--ac-bg);transform:translateY(-2px)}
+/* Custom platform input overlay */
+.add-plat-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:20px}
+.add-plat-overlay.open{display:flex}
+.add-plat-box{background:#fff;border-radius:14px;padding:24px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.add-plat-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.add-plat-sub{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.add-plat-suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.add-plat-sug{padding:5px 11px;border-radius:20px;border:1px solid var(--card-border);background:#f5f5f5;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s}
+.add-plat-sug:hover{border-color:var(--ac);color:var(--ac);background:var(--ac-bg)}
+.add-plat-input{width:100%;background:#f8f8f8;border:1px solid var(--card-border);border-radius:var(--rs);color:var(--text);font-family:"DM Sans",sans-serif;font-size:14px;padding:10px 12px;outline:none;margin-bottom:12px;transition:border-color .2s}
+.add-plat-input:focus{border-color:var(--ac);background:#fff}
+.add-plat-row{display:flex;gap:8px}
+.add-plat-cancel{flex:1;padding:10px;border-radius:var(--rs);border:1px solid var(--card-border);background:#f5f5f5;color:var(--muted);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;cursor:pointer}
+.add-plat-save{flex:2;padding:10px;border-radius:var(--rs);border:none;background:var(--ac);color:#fff;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+.add-plat-save:hover{background:var(--ac2)}
+.custom-tile-del{position:absolute;top:6px;right:8px;font-size:14px;color:var(--hint);cursor:pointer;opacity:0;transition:opacity .15s}
+.soc-tile:hover .custom-tile-del{opacity:1}
+#v-text{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+#v-photo{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+#v-ins{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── MOBILE ── */
+@media(max-width:767px){
+  body{overflow:auto}
+  .app{display:block;height:auto}
+  .sb{display:none}
+  .main{height:auto;overflow:visible}
+  .tb{height:auto;flex-wrap:wrap;padding:10px 14px;gap:8px;position:sticky;top:0;z-index:100}
+  .tb-search{max-width:100%;flex:1 0 100%;order:2}
+  .tb-filters{order:3;flex:1 0 100%;overflow-x:auto;scrollbar-width:none;margin-left:0}
+  .tb-filters::-webkit-scrollbar{display:none}
+  .tb-counts{order:1}
+  .scroll{overflow:visible;height:auto;padding:14px}
+  .gal-grid{grid-template-columns:repeat(3,1fr)}
+  .grid{grid-template-columns:1fr}
+  .photo-wrap{display:block}
+  .photo-panel{width:100%;border-left:none;border-top:1px solid var(--card-border)}
+  .photo-cards{overflow:visible;padding:14px}
+  .photo-cards .grid{grid-template-columns:1fr}
+  .ins-gal{grid-template-columns:repeat(3,1fr)}
+  .mob-bar{display:flex}
+  .mob-cats{display:flex}
+  .mob-subs{display:flex}
+}
+@media(min-width:768px){
+  .mob-bar,.mob-cats,.mob-subs{display:none}
+}
+.mob-bar{background:#fff;border-bottom:1px solid var(--card-border);padding:10px 14px;gap:8px}
+.mob-btn{flex:1;padding:9px;border-radius:var(--rs);border:1px solid var(--card-border);background:#f5f5f5;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s}
+.mob-btn.at{background:var(--ac-bg);border-color:var(--ac-br);color:var(--ac2)}
+.mob-btn.aph{background:var(--gr-bg);border-color:var(--gr-br);color:var(--gr)}
+.mob-btn.ains{background:var(--am-bg);border-color:var(--am-br);color:var(--am)}
+.mob-cats{padding:8px 14px;gap:5px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--card-border);background:#fff}
+.mob-cats::-webkit-scrollbar{display:none}
+.mob-subs{padding:6px 14px;gap:5px;overflow-x:auto;scrollbar-width:none;background:#fafafa;border-bottom:1px solid #f0f0f0}
+.mob-subs::-webkit-scrollbar{display:none}
+.chip{padding:5px 11px;border-radius:20px;border:1px solid var(--card-border);background:#fff;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.chip.a{border-color:var(--ac);background:var(--ac-bg);color:var(--ac2)}
+/* ── LIBRARY BOTTOM NAV (mobile) ── */
+.lib-bottom-nav {
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(255,255,255,0.97);backdrop-filter:blur(8px);
+  border-top:1px solid #e5e5e5;
+  padding:10px 0 max(12px,env(safe-area-inset-bottom));
+  z-index:200;box-shadow:0 -1px 6px rgba(0,0,0,0.08);
+}
+.lib-nav-item {
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:4px;cursor:pointer;text-decoration:none;
+  padding:4px 0;min-height:50px;justify-content:center;
+}
+.lib-nav-icon { font-size:20px; }
+.lib-nav-label { font-size:10px;color:#999;font-weight:500; }
+.lib-nav-item.active .lib-nav-label { color:#ff7043; }
+.lib-nav-item.active .lib-nav-icon { transform:translateY(-1px); }
+@media (max-width: 768px) {
+  .lib-bottom-nav { display:flex; }
+  .sb { display:none !important; }
+  .main { margin-left:0 !important; }
+  body { padding-bottom:70px; }
+}
+</style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D7KKQCFSLB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-D7KKQCFSLB');
+</script>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="mTitle">Customise prompt</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <button class="mtab a" id="mt-type" onclick="mTab('type')">✏️ Type subject</button>
+        <button class="mtab" id="mt-upload" onclick="mTab('upload')">📷 Upload image</button>
+      </div>
+      <div id="ms-type">
+        <input class="m-input" id="mSubject" placeholder="e.g. dolphin jumping in the sea...">
+      </div>
+      <div id="ms-upload" style="display:none">
+        <div class="m-upload-zone" onclick="document.getElementById('mFile').click()">
+          <div style="font-size:22px;margin-bottom:5px">📷</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Tap to select from gallery</div>
+          <div style="display:inline-block;padding:6px 14px;border-radius:20px;background:var(--gr);color:#fff;font-size:11px;font-weight:700;margin-top:4px">Choose file</div>
+        </div>
+        <input type="file" id="mFile" accept="image/*,video/*" style="display:none" onchange="onMFile(this)">
+        <img id="mPreview" class="m-preview" alt="">
+        <div class="analysing" id="mAnalysing"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div style="font-size:11px;color:var(--muted)">Analysing...</div></div>
+        <div class="m-analysis" id="mAnalysis"></div>
+      </div>
+      <div class="views-lbl" id="mViewsLbl" style="display:none">Choose output style</div>
+      <div class="m-views" id="mViews"></div>
+      <button class="gen-btn" id="genBtn" onclick="doGenerate()">✦ Generate my prompt</button>
+      <div class="out-box" id="outBox"></div>
+      <button class="copy-out" id="copyOutBtn" onclick="doCopyOut()">⎘ Copy this prompt</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE MODE BAR -->
+<div class="mob-bar" id="mobBar">
+  <button class="mob-btn at" id="mb-text" onclick="setMode('text')">✏️ Text</button>
+  <button class="mob-btn" id="mb-photo" onclick="setMode('photo')">📷 Photo/Video</button>
+  <button class="mob-btn" id="mb-ins" onclick="setMode('ins')">✨ Inspire Me</button>
+</div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sb">
+    <div class="sb-logo" style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+      <div style="width:24px;height:24px;background:linear-gradient(135deg,#ff7043,#ff9a76);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800">✦</div>
+      <span>clarix</span>
+      <sup style="font-size:8px;color:#ff7043;font-weight:600;margin-top:-8px">™</sup>
+    </div>
+    <!-- Back nav links -->
+    <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <a href="index.html" style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;text-decoration:none;color:rgba(255,255,255,0.6);font-size:12px;font-weight:500;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.6)'">
+        ⌂ &nbsp;Home
+      </a>
+      <a href="index.html#write" onclick="sessionStorage.setItem('clarix-goto','write')" style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;text-decoration:none;color:rgba(255,255,255,0.6);font-size:12px;font-weight:500;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.6)'">
+        ✦ &nbsp;Write a prompt
+      </a>
+    </div>
+    <div class="sb-body" id="sbBody">
+      <div class="sb-lbl">Mode</div>
+      <div class="sb-row a" id="sb-text" onclick="setMode('text')">✏️ Text prompts</div>
+      <div class="sb-row" id="sb-photo" onclick="setMode('photo')">📷 Photo / Video</div>
+      <div class="sb-row" id="sb-ins" onclick="setMode('ins')">✨ Inspire Me</div>
+      <div id="sb-text-cats">
+        <div class="sb-lbl">Category</div>
+        <div id="sbCats"></div>
+      </div>
+      <div id="sb-photo-cats" style="display:none">
+        <div class="sb-lbl">Prompt type</div>
+        <div id="sbPhotoCats"></div>
+      </div>
+    </div>
+    <div class="sb-foot">
+      <div class="sb-cnt"><span style="color:#4db6ac">✓ Essentials</span><span id="sc-f" style="color:#4db6ac">10</span></div>
+      <div class="sb-cnt"><span style="color:#ce93d8">⭐ Advanced</span><span id="sc-a" style="color:#ce93d8">5</span></div>
+      <div class="sb-cnt"><span style="color:#ffcc80">🔥 Pro</span><span id="sc-p" style="color:#ffcc80">3</span></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="tb">
+      <div class="tb-search">
+        <span class="tb-search-icon">🔍</span>
+        <input id="searchInput" placeholder="Search... try: sick leave, instagram, 3D render" oninput="onSearch()">
+      </div>
+      <div class="tb-filters" id="tbFilters">
+        <button class="plat-btn" id="btn-all" onclick="setPlat('all',this)">All</button>
+        <button class="plat-btn" id="btn-ai" onclick="setPlat('ai',this)">🤖 For AI</button>
+        <button class="plat-btn" id="btn-social" onclick="setPlat('social',this)">📱 Social</button>
+      </div>
+      <div class="tb-counts">
+        <span id="langBadge" class="lang-badge"></span>
+        <span class="cnt cnt-f">✓<span id="tc-f">10</span></span>
+        <span class="cnt cnt-a">⭐<span id="tc-a">5</span></span>
+        <span class="cnt cnt-p">🔥<span id="tc-p">3</span></span>
+      </div>
+      <!-- HELP MENU -->
+      <div style="position:relative;flex-shrink:0" id="libHelpWrap">
+        <button onclick="toggleLibHelp()" title="Help & feedback" style="width:30px;height:30px;border-radius:50%;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:14px;color:#888;display:flex;align-items:center;justify-content:center;transition:all .15s" id="libHelpBtn">?</button>
+        <div id="libHelpMenu" style="display:none;position:absolute;right:0;top:36px;background:#fff;border:1px solid #e5e5e5;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);width:220px;z-index:200;overflow:hidden">
+          <div style="padding:8px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#999;border-bottom:1px solid #f0f0f0">Help & community</div>
+          <a href="mailto:vishalbirla700@gmail.com?subject=Clarix%20Idea:%20" onclick="document.getElementById('libHelpMenu').style.display='none'" style="display:flex;align-items:center;gap:10px;padding:11px 14px;text-decoration:none;color:#1a1a1a;border-bottom:1px solid #f0f0f0" onmouseover="this.style.background='#f8f8f8'" onmouseout="this.style.background='transparent'">
+            <span style="font-size:18px">💡</span><div><div style="font-size:13px;font-weight:500">Submit an idea</div><div style="font-size:11px;color:#999">Suggest a feature</div></div>
+          </a>
+          <a href="mailto:vishalbirla700@gmail.com?subject=Clarix%20Bug%20Report:%20" onclick="document.getElementById('libHelpMenu').style.display='none'" style="display:flex;align-items:center;gap:10px;padding:11px 14px;text-decoration:none;color:#1a1a1a;border-bottom:1px solid #f0f0f0" onmouseover="this.style.background='#f8f8f8'" onmouseout="this.style.background='transparent'">
+            <span style="font-size:18px">🐛</span><div><div style="font-size:13px;font-weight:500">Report a bug</div><div style="font-size:11px;color:#999">Something not working?</div></div>
+          </a>
+          <a href="mailto:vishalbirla700@gmail.com?subject=Clarix%20Help:%20" onclick="document.getElementById('libHelpMenu').style.display='none'" style="display:flex;align-items:center;gap:10px;padding:11px 14px;text-decoration:none;color:#1a1a1a;border-bottom:1px solid #f0f0f0" onmouseover="this.style.background='#f8f8f8'" onmouseout="this.style.background='transparent'">
+            <span style="font-size:18px">✉️</span><div><div style="font-size:13px;font-weight:500">Contact us</div><div style="font-size:11px;color:#999">We reply within 24 hours</div></div>
+          </a>
+          <div onclick="document.getElementById('libHelpMenu').style.display='none';alert('Version 1.0 — March 2026 🎉');" style="display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;color:#1a1a1a;border-top:1px solid #f0f0f0" onmouseover="this.style.background='#f8f8f8'" onmouseout="this.style.background='transparent'">
+            <span style="font-size:18px">🚀</span><div><div style="font-size:13px;font-weight:500">What's new</div><div style="font-size:11px;color:#999">Version 1.0 — March 2026</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE CATS -->
+    <div class="mob-cats" id="mobCats"></div>
+    <div class="mob-subs" id="mobSubs"></div>
+
+    <!-- TEXT VIEW -->
+    <div id="v-text">
+      <div class="scroll">
+
+        <div class="upgrade" id="upgradeBanner">
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--ac2);margin-bottom:4px">🔓 Unlock all prompts</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px">You have used all free prompts for this tier. Upgrade to Pro for unlimited access.</div>
+          <div style="font-size:20px;font-weight:700;margin-bottom:10px">₹299<span style="font-size:12px;color:var(--muted);font-weight:400">/month</span></div>
+          <button style="padding:8px 22px;border-radius:20px;background:var(--ac);color:#fff;font-size:13px;font-weight:600;cursor:pointer;border:none" onclick="showToast('Pro coming soon! 🚀')">Upgrade to Pro</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <button id="socialBackBtn" onclick="goBackSocial()" style="display:none;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;border:1px solid var(--card-border);background:#fff;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif">← Back to platforms</button>
+          <span id="socialSubLabel" style="font-size:13px;font-weight:600;color:var(--ac);display:none"></span>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="tierBtns">
+          <button class="tier-pill act" id="tp-all"      onclick="setTier('all',this)">All tiers</button>
+          <button class="tier-pill"    id="tp-free"     onclick="setTier('free',this)">🆓 Essentials</button>
+          <button class="tier-pill"    id="tp-advanced" onclick="setTier('advanced',this)">⭐ Advanced</button>
+          <button class="tier-pill"    id="tp-pro"      onclick="setTier('pro',this)">🔥 Pro</button>
+        </div>
+
+        <!-- SOCIAL PLATFORM TILES — shown when Social tab active and no sub-cat selected -->
+        <div id="socialTiles" style="display:none">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Choose a platform to see its prompts:</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px" id="socialTilesGrid"></div>
+        </div>
+
+        <div class="grid" id="promptsGrid"></div>
+        <div class="empty" id="emptyText" style="display:none">No prompts found. Try a different search or filter.</div>
+      </div>
+    </div>
+
+    <!-- PHOTO VIEW -->
+    <div id="v-photo" style="display:none">
+      <div class="photo-wrap">
+        <div class="photo-cards">
+          <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="tierBtnsPhoto">
+            <button class="tier-pill act" id="tpp-all"      onclick="setTier('all',this)">All tiers</button>
+            <button class="tier-pill"    id="tpp-free"     onclick="setTier('free',this)">🆓 Essentials</button>
+            <button class="tier-pill"    id="tpp-advanced" onclick="setTier('advanced',this)">⭐ Advanced</button>
+            <button class="tier-pill"    id="tpp-pro"      onclick="setTier('pro',this)">🔥 Pro</button>
+          </div>
+          <div class="grid" id="photoGrid"></div>
+          <div class="empty" id="emptyPhoto" style="display:none">No prompts found.</div>
+        </div>
+        <div class="photo-panel">
+          <div class="p-lbl">Upload</div>
+          <div class="p-title">📷 Your image or video</div>
+          <div class="p-sub">Upload → Claude analyses → perfect prompt generated</div>
+          <div class="up-zone" onclick="document.getElementById('pFile').click()">
+            <div class="up-icon">📁</div>
+            <div class="up-title">Drag and drop or click</div>
+            <div class="up-sub">JPG · PNG · MP4 · MOV</div>
+            <div class="up-btn">Choose from gallery</div>
+          </div>
+          <input type="file" id="pFile" accept="image/*,video/*" style="display:none" onchange="onPFile(this)">
+          <img id="pPreview" class="p-preview" alt="">
+          <div class="analysing" id="pAnalysing"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div style="font-size:11px;color:var(--muted)">Claude is analysing...</div></div>
+          <div class="p-analysis" id="pAnalysis">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ac);margin-bottom:3px">Claude analysis</div>
+            <div id="pAnalysisText"></div>
+          </div>
+          <div class="p-gen" id="pGen">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gr);margin-bottom:3px">Generated prompt</div>
+            <div id="pGenText"></div>
+          </div>
+          <button class="p-copy-btn" id="pCopyBtn" onclick="doCopyPanel()">⎘ Copy this prompt</button>
+          <div style="display:none;gap:6px" id="pStyleRow">
+            <button class="p-style-btn" onclick="applyPStyle('3d')" style="border-color:var(--pu-br);color:var(--pu);background:var(--pu-bg)">⭐ 3D style</button>
+            <button class="p-style-btn" onclick="applyPStyle('cin')" style="border-color:var(--am-br);color:var(--am);background:var(--am-bg)">🔥 Cinematic</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSPIRE VIEW -->
+    <div id="v-ins" style="display:none">
+      <div class="scroll">
+        <div class="ins-wrap">
+          <div class="ins-hero">
+            <div style="font-size:28px;margin-bottom:6px">✨</div>
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:5px">Inspire Me</div>
+            <div style="font-size:13px;color:var(--muted)">Hover any image to see its prompt, or describe your own subject below.</div>
+          </div>
+          <div class="ins-gal" id="insGal"></div>
+          <div class="ins-divider">
+            <div class="ins-divider-l"></div>
+            <div class="ins-divider-t">Describe your own subject</div>
+            <div class="ins-divider-l"></div>
+          </div>
+          <div class="ins-box">
+            <div class="ins-label">Your subject</div>
+            <input class="ins-input" id="insSubject" placeholder="e.g. dolphin jumping in the sea, birthday cake, mountain sunset...">
+            <div class="ins-label">Pick style</div>
+            <div class="ins-styles">
+              <div class="ins-style s" id="ins-normal" onclick="setInsStyle('normal',this)">
+                <div style="font-size:20px;margin-bottom:4px">📸</div>
+                <div style="font-size:11px;font-weight:600">Normal</div>
+                <div style="font-size:10px;color:var(--muted)">Free</div>
+              </div>
+              <div class="ins-style" id="ins-3d" onclick="setInsStyle('3d',this)">
+                <div style="font-size:20px;margin-bottom:4px">🎨</div>
+                <div style="font-size:11px;font-weight:600">3D Render</div>
+                <div style="font-size:10px;color:var(--pu)">⭐ Advanced</div>
+              </div>
+              <div class="ins-style" id="ins-cin" onclick="setInsStyle('cin',this)">
+                <div style="font-size:20px;margin-bottom:4px">🎬</div>
+                <div style="font-size:11px;font-weight:600">Cinematic</div>
+                <div style="font-size:10px;color:var(--am)">🔥 Pro</div>
+              </div>
+            </div>
+            <button class="gen-btn" onclick="doInspire()">✨ Generate my prompt</button>
+            <div class="out-box" id="insOut"></div>
+            <button class="copy-out" id="insCopyBtn" onclick="doCopyIns()">⎘ Copy this prompt</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+<script>
+const PROMPTS = [
+
+// ═══════════════════════════════════════════════════════
+// TIER 1 — ESSENTIALS (200 prompts)
+// ═══════════════════════════════════════════════════════
+
+// EMAIL & BUSINESS
+{id:1,tier:'free',cat:'Email',title:'Professional sick leave email',desc:'Request leave due to illness',prompt:'Write a professional and polite sick leave email to my manager requesting leave for [DATE]. I am unwell with [ILLNESS]. Include a subject line, formal greeting, brief reason, expected return date, and a courteous closing.',views:null},
+{id:2,tier:'free',cat:'Email',title:'Meeting request email',desc:'Schedule a professional meeting',prompt:'Write a professional email requesting a meeting with [PERSON] to discuss [TOPIC]. Suggest [TIME] as a preferred time. Keep it concise and respectful.',views:null},
+{id:3,tier:'free',cat:'Email',title:'Follow up after interview',desc:'Post-interview thank you',prompt:'Write a warm, professional follow-up email after a job interview for the role of [ROLE] at [COMPANY]. Thank the interviewer, reiterate my interest, and mention one key point from our conversation.',views:null},
+{id:4,tier:'free',cat:'Email',title:'Salary negotiation email',desc:'Negotiate compensation professionally',prompt:'Write a confident but respectful email negotiating a salary of [AMOUNT] for the [ROLE] position. Mention my experience and the value I bring. Keep it professional and positive.',views:null},
+{id:5,tier:'free',cat:'Email',title:'Project delay notice',desc:'Inform stakeholders of delay',prompt:'Write a professional email informing the client that [PROJECT] will be delayed by [DURATION] due to [REASON]. Apologise, explain the new timeline, and offer solutions.',views:null},
+{id:6,tier:'free',cat:'Email',title:'Resignation letter',desc:'Professionally resign from a job',prompt:'Write a professional resignation letter giving [NOTICE PERIOD] notice. Express gratitude for the opportunity, mention my last working day, and offer to help with handover.',views:null},
+{id:7,tier:'free',cat:'Email',title:'Client complaint response',desc:'Handle customer complaint gracefully',prompt:'Write a professional email responding to a client complaint about [ISSUE]. Acknowledge the problem, apologise sincerely, explain what went wrong, and offer a resolution.',views:null},
+{id:8,tier:'free',cat:'Email',title:'Cold outreach email',desc:'Reach out to potential clients',prompt:'Write a compelling cold outreach email to [COMPANY] introducing my [SERVICE/PRODUCT]. Mention the specific value it provides to them, keep it under 150 words, and include a clear call to action.',views:null},
+{id:9,tier:'free',cat:'Email',title:'Promotion request',desc:'Ask for a promotion professionally',prompt:'Write a confident email to my manager requesting a promotion to [ROLE]. Highlight my key achievements in the past [DURATION], the value I have added, and why I am ready for the next level.',views:null},
+{id:10,tier:'free',cat:'Email',title:'Team appreciation email',desc:'Thank and motivate your team',prompt:'Write a warm, genuine email appreciating my team for successfully completing [PROJECT]. Mention specific contributions, celebrate the win, and motivate them for what is next.',views:null},
+
+// SOCIAL MEDIA
+{id:11,tier:'free',cat:'Social',title:'LinkedIn achievement post',desc:'Share a professional milestone',prompt:'Write an engaging LinkedIn post about [ACHIEVEMENT]. Start with a strong hook, share the story authentically, add a key lesson learned, and end with a question to drive comments. 150-200 words.',views:null},
+{id:12,tier:'free',cat:'Social',title:'Instagram travel caption',desc:'Captivating travel post',prompt:'Write an engaging Instagram caption for a travel photo from [LOCATION]. Include a personal feeling or observation, 2-3 relevant hashtags, and a question or call to action.',views:null},
+{id:13,tier:'free',cat:'Social',title:'Twitter thread opener',desc:'Hook readers into a thread',prompt:'Write a powerful opening tweet for a thread about [TOPIC]. Make it so compelling that people have to read the next tweet. Under 280 characters.',views:null},
+{id:14,tier:'free',cat:'Social',title:'WhatsApp group announcement',desc:'Announce something to a group',prompt:'Write a friendly WhatsApp group message announcing [EVENT/NEWS]. Keep it brief, warm, include all key details — date, time, location — and end with enthusiasm.',views:null},
+{id:15,tier:'free',cat:'Social',title:'Facebook birthday post',desc:'Heartfelt birthday message',prompt:'Write a warm, genuine Facebook birthday post for [NAME]. Mention a specific memory or quality you love about them. Personal, funny, and heartfelt.',views:null},
+{id:16,tier:'free',cat:'Social',title:'Instagram motivational post',desc:'Inspire your followers',prompt:'Write a motivational Instagram caption about [THEME — e.g. resilience, starting over, success]. Conversational tone, genuine insight, end with a question. Include 3 hashtags.',views:null},
+{id:17,tier:'free',cat:'Social',title:'LinkedIn job search post',desc:'Let your network know you are open',prompt:'Write a professional LinkedIn post letting my network know I am open to new opportunities in [FIELD]. Mention my key skills and experience. Confident but not desperate.',views:null},
+{id:18,tier:'free',cat:'Social',title:'YouTube video description',desc:'SEO-friendly video description',prompt:'Write a YouTube description for a video about [TOPIC]. Include what viewers will learn, key points covered, timestamp markers for [SECTIONS], and a call to subscribe. SEO-friendly.',views:null},
+{id:19,tier:'free',cat:'Social',title:'Instagram product launch',desc:'Announce a new product',prompt:'Write an Instagram caption announcing the launch of [PRODUCT]. Build excitement, highlight the key benefit, and include a clear call to action with a link-in-bio mention.',views:null},
+{id:20,tier:'free',cat:'Social',title:'Threads conversation starter',desc:'Start a discussion on Threads',prompt:'Write a Threads post that starts a genuine discussion about [TOPIC]. Conversational, a little controversial but not offensive, under 3 sentences.',views:null},
+
+// STUDY & LEARNING
+{id:21,tier:'free',cat:'Study',title:'Study plan creator',desc:'Structured exam preparation plan',prompt:'Create a detailed study plan for [SUBJECT/EXAM] in [TIMEFRAME]. Break it into daily sessions, prioritise topics by importance, suggest study techniques, and include revision days.',views:null},
+{id:22,tier:'free',cat:'Study',title:'Explain complex concept simply',desc:'Understand anything as a beginner',prompt:'Explain [CONCEPT] in simple, easy-to-understand language for a complete beginner. Use a real-world analogy, break it into steps, and give a practical example.',views:null},
+{id:23,tier:'free',cat:'Study',title:'Essay outline generator',desc:'Structure any essay quickly',prompt:'Create a detailed outline for an essay on [TOPIC]. Include an engaging introduction approach, 3-4 main arguments with supporting points, and a strong conclusion strategy.',views:null},
+{id:24,tier:'free',cat:'Study',title:'Quiz questions creator',desc:'Generate practice questions',prompt:'Create 10 multiple-choice quiz questions on [TOPIC] with 4 options each. Include the correct answer and a brief explanation for each. Suitable for [LEVEL] students.',views:null},
+{id:25,tier:'free',cat:'Study',title:'Summarise long content',desc:'Get the key points fast',prompt:'Summarise the following content in clear, concise bullet points. Pull out the 5 most important ideas, any key data or facts, and the main conclusion: [PASTE CONTENT]',views:null},
+{id:26,tier:'free',cat:'Study',title:'Flashcard creator',desc:'Make revision cards from notes',prompt:'Turn the following notes into 15 flashcard-style question and answer pairs for revision. Keep answers under 2 sentences each: [PASTE NOTES]',views:null},
+{id:27,tier:'free',cat:'Study',title:'Research topic explorer',desc:'Deep dive into any subject',prompt:'Give me a comprehensive overview of [TOPIC] including: what it is, why it matters, key concepts, major debates, and 5 specific areas I should research further.',views:null},
+{id:28,tier:'free',cat:'Study',title:'Debate argument builder',desc:'Build strong arguments for any side',prompt:'Build strong arguments for [POSITION] on the topic of [DEBATE TOPIC]. Include 4 main points with supporting evidence, and anticipate the top 2 counterarguments.',views:null},
+{id:29,tier:'free',cat:'Study',title:'Language learning practice',desc:'Practise a foreign language',prompt:'Give me 10 practical conversation exercises in [LANGUAGE] at [BEGINNER/INTERMEDIATE/ADVANCED] level on the topic of [THEME]. Include English translation and cultural notes.',views:null},
+{id:30,tier:'free',cat:'Study',title:'Mind map generator',desc:'Map out any topic visually',prompt:'Create a detailed mind map in text format for [TOPIC]. Show the central idea, 5 main branches, and 3-4 sub-points per branch. Format it clearly with indentation.',views:null},
+
+// CODING & TECH
+{id:31,tier:'free',cat:'Coding',title:'Debug my code',desc:'Find and fix code errors',prompt:'Debug the following code, identify all errors, explain what each error is and why it is wrong, then provide the corrected version with comments: [PASTE CODE]',views:null},
+{id:32,tier:'free',cat:'Coding',title:'Explain code clearly',desc:'Understand any code snippet',prompt:'Explain the following code line by line in simple language. Describe what each section does, why it is written that way, and what the overall output will be: [PASTE CODE]',views:null},
+{id:33,tier:'free',cat:'Coding',title:'Write a function',desc:'Generate clean code functions',prompt:'Write a [LANGUAGE] function that [DESCRIPTION OF WHAT IT SHOULD DO]. Include error handling, add comments explaining each step, and show an example of how to call it.',views:null},
+{id:34,tier:'free',cat:'Coding',title:'Code review request',desc:'Get expert code feedback',prompt:'Review the following code for: bugs, performance issues, security vulnerabilities, readability, and best practices. Suggest specific improvements with examples: [PASTE CODE]',views:null},
+{id:35,tier:'free',cat:'Coding',title:'Convert code between languages',desc:'Translate code to another language',prompt:'Convert the following [SOURCE LANGUAGE] code to [TARGET LANGUAGE]. Maintain the same logic and functionality, follow best practices for the target language, and add comments: [PASTE CODE]',views:null},
+{id:36,tier:'free',cat:'Coding',title:'API integration guide',desc:'Connect to any API',prompt:'Write step-by-step instructions and code examples for integrating the [API NAME] API into a [LANGUAGE/FRAMEWORK] project. Include authentication, key endpoints, and error handling.',views:null},
+{id:37,tier:'free',cat:'Coding',title:'Database query writer',desc:'Generate SQL queries',prompt:'Write a [SQL/NoSQL] query to [DESCRIPTION OF WHAT YOU NEED]. Optimise for performance, explain what the query does, and show example input and output data.',views:null},
+{id:38,tier:'free',cat:'Coding',title:'Write unit tests',desc:'Generate test cases',prompt:'Write comprehensive unit tests for the following function using [TESTING FRAMEWORK]. Cover happy path, edge cases, and error conditions. Explain what each test is checking: [PASTE FUNCTION]',views:null},
+{id:39,tier:'free',cat:'Coding',title:'README file generator',desc:'Document your project professionally',prompt:'Write a professional README.md for a [TYPE] project called [NAME] that does [DESCRIPTION]. Include: overview, features, installation, usage, tech stack, and contributing guide.',views:null},
+{id:40,tier:'free',cat:'Coding',title:'Algorithm explainer',desc:'Understand any algorithm',prompt:'Explain the [ALGORITHM NAME] algorithm in simple language. Cover: how it works step by step, time and space complexity, when to use it, and a code example in [LANGUAGE].',views:null},
+
+// BUSINESS & CAREER
+{id:41,tier:'free',cat:'Business',title:'Business plan section',desc:'Write any part of a business plan',prompt:'Write the [SECTION — e.g. Executive Summary, Market Analysis] section of a business plan for [BUSINESS IDEA]. Be specific, professional, and include realistic projections where relevant.',views:null},
+{id:42,tier:'free',cat:'Business',title:'Job description writer',desc:'Write compelling job postings',prompt:'Write an engaging job description for a [ROLE] position at a [TYPE] company. Include responsibilities, required skills, nice-to-haves, what makes the role exciting, and company culture.',views:null},
+{id:43,tier:'free',cat:'Business',title:'Interview preparation',desc:'Prepare for any job interview',prompt:'I am interviewing for a [ROLE] at [COMPANY TYPE]. Give me the 10 most likely interview questions with suggested answers tailored to someone with [YOUR BACKGROUND].',views:null},
+{id:44,tier:'free',cat:'Business',title:'SWOT analysis',desc:'Analyse any business or idea',prompt:'Conduct a detailed SWOT analysis for [BUSINESS/PRODUCT/IDEA]. Be specific and actionable. For each weakness and threat, suggest how to address it.',views:null},
+{id:45,tier:'free',cat:'Business',title:'Pitch deck slide content',desc:'Write compelling pitch content',prompt:'Write the content for a [SLIDE NAME — e.g. Problem, Solution, Market Size] slide in a startup pitch deck for [STARTUP IDEA]. Make it concise, compelling, and investor-ready.',views:null},
+{id:46,tier:'free',cat:'Business',title:'Performance review writer',desc:'Write professional appraisals',prompt:'Write a [SELF/MANAGER] performance review for [ROLE] covering: key achievements in [PERIOD], areas of strength, areas for improvement, and goals for next period. Professional and constructive.',views:null},
+{id:47,tier:'free',cat:'Business',title:'Meeting agenda creator',desc:'Structure productive meetings',prompt:'Create a structured meeting agenda for a [DURATION] meeting about [TOPIC] with [NUMBER] participants. Include time slots for each item, desired outcomes, and who leads each section.',views:null},
+{id:48,tier:'free',cat:'Business',title:'Customer persona builder',desc:'Define your target customer',prompt:'Create a detailed customer persona for [PRODUCT/SERVICE]. Include: demographics, goals, frustrations, daily routine, preferred channels, and what would make them buy.',views:null},
+{id:49,tier:'free',cat:'Business',title:'Competitor analysis',desc:'Understand your competition',prompt:'Write a detailed competitor analysis for [PRODUCT/SERVICE] versus [COMPETITOR]. Compare: features, pricing, target audience, strengths, weaknesses, and market positioning.',views:null},
+{id:50,tier:'free',cat:'Business',title:'OKR framework creator',desc:'Set goals and key results',prompt:'Create an OKR framework for [TEAM/COMPANY] for [QUARTER/YEAR]. Include 3 objectives with 3-4 measurable key results each. Align with [OVERALL GOAL].',views:null},
+
+// CREATIVE WRITING
+{id:51,tier:'free',cat:'Creative',title:'Short story opener',desc:'Hook readers immediately',prompt:'Write the opening 200 words of a short story set in [SETTING] with a [GENRE] tone. The main character is [BRIEF DESCRIPTION]. Start in the middle of the action — no slow build-up.',views:null},
+{id:52,tier:'free',cat:'Creative',title:'Product description writer',desc:'Make products irresistible',prompt:'Write a compelling product description for [PRODUCT NAME]. Highlight the top 3 benefits (not just features), speak to [TARGET CUSTOMER] pain points, and end with a buying prompt.',views:null},
+{id:53,tier:'free',cat:'Creative',title:'Blog post introduction',desc:'Hook blog readers instantly',prompt:'Write an engaging introduction (150 words) for a blog post about [TOPIC] targeting [AUDIENCE]. Open with a surprising fact or question, build curiosity, and end with a promise of value.',views:null},
+{id:54,tier:'free',cat:'Creative',title:'Speech or toast writer',desc:'Speak confidently at any event',prompt:'Write a [DURATION] speech/toast for [OCCASION] about [PERSON/TOPIC]. Tone: [FORMAL/FUNNY/HEARTFELT]. Include a memorable opening line, 2-3 stories or points, and a strong close.',views:null},
+{id:55,tier:'free',cat:'Creative',title:'Tagline generator',desc:'Create memorable brand taglines',prompt:'Generate 10 creative taglines for [BRAND/PRODUCT] that is [DESCRIPTION]. Vary the tone: some inspirational, some witty, some direct. Target audience: [AUDIENCE].',views:null},
+{id:56,tier:'free',cat:'Creative',title:'Character description',desc:'Bring fictional characters to life',prompt:'Write a vivid character description for [CHARACTER NAME], a [AGE] year old [ROLE] in a [GENRE] story. Include physical appearance, personality, backstory hint, and a distinctive quirk.',views:null},
+{id:57,tier:'free',cat:'Creative',title:'Scene description writer',desc:'Create immersive settings',prompt:'Write a vivid, sensory scene description for [SETTING] in [TIME PERIOD]. Engage all five senses, set the mood as [MOOD], and make the reader feel like they are there.',views:null},
+{id:58,tier:'free',cat:'Creative',title:'Dialogue writer',desc:'Write authentic conversations',prompt:'Write a natural dialogue between [CHARACTER 1] and [CHARACTER 2] about [TOPIC]. The conversation should reveal character, move the story forward, and feel authentic not scripted.',views:null},
+{id:59,tier:'free',cat:'Creative',title:'Children story creator',desc:'Write engaging kids content',prompt:'Write a short, engaging story for [AGE] year old children about [THEME]. Include a simple moral lesson, fun characters, vivid descriptions, and natural dialogue. 300-400 words.',views:null},
+{id:60,tier:'free',cat:'Creative',title:'Poem writer',desc:'Create meaningful poetry',prompt:'Write a [STYLE — e.g. haiku, free verse, limerick] poem about [SUBJECT]. Tone: [TONE]. Use vivid imagery, avoid clichés, and make it feel personal and genuine.',views:null},
+
+// HEALTH & WELLNESS
+{id:61,tier:'free',cat:'Health',title:'Workout plan creator',desc:'Personalised exercise routine',prompt:'Create a [DURATION] workout plan for someone who is [FITNESS LEVEL] and wants to [GOAL — e.g. lose weight, build muscle]. Include exercises, sets, reps, rest times, and weekly progression.',views:null},
+{id:62,tier:'free',cat:'Health',title:'Meal plan generator',desc:'Healthy eating made simple',prompt:'Create a 7-day meal plan for [DIETARY PREFERENCE — e.g. vegetarian, keto] targeting [CALORIE GOAL] calories per day. Include breakfast, lunch, dinner, and snacks. Simple to prepare.',views:null},
+{id:63,tier:'free',cat:'Health',title:'Stress management guide',desc:'Evidence-based stress relief',prompt:'Give me a practical, evidence-based guide for managing [TYPE OF STRESS — e.g. work stress, exam anxiety]. Include daily habits, in-the-moment techniques, and long-term strategies.',views:null},
+{id:64,tier:'free',cat:'Health',title:'Sleep improvement plan',desc:'Get better sleep tonight',prompt:'Create a personalised plan to improve sleep quality for someone who [SLEEP ISSUE — e.g. can not fall asleep, wakes up often]. Include evening routine, environment changes, and habits to avoid.',views:null},
+{id:65,tier:'free',cat:'Health',title:'Meditation script',desc:'Guided relaxation in words',prompt:'Write a [DURATION] guided meditation script for [PURPOSE — e.g. stress relief, morning energy, deep sleep]. Use calm language, breathing cues, and vivid visualisation prompts.',views:null},
+{id:66,tier:'free',cat:'Health',title:'Healthy recipe creator',desc:'Cook delicious healthy meals',prompt:'Create a detailed recipe for a healthy [MEAL TYPE] dish using [MAIN INGREDIENTS]. Include nutritional highlights, prep and cook time, step-by-step instructions, and serving suggestions.',views:null},
+{id:67,tier:'free',cat:'Health',title:'Doctor appointment prep',desc:'Get the most from your visit',prompt:'Help me prepare for a doctor appointment about [HEALTH CONCERN]. Create a list of symptoms to describe, questions to ask, my medical history points to mention, and what to expect.',views:null},
+{id:68,tier:'free',cat:'Health',title:'Mental health journal prompts',desc:'Explore your thoughts and feelings',prompt:'Give me 10 deep but gentle journal prompts to explore [EMOTION OR THEME — e.g. anxiety, self-worth, gratitude]. Each prompt should invite reflection without feeling overwhelming.',views:null},
+{id:69,tier:'free',cat:'Health',title:'Habit tracker system',desc:'Build habits that actually stick',prompt:'Design a 30-day habit-building system for [HABIT]. Include: daily actions, weekly check-ins, reward milestones, how to handle missed days, and tracking method.',views:null},
+{id:70,tier:'free',cat:'Health',title:'Nutrition label explainer',desc:'Understand what you are eating',prompt:'Explain the nutritional label of [FOOD PRODUCT] in simple terms. What is good, what to watch out for, how it fits into a healthy diet, and what it means for [HEALTH GOAL].',views:null},
+
+// TRAVEL & LIFESTYLE
+{id:71,tier:'free',cat:'Travel',title:'Travel itinerary planner',desc:'Plan the perfect trip',prompt:'Create a [DURATION] travel itinerary for [DESTINATION] for [NUMBER] people with a [BUDGET LEVEL] budget. Include daily activities, food recommendations, transport tips, and estimated costs.',views:null},
+{id:72,tier:'free',cat:'Travel',title:'Packing list creator',desc:'Never forget anything again',prompt:'Create a comprehensive packing list for a [DURATION] trip to [DESTINATION] in [SEASON]. Include clothes, toiletries, documents, tech, and specific items for the activities planned: [ACTIVITIES].',views:null},
+{id:73,tier:'free',cat:'Travel',title:'Local food guide',desc:'Eat like a local anywhere',prompt:'Write a guide to must-try local foods in [DESTINATION]. Include: iconic dishes, where to find the best versions, what to expect flavour-wise, and any eating customs to know.',views:null},
+{id:74,tier:'free',cat:'Travel',title:'Budget travel tips',desc:'Travel more for less',prompt:'Give me practical tips for travelling to [DESTINATION] on a budget of [BUDGET]. Include cheapest times to visit, budget accommodation options, free activities, and money-saving hacks.',views:null},
+{id:75,tier:'free',cat:'Travel',title:'Visa application guide',desc:'Navigate visa requirements',prompt:'Explain the visa requirements for [NATIONALITY] travelling to [DESTINATION]. Include: type of visa needed, documents required, application process, processing time, and common mistakes to avoid.',views:null},
+{id:76,tier:'free',cat:'Travel',title:'Hotel review analyser',desc:'Decide if a hotel is worth it',prompt:'Analyse these hotel reviews and tell me: key strengths, common complaints, who this hotel is best suited for, red flags to watch, and whether it is worth the price: [PASTE REVIEWS]',views:null},
+{id:77,tier:'free',cat:'Travel',title:'Solo travel safety guide',desc:'Travel alone with confidence',prompt:'Write a safety guide for solo travel to [DESTINATION] for a [GENDER] traveller. Include: safe neighbourhoods, scams to avoid, emergency contacts, how to stay connected, and cultural do and don’ts.',views:null},
+{id:78,tier:'free',cat:'Travel',title:'Travel photography spots',desc:'Find the best shots',prompt:'List the 10 best photography locations in [DESTINATION] with: what makes each special, best time of day to visit, what type of shots to get, and any access tips.',views:null},
+{id:79,tier:'free',cat:'Travel',title:'Family vacation planner',desc:'Trips the whole family loves',prompt:'Plan a [DURATION] family vacation to [DESTINATION] for [ADULTS] adults and [CHILDREN] children aged [AGES]. Focus on activities everyone will enjoy, family-friendly restaurants, and avoiding common pitfalls.',views:null},
+{id:80,tier:'free',cat:'Travel',title:'Digital nomad city guide',desc:'Work from anywhere guide',prompt:'Write a digital nomad guide for [CITY]. Include: cost of living, best co-working spaces, reliable cafes with wifi, visa options, local SIM cards, expat communities, and quality of life rating.',views:null},
+
+// PERSONAL & RELATIONSHIPS
+{id:81,tier:'free',cat:'Personal',title:'Apology message writer',desc:'Apologise sincerely and effectively',prompt:'Help me write a sincere apology to [PERSON] for [WHAT HAPPENED]. Acknowledge what I did wrong, show I understand the impact, express genuine remorse, and suggest how I will do better.',views:null},
+{id:82,tier:'free',cat:'Personal',title:'Difficult conversation script',desc:'Navigate tough talks with confidence',prompt:'Help me prepare for a difficult conversation with [PERSON] about [TOPIC]. Write a script that opens gently, states my concerns clearly, listens to their perspective, and aims for resolution.',views:null},
+{id:83,tier:'free',cat:'Personal',title:'Personal introduction writer',desc:'Introduce yourself memorably',prompt:'Write a compelling personal introduction for me for [CONTEXT — e.g. networking event, dating profile, new team]. I am [BRIEF BACKGROUND]. Make it warm, genuine, and memorable.',views:null},
+{id:84,tier:'free',cat:'Personal',title:'Goal setting framework',desc:'Set and achieve meaningful goals',prompt:'Help me create a goal-setting framework for [GOAL]. Break it into 30/60/90 day milestones, identify potential obstacles and how to overcome them, and create daily habits that lead to success.',views:null},
+{id:85,tier:'free',cat:'Personal',title:'Decision making helper',desc:'Make difficult decisions clearly',prompt:'Help me make a decision about [DECISION]. Walk me through: pros and cons, what each option says about my values, the worst-case scenario for each, and the option you would recommend and why.',views:null},
+{id:86,tier:'free',cat:'Personal',title:'Complaint letter writer',desc:'Get results with your complaint',prompt:'Write a firm but professional complaint letter about [ISSUE] to [COMPANY/PERSON]. Describe the problem clearly, state the impact on me, and specify the exact resolution I am requesting.',views:null},
+{id:87,tier:'free',cat:'Personal',title:'Thank you message creator',desc:'Express genuine gratitude',prompt:'Write a heartfelt thank you message to [PERSON] for [WHAT THEY DID]. Make it specific, genuine, and mention the real impact their action had on me. Tone: [FORMAL/CASUAL].',views:null},
+{id:88,tier:'free',cat:'Personal',title:'Life advice request',desc:'Get thoughtful perspective on life',prompt:'Give me genuine, practical advice on [LIFE SITUATION]. I am [BRIEF CONTEXT]. Do not be generic — give me the honest perspective and specific steps most people do not say out loud.',views:null},
+{id:89,tier:'free',cat:'Personal',title:'Budget planner',desc:'Take control of your finances',prompt:'Create a monthly budget plan for someone earning [INCOME] per month with expenses including [MAIN EXPENSES]. Include categories, suggested percentages, savings target, and where to cut back.',views:null},
+{id:90,tier:'free',cat:'Personal',title:'Networking message writer',desc:'Connect with anyone professionally',prompt:'Write a personalised LinkedIn/email message to connect with [PERSON] who works in [FIELD]. Mention a specific reason for reaching out, what I admire about their work, and a clear but low-pressure ask.',views:null},
+
+// IMAGE AI PROMPTS
+{id:91,tier:'free',cat:'Image AI',title:'Portrait photography prompt',desc:'Realistic portrait for Midjourney/DALL-E',prompt:'A professional portrait of [SUBJECT DESCRIPTION], natural window lighting, shallow depth of field, warm color grade, Canon 5D, 85mm lens, bokeh background, hyper-realistic',
+views:['Normal','Professional Studio','Golden Hour']},
+{id:92,tier:'free',cat:'Image AI',title:'Landscape scene prompt',desc:'Stunning natural landscape',prompt:'A breathtaking landscape of [LOCATION/SCENE], dramatic sky, golden hour lighting, ultra-detailed, National Geographic style photography, 8K resolution, atmospheric perspective',
+views:['Daylight','Sunset/Sunrise','Stormy Drama']},
+{id:93,tier:'free',cat:'Image AI',title:'Food photography prompt',desc:'Professional food shots',prompt:'Professional food photography of [DISH], styled plating, soft natural light, shallow depth of field, restaurant quality, warm tones, overhead or 45-degree angle, appetizing and fresh',
+views:['Clean Minimal','Rustic Warm','Dark Moody']},
+{id:94,tier:'free',cat:'Image AI',title:'Architecture prompt',desc:'Stunning building photography',prompt:'Architectural photography of [BUILDING TYPE], clean lines, perfect symmetry, blue hour lighting, reflective surfaces, minimalist composition, ultra-sharp details',
+views:['Exterior Day','Interior Light','Night Lights']},
+{id:95,tier:'free',cat:'Image AI',title:'Fantasy character prompt',desc:'Create fantasy characters',prompt:'A detailed fantasy character — [DESCRIPTION], elaborate costume with intricate details, magical atmosphere, digital painting style, dramatic lighting, high fantasy, concept art quality',
+views:['Portrait','Full Body','Action Pose']},
+{id:96,tier:'free',cat:'Image AI',title:'Animal in nature prompt',desc:'Wildlife photography style',prompt:'[ANIMAL] in its natural habitat [LOCATION], wildlife photography, golden hour light, bokeh background, hyper-realistic fur/skin detail, National Geographic quality, action or candid moment',
+views:['Normal View','Close-up Detail','Epic Wide Shot']},
+{id:97,tier:'free',cat:'Image AI',title:'Abstract art prompt',desc:'Unique abstract artwork',prompt:'Abstract digital art representing [CONCEPT/EMOTION], [COLOR PALETTE] color scheme, flowing organic shapes, layered textures, contemporary fine art style, gallery-worthy composition',
+views:['Minimal','Vibrant Chaos','Geometric']},
+{id:98,tier:'free',cat:'Image AI',title:'Product mockup prompt',desc:'Professional product images',prompt:'Professional product photography of [PRODUCT], clean white or [COLOR] background, perfect lighting, multiple angles, commercial photography quality, sharp details, brand-ready',
+views:['White Background','Lifestyle Scene','Flat Lay']},
+{id:99,tier:'free',cat:'Image AI',title:'City street scene',desc:'Urban photography prompts',prompt:'Street photography in [CITY/NEIGHBOURHOOD], documentary style, candid moment, urban atmosphere, [TIME OF DAY] lighting, film grain, Leica aesthetic, human element',
+views:['Daytime Busy','Rainy Night','Golden Hour']},
+{id:100,tier:'free',cat:'Image AI',title:'Vintage/retro aesthetic',desc:'Nostalgic visual style',prompt:'[SUBJECT] in vintage [DECADE — e.g. 1970s] aesthetic, film photography look, faded colors, light leaks, grain, authentic period-accurate styling and mood',
+views:['Film Photo','Magazine Scan','Polaroid Style']},
+
+// MORE ESSENTIALS — QUICK USE
+{id:101,tier:'free',cat:'Quick',title:'Summarise this for me',desc:'Get the key points from anything',prompt:'Summarise the following in 5 clear bullet points. Start each point with the most important word. End with one sentence on what I should do or take away: [PASTE CONTENT]',views:null},
+{id:102,tier:'free',cat:'Quick',title:'Make this sound professional',desc:'Polish any rough text instantly',prompt:'Rewrite the following text to sound professional, clear, and polished while keeping the same meaning. Fix grammar, improve word choice, and adjust the tone: [PASTE TEXT]',views:null},
+{id:103,tier:'free',cat:'Quick',title:'Translate and explain',desc:'Translate with cultural context',prompt:'Translate the following text from [SOURCE LANGUAGE] to [TARGET LANGUAGE]. Also explain any cultural references, idioms, or nuances that might not translate directly: [PASTE TEXT]',views:null},
+{id:104,tier:'free',cat:'Quick',title:'Give me pros and cons',desc:'See both sides of any decision',prompt:'Give me a detailed list of pros and cons for [TOPIC/DECISION]. Be specific, not generic. Include at least 6 on each side. Then give me your honest overall recommendation.',views:null},
+{id:105,tier:'free',cat:'Quick',title:'Write a review',desc:'Write authentic reviews for anything',prompt:'Write an honest, detailed [STAR RATING]-star review for [PRODUCT/PLACE/SERVICE]. Mention specific aspects: [ASPECTS TO COVER]. Sound like a real person, not a bot.',views:null},
+{id:106,tier:'free',cat:'Quick',title:'Make a checklist',desc:'Never miss a step again',prompt:'Create a comprehensive checklist for [TASK/PROCESS]. Organise items in logical order, group related items, and mark which ones are critical vs optional.',views:null},
+{id:107,tier:'free',cat:'Quick',title:'Compare two things',desc:'Side-by-side comparison of anything',prompt:'Compare [OPTION A] vs [OPTION B] across these dimensions: [LIST DIMENSIONS]. Use a clear format, be specific, and tell me which is better for [MY SPECIFIC SITUATION].',views:null},
+{id:108,tier:'free',cat:'Quick',title:'Fact check this claim',desc:'Verify information quickly',prompt:'Fact-check the following claim: [CLAIM]. Tell me if it is true, false, or partially true. Provide evidence and context. If false, explain the misconception and what the truth is.',views:null},
+{id:109,tier:'free',cat:'Quick',title:'Generate 10 ideas',desc:'Brainstorm anything fast',prompt:'Generate 10 creative, specific, and actionable ideas for [TOPIC/CHALLENGE]. Mix safe ideas with bold ones. For each idea, add one sentence on why it could work.',views:null},
+{id:110,tier:'free',cat:'Quick',title:'Write instructions',desc:'Clear step-by-step guides',prompt:'Write clear, step-by-step instructions for [TASK] targeted at someone who has never done it before. Use simple language, numbered steps, and include warnings or tips where relevant.',views:null},
+
+// FINANCE & MONEY
+{id:111,tier:'free',cat:'Finance',title:'Investment basics explainer',desc:'Understand any investment concept',prompt:'Explain [INVESTMENT CONCEPT — e.g. SIP, mutual funds, ETFs] in simple language for a beginner in India. Cover: what it is, how it works, risks, potential returns, and how to get started.',views:null},
+{id:112,tier:'free',cat:'Finance',title:'Personal finance audit',desc:'Review and improve your finances',prompt:'Help me conduct a personal finance audit. I earn [INCOME] and spend on [MAIN EXPENSES]. Review my financial health, identify where I am losing money, and give me a priority action list.',views:null},
+{id:113,tier:'free',cat:'Finance',title:'Loan calculator explanation',desc:'Understand loan terms clearly',prompt:'Explain a [LOAN TYPE] loan of [AMOUNT] at [INTEREST RATE]% for [DURATION] in simple terms. What will I actually pay? Show the EMI calculation and total interest paid.',views:null},
+{id:114,tier:'free',cat:'Finance',title:'Tax saving strategies',desc:'Legal ways to save on taxes',prompt:'Explain the top 10 legal tax-saving strategies for [SALARIED/SELF-EMPLOYED] individuals in India for FY [YEAR]. Include specific sections like 80C, HRA, and practical steps to implement each.',views:null},
+{id:115,tier:'free',cat:'Finance',title:'Side income ideas',desc:'Generate extra income ideas',prompt:'Give me 10 realistic side income ideas for someone who works in [FIELD] and has [HOURS] free per week. Rank by earning potential and ease of starting with [BUDGET] initial investment.',views:null},
+{id:116,tier:'free',cat:'Finance',title:'Startup funding explainer',desc:'Understand funding rounds',prompt:'Explain [FUNDING STAGE — e.g. seed, Series A, IPO] funding for a startup in simple terms. What does it mean, what do investors get, typical amounts in India, and what the founder gives up.',views:null},
+{id:117,tier:'free',cat:'Finance',title:'Credit score guide',desc:'Improve your credit score',prompt:'Explain how credit scores work in India, what factors affect my score, how to check it for free, and give me a 6-month action plan to improve a score of [CURRENT SCORE].',views:null},
+{id:118,tier:'free',cat:'Finance',title:'Insurance policy explainer',desc:'Understand any insurance policy',prompt:'Explain this insurance policy in simple terms: [PASTE POLICY DETAILS OR TYPE]. What does it cover, what are the exclusions, is it worth the premium, and what should I watch out for?',views:null},
+{id:119,tier:'free',cat:'Finance',title:'Negotiate a better deal',desc:'Get better prices on anything',prompt:'Help me negotiate a better deal for [PRODUCT/SERVICE] currently priced at [PRICE]. Give me specific phrases to use, the best negotiation tactics for this situation, and my walk-away point.',views:null},
+{id:120,tier:'free',cat:'Finance',title:'Freelance rate calculator',desc:'Price your work correctly',prompt:'Help me calculate my freelance rate for [SERVICE] in [CITY/COUNTRY]. I need to earn [MONTHLY TARGET]. Factor in taxes, expenses, non-billable hours, and market rates for my experience level.',views:null},
+
+// ADDITIONAL ESSENTIALS (to reach 200)
+{id:121,tier:'free',cat:'Marketing',title:'Marketing campaign brief',desc:'Brief any campaign clearly',prompt:'Write a marketing campaign brief for [PRODUCT] targeting [AUDIENCE]. Include: campaign goal, key message, channels, budget range, timeline, success metrics, and do’s and don’ts.',views:null},
+{id:122,tier:'free',cat:'Marketing',title:'Ad copy writer',desc:'Write ads that convert',prompt:'Write 5 variations of ad copy for [PRODUCT/SERVICE] targeting [AUDIENCE] on [PLATFORM]. Each should have a headline under 8 words and body copy under 100 words. Tone: [TONE].',views:null},
+{id:123,tier:'free',cat:'Marketing',title:'Email newsletter writer',desc:'Engaging newsletters people read',prompt:'Write an engaging email newsletter about [TOPIC] for [AUDIENCE]. Include: compelling subject line, preview text, main content with 3 key points, a featured story or tip, and a clear CTA.',views:null},
+{id:124,tier:'free',cat:'Marketing',title:'SEO blog post outline',desc:'Rank on Google with great content',prompt:'Create an SEO-optimised blog post outline for the keyword "[KEYWORD]". Include: title tag, meta description, H1, 5 H2 sections with bullet points, internal link opportunities, and FAQ section.',views:null},
+{id:125,tier:'free',cat:'Marketing',title:'Brand voice guide',desc:'Define your brand personality',prompt:'Create a brand voice guide for [BRAND NAME] which is a [TYPE] brand targeting [AUDIENCE]. Define: personality traits, tone of voice, vocabulary to use, vocabulary to avoid, and 3 example messages.',views:null},
+{id:126,tier:'free',cat:'Marketing',title:'Customer testimonial request',desc:'Get more reviews and testimonials',prompt:'Write 3 email templates to request testimonials from happy customers of [PRODUCT/SERVICE]. Make them easy to respond to, non-pushy, and suggest specific questions they could answer.',views:null},
+{id:127,tier:'free',cat:'Marketing',title:'Influencer outreach message',desc:'Partner with the right creators',prompt:'Write an outreach message to [TYPE] influencer with [FOLLOWER COUNT] followers to collaborate on promoting [PRODUCT]. Be genuine, specific about why they fit, and clearly state the offer.',views:null},
+{id:128,tier:'free',cat:'Marketing',title:'Landing page copy',desc:'Write pages that convert visitors',prompt:'Write high-converting landing page copy for [PRODUCT/SERVICE]. Include: headline, subheadline, 3 key benefits, social proof placeholder, FAQ section, and CTA button text. Target: [AUDIENCE].',views:null},
+{id:129,tier:'free',cat:'Marketing',title:'Referral programme announcement',desc:'Launch a referral scheme',prompt:'Write an announcement for launching a referral programme for [COMPANY/PRODUCT]. Explain how it works, what customers get, how to join, and why they should share. Exciting and clear.',views:null},
+{id:130,tier:'free',cat:'Marketing',title:'Content calendar planner',desc:'Plan a month of content',prompt:'Create a 30-day social media content calendar for [BRAND] on [PLATFORMS]. Mix content types: educational, entertaining, promotional, user-generated. Match posting frequency: [FREQUENCY].',views:null},
+
+// HR & MANAGEMENT
+{id:131,tier:'free',cat:'HR',title:'Employee onboarding plan',desc:'Welcome new team members well',prompt:'Create a 30-day onboarding plan for a new [ROLE] joining [TYPE] company. Include: day 1 schedule, week 1 goals, 30-day milestones, key meetings to schedule, and resources to share.',views:null},
+{id:132,tier:'free',cat:'HR',title:'Performance improvement plan',desc:'Help struggling employees grow',prompt:'Create a Performance Improvement Plan (PIP) for an employee in [ROLE] who is struggling with [SPECIFIC ISSUES]. Include: clear expectations, support offered, timeline, and success criteria.',views:null},
+{id:133,tier:'free',cat:'HR',title:'Team meeting ice breaker',desc:'Start meetings on a positive note',prompt:'Give me 10 creative ice-breaker activities for a [TYPE] team meeting with [NUMBER] people. Each should take under 5 minutes, work for [IN-PERSON/REMOTE] teams, and not feel forced or awkward.',views:null},
+{id:134,tier:'free',cat:'HR',title:'Conflict resolution script',desc:'Mediate workplace conflicts',prompt:'Help me mediate a conflict between [PERSON A] and [PERSON B] about [ISSUE]. Write a script for a mediation meeting that is fair, structured, and focused on finding a resolution.',views:null},
+{id:135,tier:'free',cat:'HR',title:'Employee survey questions',desc:'Gather genuine team feedback',prompt:'Create a 15-question employee satisfaction survey for [COMPANY TYPE]. Cover: work environment, management, growth, workload, and culture. Mix rating scales and open-ended questions.',views:null},
+
+// PARENTING & EDUCATION
+{id:136,tier:'free',cat:'Parenting',title:'Explain to a child',desc:'Make any topic child-friendly',prompt:'Explain [COMPLEX TOPIC] to a [AGE] year old child. Use simple words, a fun analogy they can relate to, and check their understanding with a simple question at the end.',views:null},
+{id:137,tier:'free',cat:'Parenting',title:'Bedtime story creator',desc:'Unique bedtime stories',prompt:'Write an original bedtime story for a [AGE] year old about [THEME]. Include a main character named [NAME], a small problem to solve, and a gentle lesson. Calming and 300-400 words.',views:null},
+{id:138,tier:'free',cat:'Parenting',title:'Homework helper prompt',desc:'Help kids understand homework',prompt:'Help explain this homework question to a [GRADE] student without giving them the answer directly. Guide them to think it through step by step: [PASTE QUESTION]',views:null},
+{id:139,tier:'free',cat:'Parenting',title:'Screen time activity replacement',desc:'Fun offline activities for kids',prompt:'Give me 15 engaging, screen-free activities for a [AGE] year old child for [DURATION] on a [RAINY/OUTDOOR/WEEKEND] day. Mix creative, physical, and educational activities.',views:null},
+{id:140,tier:'free',cat:'Parenting',title:'Parent-teacher communication',desc:'Communicate with school professionally',prompt:'Write a professional and constructive email to my child’s teacher about [CONCERN/TOPIC]. Be respectful, specific, and solution-oriented. Show I want to work together for my child’s benefit.',views:null},
+
+// LEGAL & ADMIN
+{id:141,tier:'free',cat:'Legal',title:'Simple contract template',desc:'Basic agreements in plain language',prompt:'Write a simple [TYPE] agreement between [PARTY A] and [PARTY B] for [PURPOSE]. Include: scope of work, payment terms, timeline, intellectual property rights, and termination clause. Plain language.',views:null},
+{id:142,tier:'free',cat:'Legal',title:'Legal document explainer',desc:'Understand legal language',prompt:'Explain the following legal document/clause in simple everyday language. What does it mean, what are my obligations, what are the risks, and what should I negotiate: [PASTE TEXT]',views:null},
+{id:143,tier:'free',cat:'Legal',title:'RTI application writer',desc:'Right to Information requests',prompt:'Write a formal RTI application requesting information about [TOPIC] from [GOVERNMENT DEPARTMENT]. Follow proper format, be specific about the information needed, and cite relevant RTI provisions.',views:null},
+{id:144,tier:'free',cat:'Legal',title:'Consumer complaint letter',desc:'Escalate consumer issues',prompt:'Write a formal consumer complaint letter to [COMPANY/CONSUMER COURT] about [ISSUE]. Include: purchase details, what went wrong, resolution attempts, and specific compensation requested.',views:null},
+{id:145,tier:'free',cat:'Legal',title:'Privacy policy generator',desc:'Basic privacy policy for websites',prompt:'Write a clear, compliant privacy policy for [WEBSITE/APP TYPE] that collects [DATA TYPES]. Cover: data collected, how it is used, storage, third parties, user rights, and contact information.',views:null},
+
+// FOOD & COOKING
+{id:146,tier:'free',cat:'Food',title:'Recipe from ingredients',desc:'Cook with what you have',prompt:'Create a delicious recipe using only these ingredients: [LIST INGREDIENTS]. Include: dish name, cooking time, step-by-step instructions, and serving suggestions. Minimal additional items needed.',views:null},
+{id:147,tier:'free',cat:'Food',title:'Restaurant review writer',desc:'Write reviews that help others',prompt:'Write an honest, detailed review for [RESTAURANT NAME] in [LOCATION]. Cover: ambiance, food quality, service, value for money, best and worst dishes, and who would enjoy it.',views:null},
+{id:148,tier:'free',cat:'Food',title:'Cooking technique explainer',desc:'Master any cooking technique',prompt:'Explain the [COOKING TECHNIQUE — e.g. sautéing, braising, tempering] technique in detail. Cover: what it is, when to use it, step-by-step process, common mistakes, and a simple recipe that uses it.',views:null},
+{id:149,tier:'free',cat:'Food',title:'Party menu planner',desc:'Plan food for any gathering',prompt:'Plan a complete menu for a [TYPE] party with [NUMBER] guests. Include: starters, mains, sides, desserts, and drinks. Consider [DIETARY RESTRICTIONS]. Prep timeline and what to make vs order.',views:null},
+{id:150,tier:'free',cat:'Food',title:'Grocery shopping list',desc:'Smart shopping made easy',prompt:'Create a weekly grocery shopping list for [NUMBER] people eating [DIETARY PREFERENCE] food. Based on [MEAL PLAN OR COOKING STYLE]. Organise by store section. Budget: [BUDGET].',views:null},
+
+// REMAINING ESSENTIALS 151-200
+{id:151,tier:'free',cat:'Quick',title:'Write a bio',desc:'Professional bio for any platform',prompt:'Write a professional bio for [NAME] who is a [ROLE/PROFESSION]. Include their background, key achievements, current focus, and a personal touch. Length: [SHORT: 50 words / LONG: 150 words]. Platform: [PLATFORM].',views:null},
+{id:152,tier:'free',cat:'Quick',title:'Proofread my writing',desc:'Catch every error',prompt:'Proofread the following text. Correct grammar, spelling, and punctuation errors. Improve awkward phrasing. Keep my voice and meaning intact. List the key changes you made: [PASTE TEXT]',views:null},
+{id:153,tier:'free',cat:'Quick',title:'Write a press release',desc:'Announce news professionally',prompt:'Write a professional press release announcing [NEWS/EVENT] for [COMPANY]. Follow standard format: headline, dateline, lead paragraph, body, quotes, boilerplate, and contact information.',views:null},
+{id:154,tier:'free',cat:'Quick',title:'Create a survey',desc:'Gather data effectively',prompt:'Create a [NUMBER]-question survey about [TOPIC] for [AUDIENCE]. Include a mix of: multiple choice, rating scales, and 2 open-ended questions. Keep it under 5 minutes to complete.',views:null},
+{id:155,tier:'free',cat:'Quick',title:'Write terms and conditions',desc:'Basic T&Cs for any service',prompt:'Write clear, simple Terms and Conditions for [SERVICE/PRODUCT]. Cover: usage rules, payment terms, refund policy, liability limitations, and contact for disputes. Plain language not legalese.',views:null},
+{id:156,tier:'free',cat:'Study',title:'Case study analysis',desc:'Analyse any business case',prompt:'Analyse the following business case study. Identify: the core problem, key stakeholders, options available, recommendation with reasoning, and lessons applicable to similar situations: [PASTE CASE]',views:null},
+{id:157,tier:'free',cat:'Study',title:'Literature review helper',desc:'Academic literature summaries',prompt:'Help me write a literature review section on [TOPIC] for an academic paper. Synthesise these key themes: [THEMES]. Discuss agreements, disagreements, and gaps in current research.',views:null},
+{id:158,tier:'free',cat:'Business',title:'Investor update email',desc:'Keep investors informed',prompt:'Write a monthly investor update email for [STARTUP NAME]. Cover: key metrics this month, milestones achieved, challenges faced, how we are addressing them, and what we need from investors.',views:null},
+{id:159,tier:'free',cat:'Business',title:'Sales script writer',desc:'Close more deals',prompt:'Write a sales call script for [PRODUCT/SERVICE] targeting [CUSTOMER TYPE]. Include: opening hook, qualifying questions, key benefits to highlight, handling the top 3 objections, and closing techniques.',views:null},
+{id:160,tier:'free',cat:'Marketing',title:'Podcast episode outline',desc:'Plan engaging podcast content',prompt:'Create a detailed outline for a [DURATION] podcast episode about [TOPIC] for [AUDIENCE]. Include: hook, intro, 5 main discussion points with sub-topics, guest questions if applicable, and outro CTA.',views:null},
+{id:161,tier:'free',cat:'Creative',title:'Screenwriting scene',desc:'Write compelling movie scenes',prompt:'Write a [GENRE] screenplay scene between [CHARACTERS] in [SETTING]. Show don’t tell. Use proper screenplay format. The scene should reveal character and advance the plot by [STORY BEAT].',views:null},
+{id:162,tier:'free',cat:'Creative',title:'Song lyrics writer',desc:'Create original song lyrics',prompt:'Write original song lyrics for a [GENRE] song about [THEME]. Include: verse 1, chorus, verse 2, bridge, outro. Rhyme scheme: [AABB/ABAB/FREE VERSE]. Mood: [MOOD]. Avoid clichés.',views:null},
+{id:163,tier:'free',cat:'Personal',title:'Morning routine designer',desc:'Start every day powerfully',prompt:'Design an optimal morning routine for someone who wants to [GOAL — e.g. be more productive, less stressed, healthier]. I wake up at [TIME] and start work at [TIME]. Current routine: [DESCRIPTION].',views:null},
+{id:164,tier:'free',cat:'Personal',title:'Reading list curator',desc:'Books worth your time',prompt:'Curate a reading list of 10 books for someone interested in [TOPIC/GENRE]. For each book: title, author, one-line summary, and why it is specifically relevant to [MY SITUATION OR GOAL].',views:null},
+{id:165,tier:'free',cat:'Health',title:'Recovery meal plan',desc:'Eat right for recovery',prompt:'Create a 7-day recovery meal plan for someone recovering from [CONDITION/SURGERY/ILLNESS]. Focus on [KEY NUTRIENTS]. Include easy-to-prepare meals, foods to avoid, and hydration guide.',views:null},
+{id:166,tier:'free',cat:'Tech',title:'Tech setup guide',desc:'Set up any technology correctly',prompt:'Write a complete setup guide for [DEVICE/SOFTWARE/SYSTEM] for a non-technical user. Include: what you need before starting, step-by-step setup, common issues and fixes, and best settings to configure.',views:null},
+{id:167,tier:'free',cat:'Tech',title:'App feature description',desc:'Describe app features compellingly',prompt:'Write compelling feature descriptions for [APP NAME]. For each feature: [FEATURE LIST] — write a 2-sentence benefit-focused description that speaks to [USER TYPE] in simple language.',views:null},
+{id:168,tier:'free',cat:'Image AI',title:'Cartoon character prompt',desc:'Create cartoon style characters',prompt:'[CHARACTER DESCRIPTION] in cartoon animation style, vibrant colors, expressive face, clean lines, Disney/Pixar inspired, friendly and approachable, detailed costume, white background',views:['Classic Cartoon','Anime Style','3D Rendered']},
+{id:169,tier:'free',cat:'Image AI',title:'Logo concept prompt',desc:'Generate logo ideas',prompt:'A minimalist logo concept for [BRAND NAME] in [INDUSTRY], clean geometric shapes, [COLOR PALETTE], professional and modern, scalable design, negative space usage, brand identity concept',views:['Minimalist','Bold Wordmark','Icon Only']},
+{id:170,tier:'free',cat:'Image AI',title:'Interior design prompt',desc:'Visualise room designs',prompt:'[ROOM TYPE] interior design, [STYLE — e.g. Scandinavian, industrial, boho], natural light streaming in, carefully curated furniture and decor, [COLOR SCHEME], architectural photography, ultra-realistic',views:['Day Light','Evening Cozy','Aerial View']},
+{id:171,tier:'free',cat:'Social',title:'Reel/Short script',desc:'Script for viral short videos',prompt:'Write a [DURATION]-second script for a [PLATFORM] Reel/Short about [TOPIC]. Include: hook (first 3 seconds), main content beats, text overlays to add, and a strong CTA ending. Engaging and fast-paced.',views:null},
+{id:172,tier:'free',cat:'Social',title:'Pinterest pin description',desc:'Pins that get saved and clicked',prompt:'Write 5 Pinterest pin descriptions for [CONTENT TOPIC]. Each should be: keyword-rich, inspire curiosity or action, under 100 words, and speak directly to [TARGET AUDIENCE’s] desires.',views:null},
+{id:173,tier:'free',cat:'Business',title:'Partnership proposal',desc:'Propose business partnerships',prompt:'Write a business partnership proposal for [COMPANY A] to partner with [COMPANY B] on [PROJECT/INITIATIVE]. Include: mutual benefits, proposed structure, investment from each side, and success metrics.',views:null},
+{id:174,tier:'free',cat:'Legal',title:'Freelance contract template',desc:'Protect your freelance work',prompt:'Write a freelance contract for [SERVICE TYPE] work. Cover: scope of work, payment schedule, revision policy, intellectual property ownership, confidentiality, and what happens if either party breaks the agreement.',views:null},
+{id:175,tier:'free',cat:'Creative',title:'Company culture manifesto',desc:'Define your company culture',prompt:'Write a company culture manifesto for [COMPANY TYPE] that values [CORE VALUES]. Make it inspiring, authentic, and specific — not generic corporate speak. It should make people want to work there.',views:null},
+{id:176,tier:'free',cat:'Quick',title:'Meeting notes formatter',desc:'Structure messy meeting notes',prompt:'Format and structure these raw meeting notes into a professional document with: summary, decisions made, action items with owners and deadlines, and open questions: [PASTE NOTES]',views:null},
+{id:177,tier:'free',cat:'Study',title:'Presentation script writer',desc:'Confident presentation scripts',prompt:'Write a [DURATION] presentation script about [TOPIC] for [AUDIENCE]. Include: attention-grabbing opener, smooth transitions between [NUMBER] main points, audience engagement moments, and memorable close.',views:null},
+{id:178,tier:'free',cat:'Finance',title:'Startup pitch one-pager',desc:'One page that raises money',prompt:'Write a one-page investor summary for [STARTUP] in [INDUSTRY]. Include: problem, solution, market size, traction, team highlights, business model, and funding ask in a concise, compelling format.',views:null},
+{id:179,tier:'free',cat:'Personal',title:'Vision board text content',desc:'Write your life vision clearly',prompt:'Help me write a detailed vision for my ideal life in [TIMEFRAME] across these areas: career, relationships, health, finances, personal growth, and lifestyle. Make it specific, vivid, and emotionally compelling.',views:null},
+{id:180,tier:'free',cat:'Marketing',title:'Testimonial case study',desc:'Turn customer wins into case studies',prompt:'Write a customer success case study about [CUSTOMER TYPE] who used [PRODUCT/SERVICE] to achieve [RESULT]. Format: challenge, solution, implementation, results with metrics, and customer quote.',views:null},
+{id:181,tier:'free',cat:'HR',title:'Training material outline',desc:'Create effective training content',prompt:'Create a training module outline for [TOPIC] for [EMPLOYEE TYPE]. Include: learning objectives, content sections, exercises, assessments, and how you will measure if training was effective.',views:null},
+{id:182,tier:'free',cat:'Coding',title:'System design overview',desc:'Design scalable systems',prompt:'Design a high-level system architecture for [APPLICATION TYPE] that needs to handle [SCALE]. Include: key components, data flow, database choices, APIs needed, and scalability considerations.',views:null},
+{id:183,tier:'free',cat:'Tech',title:'Product requirements doc',desc:'Write clear product requirements',prompt:'Write a Product Requirements Document (PRD) for [FEATURE/PRODUCT]. Include: problem statement, user stories, acceptance criteria, technical requirements, edge cases, and out-of-scope items.',views:null},
+{id:184,tier:'free',cat:'Creative',title:'Brand story writer',desc:'Tell your brand’s story compellingly',prompt:'Write the brand story for [COMPANY/PRODUCT]. Cover: why it was started, the problem that needed solving, the journey, what makes it different, and why it matters to [AUDIENCE]. Authentic and human.',views:null},
+{id:185,tier:'free',cat:'Personal',title:'Bucket list creator',desc:'Design your life list',prompt:'Help me create a meaningful, specific bucket list for [TIMEFRAME]. Include experiences across: travel, relationships, career, skills, adventure, creativity, and giving back. Realistic but ambitious.',views:null},
+{id:186,tier:'free',cat:'Image AI',title:'Social media banner',desc:'Header images for any platform',prompt:'A professional social media banner for [BRAND/PERSON] in [INDUSTRY], clean and modern design, [COLOR PALETTE], space for text overlay, [PLATFORM] dimensions optimised, brand identity',views:['Corporate','Creative Agency','Personal Brand']},
+{id:187,tier:'free',cat:'Image AI',title:'Event poster prompt',desc:'Eye-catching event visuals',prompt:'A compelling event poster for [EVENT NAME] — [EVENT TYPE], [DATE/LOCATION], bold typography, attention-grabbing design, [MOOD/THEME] atmosphere, professional print quality, space for details',views:['Bold Modern','Elegant Minimal','Festive Vibrant']},
+{id:188,tier:'free',cat:'Quick',title:'Negotiation email',desc:'Negotiate anything over email',prompt:'Write a negotiation email for [WHAT YOU ARE NEGOTIATING] with [PERSON/COMPANY]. Current offer: [OFFER]. My ask: [YOUR ASK]. Tone: professional, confident, collaborative. Include a clear rationale.',views:null},
+{id:189,tier:'free',cat:'Business',title:'Exit strategy planner',desc:'Plan your business exit',prompt:'Help me think through exit strategy options for [BUSINESS TYPE] with [REVENUE/STAGE]. Cover: acquisition, merger, IPO, management buyout options — with pros, cons, and timing considerations.',views:null},
+{id:190,tier:'free',cat:'Quick',title:'Write a proposal',desc:'Win any project or contract',prompt:'Write a professional proposal for [PROJECT] for client [CLIENT TYPE]. Include: executive summary, understanding of their needs, proposed approach, timeline, team/experience, investment, and next steps.',views:null},
+{id:191,tier:'free',cat:'Marketing',title:'Reactivation campaign email',desc:'Win back inactive customers',prompt:'Write a win-back email campaign (3 emails) for customers who have not purchased from [BRAND] in [TIMEFRAME]. Tone: warm, understanding, not desperate. Include a re-engagement offer.',views:null},
+{id:192,tier:'free',cat:'Personal',title:'Reference letter writer',desc:'Write strong reference letters',prompt:'Write a strong professional reference letter for [NAME] who is applying for [POSITION]. I know them as their [RELATIONSHIP]. Highlight: key strengths, specific examples, and why they are right for this role.',views:null},
+{id:193,tier:'free',cat:'Study',title:'Thesis statement generator',desc:'Strong thesis statements for essays',prompt:'Generate 5 strong thesis statements for an essay on [TOPIC] taking a [STANCE]. Each should be specific, arguable, and signal the structure of the essay. For [ACADEMIC LEVEL].',views:null},
+{id:194,tier:'free',cat:'Creative',title:'Social proof copy',desc:'Write compelling testimonial content',prompt:'Rewrite these raw customer testimonials to be more compelling while keeping them authentic. Make them specific, benefit-focused, and credible: [PASTE TESTIMONIALS]',views:null},
+{id:195,tier:'free',cat:'Tech',title:'Error message writer',desc:'Write helpful error messages',prompt:'Write clear, user-friendly error messages for these [APP TYPE] error scenarios: [LIST ERRORS]. Each message should: explain what went wrong simply, what the user can do next, and avoid technical jargon.',views:null},
+{id:196,tier:'free',cat:'Health',title:'First aid guide',desc:'Handle emergencies calmly',prompt:'Write a clear first aid guide for [EMERGENCY SITUATION]. Include: immediate steps, what to do while waiting for help, what NOT to do, when to call emergency services, and reassuring tips.',views:null},
+{id:197,tier:'free',cat:'Travel',title:'Travel caption in local language',desc:'Connect with locals authentically',prompt:'Give me 5 travel captions for photos from [COUNTRY/CITY] written in [LOCAL LANGUAGE] with English translation. Include a local proverb or phrase that relates to travel or discovery.',views:null},
+{id:198,tier:'free',cat:'Business',title:'Meeting follow-up email',desc:'Actionable post-meeting emails',prompt:'Write a professional follow-up email after a meeting with [PERSON/COMPANY] about [TOPIC]. Include: thank you, summary of what was discussed, action items with owners, next steps, and timeline.',views:null},
+{id:199,tier:'free',cat:'Creative',title:'Viral post formula',desc:'Write content built to spread',prompt:'Write a [PLATFORM] post about [TOPIC] using the viral formula: surprising hook + counterintuitive insight + personal story + actionable takeaway + engagement question. Make it shareable.',views:null},
+{id:200,tier:'free',cat:'Quick',title:'Custom prompt builder',desc:'Build any prompt you need',prompt:'Help me build a perfect prompt for [WHAT YOU WANT AI TO DO]. Ask me the right questions to understand my goal, then write the optimised prompt I should use.',views:null},
+
+// ═══════════════════════════════════════════════════════
+// TIER 2 — ADVANCED (10 prompts)
+// ═══════════════════════════════════════════════════════
+{id:201,tier:'advanced',cat:'3D Art',title:'Photorealistic 3D render',desc:'Cinema-quality 3D scenes',prompt:'Photorealistic 3D render of [SUBJECT], Octane render or Blender Cycles, global illumination, ray-traced reflections, subsurface scattering on skin/organic materials, 8K texture resolution, studio HDRI lighting, ultra-detailed geometry, depth of field, chromatic aberration, film grain',
+views:['Studio White','Dark Dramatic','Environmental HDRI'],socialPrompt:"Write an Instagram caption for my photorealistic 3D rendered artwork of [SUBJECT]. The image looks hyper-realistic with dramatic studio lighting. Make it sound artistic and professional with 3-5 relevant hashtags like #3DArt #DigitalArt #CGI."},
+{id:202,tier:'advanced',cat:'3D Art',title:'3D typography art',desc:'Text as visual sculpture',prompt:'3D typographic art spelling "[TEXT]", extruded letterforms with beveled edges, [MATERIAL — e.g. chrome, gold, glass, neon], dramatic studio lighting, reflective floor, Blender render quality, poster composition, high contrast background',
+views:['Chrome Metal','Neon Glow','Molten Gold'],socialPrompt:"Write a social media post showcasing my 3D typography artwork spelling [TEXT]. Describe the [MATERIAL] finish and dramatic lighting. Suitable for Instagram or Behance. Include design-related hashtags."},
+{id:203,tier:'advanced',cat:'Design',title:'Holographic UI design',desc:'Futuristic interface concepts',prompt:'Futuristic holographic UI interface design for [PURPOSE], floating transparent panels, iridescent glow effects, data visualization elements, sci-fi aesthetic, electric blue and purple color scheme, dark background, concept art quality, detailed and functional-looking',
+views:['Blue Hologram','Amber Alert','Matrix Green'],socialPrompt:"Write an Instagram/LinkedIn post about my futuristic holographic UI design concept for [PURPOSE]. Explain the sci-fi aesthetic and what problem it solves. Speak to designers and tech enthusiasts."},
+{id:204,tier:'advanced',cat:'Design',title:'Isometric illustration',desc:'Technical isometric artwork',prompt:'Detailed isometric illustration of [SUBJECT — e.g. city block, office, smart home], pixel-perfect geometry, [COLOR PALETTE] color scheme, clean lines, each element carefully detailed, vector illustration quality, no perspective distortion, architectural accuracy',
+views:['Flat Clean','Detailed Complex','Neon Night'],socialPrompt:"Write a Twitter/Instagram caption for my isometric illustration of [SUBJECT]. Describe the clean geometric style and colour palette. Include hashtags for #IsometricDesign #Illustration #DigitalArt."},
+{id:205,tier:'advanced',cat:'Image AI',title:'Double exposure art',desc:'Artistic photo compositing',prompt:'Double exposure photograph blending [SUBJECT 1] and [SUBJECT 2], seamlessly merged, artistic photography, high contrast silhouette, emotional storytelling, monochrome or duotone color grade, fine art photography quality, award-winning composition',
+views:['Monochrome','Blue Duotone','Forest Nature'],socialPrompt:"Write an artistic Instagram caption for my double exposure photo blending [SUBJECT 1] and [SUBJECT 2]. Explain the emotional storytelling behind the composition. Poetic and evocative tone."},
+{id:206,tier:'advanced',cat:'Image AI',title:'Macro photography extreme',desc:'Ultra close-up detail shots',prompt:'Extreme macro photography of [SMALL SUBJECT], 10:1 magnification, razor-sharp focus, beautiful bokeh, studio lighting revealing unseen detail, scientific accuracy combined with artistic composition, Nikon Z-series quality, focus stacking result',
+views:['White Studio','Dark Drama','Natural Light'],socialPrompt:"Write a caption for my extreme macro photography shot of [SMALL SUBJECT]. Describe the unseen world it reveals. Suitable for Instagram or 500px. Include #MacroPhotography hashtags."},
+{id:207,tier:'advanced',cat:'Design',title:'Brand identity concept sheet',desc:'Complete brand visual system',prompt:'Brand identity concept sheet for [BRAND NAME] in [INDUSTRY], logo variations (primary, icon, wordmark), color palette with hex codes shown, typography pairing, pattern/texture elements, mockup on [PRODUCT TYPE], professional design agency presentation style',
+views:['Minimalist Modern','Bold Expressive','Luxury Premium'],socialPrompt:"Write a LinkedIn or Instagram post presenting my brand identity concept for [BRAND NAME]. Highlight the design thinking, colour palette, and what makes the visual identity unique."},
+{id:208,tier:'advanced',cat:'3D Art',title:'Abstract 3D fluid art',desc:'Organic flowing 3D sculptures',prompt:'Abstract 3D fluid sculpture with complex organic forms, [COLOR PALETTE] iridescent surface, subsurface light scattering, physically accurate fluid simulation result, studio photography of sculpture, dark background, museum-quality art piece, ultra-high detail',
+views:['Liquid Metal','Neon Plasma','Marble Swirl'],socialPrompt:"Write an Instagram caption for my abstract 3D fluid sculpture artwork. Describe the [COLOR PALETTE] iridescent surface and organic forms. Poetic, artistic tone for a creative audience."},
+{id:209,tier:'advanced',cat:'Image AI',title:'Infrared photography effect',desc:'Otherworldly landscape look',prompt:'Infrared photography style image of [LANDSCAPE/SCENE], pure white foliage, deep black skies, dreamlike and ethereal atmosphere, false color infrared film simulation, Kodak Aerochrome aesthetic, high contrast, surreal yet photographic quality',
+views:['Classic IR BW','Color Infrared','Fantasy Teal'],socialPrompt:"Write a caption for my infrared photography series of [LANDSCAPE/SCENE]. Describe the dreamlike atmosphere and the ethereal quality of the false-colour technique. Include #InfraredPhotography."},
+{id:210,tier:'advanced',cat:'Design',title:'Data visualisation art',desc:'Beautiful data as art',prompt:'Artistic data visualisation of [DATA CONCEPT — e.g. global temperatures, population growth, music frequencies], beautiful infographic design, [COLOR PALETTE], flowing connections, readable hierarchy, motion graphics still frame quality, Giorgia Lupi inspired',
+views:['Scientific Clean','Artistic Flow','Dark Dashboard'],socialPrompt:"Write a LinkedIn or Instagram post showcasing my data visualisation artwork about [DATA CONCEPT]. Explain what the data shows and why I made it beautiful. Speak to both data and design audiences."},
+
+// ═══════════════════════════════════════════════════════
+// TIER 3 — PRO (10 prompts)
+// ═══════════════════════════════════════════════════════
+{id:211,tier:'pro',cat:'Video AI',title:'Cinematic video prompt',desc:'Film-quality video generation',prompt:'Cinematic video of [SUBJECT AND ACTION], shot on ARRI Alexa with anamorphic lens, golden hour lighting, slow motion 120fps, shallow depth of field, anamorphic lens flares, Terrence Malick visual style, professional color grade, atmospheric haze, film grain texture, epic orchestral implied mood',
+views:['Golden Hour','Blue Hour','Storm Drama'],socialPrompt:"Write an Instagram Reel caption or YouTube Shorts description for my cinematic video of [SUBJECT AND ACTION]. Build excitement around the film-quality production. Include relevant video hashtags."},
+{id:212,tier:'pro',cat:'Video AI',title:'Documentary style footage',desc:'Authentic documentary look',prompt:'Documentary-style footage of [SUBJECT], handheld camera movement, natural available light, photojournalistic composition, gritty realism, 16mm film grain, desaturated color grade, intimate and observational, award-winning documentary cinematography style',
+views:['Color','Black & White','Super 8 Vintage'],socialPrompt:"Write a social media post sharing my documentary-style footage of [SUBJECT]. Describe the raw, authentic feel and what story it tells. Suitable for YouTube, Instagram Reels or Facebook."},
+{id:213,tier:'pro',cat:'Video AI',title:'Commercial product video',desc:'Advertising-quality product footage',prompt:'High-end commercial video for [PRODUCT], elegant product reveal, precise camera movement, perfect studio lighting with coloured gels, premium feel, Apple or Rolex commercial aesthetic, hyper-slow motion product details, seamless transitions, luxury brand quality',
+views:['Dark Luxury','Clean White','Colourful Bold'],socialPrompt:"Write a professional post for LinkedIn or Instagram showcasing my commercial product video for [PRODUCT]. Highlight the production quality and what makes it stand out from regular product videos."},
+{id:214,tier:'pro',cat:'Video AI',title:'Nature documentary footage',desc:'BBC Earth level nature footage',prompt:'BBC Planet Earth quality footage of [ANIMAL/NATURAL PHENOMENON], telephoto lens compression, perfect natural lighting, slow motion movement details, dramatic scale contrast, pristine natural environment, David Attenborough documentary visual style, 8K clarity',
+views:['Daylight Action','Golden Hour','Underwater'],socialPrompt:"Write an Instagram or YouTube caption for my nature documentary-style footage of [ANIMAL/NATURAL PHENOMENON]. Evoke the awe and scale of the natural world. Include nature hashtags."},
+{id:215,tier:'pro',cat:'Video AI',title:'Sci-fi VFX sequence',desc:'Blockbuster visual effects',prompt:'Hollywood-quality sci-fi VFX sequence featuring [SCENE DESCRIPTION], photoreal CGI integrated with live action aesthetic, ILM quality visual effects, lens-accurate physics, atmospheric volumetric effects, epic scale, Blade Runner 2049 or Dune visual reference quality',
+views:['Space Epic','Cyberpunk City','Alien World'],socialPrompt:"Write a social media post revealing my sci-fi VFX sequence featuring [SCENE DESCRIPTION]. Build hype around the visual effects quality. Suitable for Instagram, Twitter or a filmmaker community."},
+{id:216,tier:'pro',cat:'Video AI',title:'Music video aesthetic',desc:'Artist-quality music visuals',prompt:'Cinematic music video sequence for [GENRE] music featuring [VISUAL CONCEPT], unique directorial vision, colour-graded with distinctive look, choreographed camera movement, lighting design by cinematographer, fashion-forward styling, conceptual art direction',
+views:['Euphoria Neon','Vintage Film','Minimal Art'],socialPrompt:"Write a music video announcement post for [GENRE] music featuring [VISUAL CONCEPT]. Build anticipation and describe the visual aesthetic. Works for Instagram, YouTube and Twitter."},
+{id:217,tier:'pro',cat:'Video AI',title:'Architecture walkthrough',desc:'Architectural visualisation video',prompt:'Photorealistic architectural walkthrough of [BUILDING TYPE], smooth cinematic camera movement through spaces, accurate material rendering — concrete, glass, wood, steel, natural and artificial lighting simulation, time-of-day variation, Zaha Hadid Studio quality render',
+views:['Daytime Bright','Dusk Warm','Night Illuminated'],socialPrompt:"Write a professional post on Instagram or LinkedIn presenting my architectural walkthrough of [BUILDING TYPE]. Speak to architects, interior designers and real estate professionals."},
+{id:218,tier:'pro',cat:'Video AI',title:'Fashion film sequence',desc:'Luxury fashion video content',prompt:'Luxury fashion film sequence featuring [GARMENT/COLLECTION DESCRIPTION], editorial photography meets cinema, slow motion fabric movement, perfect skin and texture rendering, Nicolas Ghesquière or Riccardo Tisci aesthetic, high fashion magazine video quality, artistic lighting',
+views:['Studio Minimal','Outdoor Editorial','Surreal Fantasy'],socialPrompt:"Write a fashion editorial post for Instagram featuring my fashion film of [GARMENT/COLLECTION DESCRIPTION]. Capture the luxury aesthetic and cinematic quality in the caption."},
+{id:219,tier:'pro',cat:'Video AI',title:'Sports action sequence',desc:'ESPN-quality sports footage',prompt:'Professional sports broadcast quality footage of [SPORT/ACTION], ultra slow motion at 1000fps capturing peak action moment, perfect stadium or outdoor lighting, dynamic camera angles, ESPN or Red Bull Media House visual quality, athletic form at peak performance',
+views:['Game Day','Training Drama','Victory Moment'],socialPrompt:"Write a high-energy social post for my sports action sequence footage of [SPORT/ACTION]. Use dynamic language that matches the ultra slow motion drama. Perfect for Instagram Reels or Twitter."},
+{id:220,tier:'pro',cat:'Video AI',title:'Timelapse cinematic',desc:'Epic timelapse sequences',prompt:'Cinematic timelapse of [SCENE — e.g. city at night, storm clouds, starfield over mountain], silky smooth motion, perfect exposure ramping from day to night, ultra-high resolution, dramatic and meditative simultaneously, Planet Earth or Overview documentary quality',
+views:['City Night','Nature Storm','Stars Milky Way'],socialPrompt:"Write a meditative, cinematic caption for my timelapse of [SCENE]. Capture the passage of time and the beauty of the natural world. Suitable for Instagram, YouTube and Twitter."},
+
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var S = {
+  mode: 'text',
+  plat: 'all',
+  tier: 'all',
+  cat: 'All',
+  sub: 'All',
+  photoStyle: 'normal',
+  insStyle: 'normal',
+  mPrompt: null,
+  mViewIdx: 0,
+  genOut: '',
+  panelPrompt: '',
+  insOut: '',
+  used: {
+    free:     parseInt(localStorage.getItem('cx-free')    || '0'),
+    advanced: parseInt(localStorage.getItem('cx-adv')     || '0'),
+    pro:      parseInt(localStorage.getItem('cx-pro')     || '0')
+  }
+};
+
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+var LIMITS = { free: 10, advanced: 5, pro: 3 };
+
+var AI_CATS = { Email:1, Study:1, Coding:1, Business:1, Creative:1, Health:1, Travel:1, Personal:1, Finance:1, Marketing:1, Quick:1, HR:1, Parenting:1, Legal:1, Food:1, Tech:1 };
+var SOC_CATS = { Social:1, 'Image AI':1 };
+var PHOTO_CATS = { 'Image AI':1, '3D Art':1, Design:1, 'Video AI':1 };
+
+var TEXT_CATS = ['All','Email','Social','Study','Coding','Business','Creative','Health','Travel','Personal','Finance','Marketing','Quick','HR','Parenting','Legal','Food','Tech'];
+var PH_CATS   = ['All','Image AI','3D Art','Design','Video AI'];
+
+var SUB_CATS = {
+  'Email':    ['All','Work email','Personal email','Follow-up','Cold outreach'],
+  'Social':   ['All','Instagram','LinkedIn','WhatsApp','Twitter','YouTube','Facebook'],
+  'Study':    ['All','Exam prep','Essay','Research'],
+  'Coding':   ['All','Debug','Explain','Write code','Review'],
+  'Business': ['All','Strategy','Marketing','Proposals'],
+  'Health':   ['All','Fitness','Nutrition','Mental health'],
+  'Travel':   ['All','Itinerary','Packing','Budget'],
+  'Image AI': ['All','Portrait','Landscape','Food','Architecture'],
+  '3D Art':   ['All','Photorealistic','Abstract'],
+  'Video AI': ['All','Cinematic','Documentary']
+};
+
+var GRADS = {
+  Email:'135deg,#667eea,#764ba2', Social:'135deg,#f093fb,#f5576c',
+  Study:'135deg,#4facfe,#00f2fe', Coding:'135deg,#43e97b,#38f9d7',
+  Business:'135deg,#fa709a,#fee140', Creative:'135deg,#a18cd1,#fbc2eb',
+  Health:'135deg,#84fab0,#8fd3f4', Travel:'135deg,#ffecd2,#fcb69f',
+  Personal:'135deg,#a1c4fd,#c2e9fb', Finance:'135deg,#d4fc79,#96e6a1',
+  Marketing:'135deg,#fda085,#f6d365', Quick:'135deg,#89f7fe,#66a6ff',
+  HR:'135deg,#fddb92,#d1fdff', Parenting:'135deg,#f6d365,#fda085',
+  Legal:'135deg,#c3cfe2,#aab8cc', Food:'135deg,#f093fb,#f5576c',
+  Tech:'135deg,#4facfe,#00f2fe', 'Image AI':'135deg,#667eea,#764ba2',
+  '3D Art':'135deg,#f093fb,#f5576c', Design:'135deg,#a18cd1,#fbc2eb',
+  'Video AI':'135deg,#43e97b,#38f9d7'
+};
+
+var THUMBS = {
+  'Image AI': 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&q=60',
+  '3D Art':   'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&q=60',
+  'Design':   'https://images.unsplash.com/photo-1558655146-364adaf1fcc9?w=400&q=60',
+  'Video AI': 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400&q=60',
+  'Social':   'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&q=60',
+  'Email':    'https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=400&q=60',
+  'Study':    'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=60',
+  'Coding':   'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=60',
+  'Business': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=60',
+  'Health':   'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=60',
+  'Travel':   'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&q=60',
+  'Creative': 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&q=60',
+  'Marketing':'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=60',
+  'Finance':  'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&q=60',
+  'Food':     'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=60',
+  'Quick':    'https://images.unsplash.com/photo-1484807352052-23338990c6c6?w=400&q=60',
+  'Personal': 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&q=60'
+};
+
+var ICONS = {
+  Email:'✉️', Social:'📱', Study:'📚', Coding:'💻', Business:'💼', Creative:'✍️',
+  Health:'💪', Travel:'✈️', Personal:'👤', Finance:'💰', Marketing:'📣', Quick:'⚡',
+  HR:'👥', Parenting:'👶', Legal:'⚖️', Food:'🍽️', Tech:'🔧',
+  'Image AI':'🖼️', '3D Art':'🎨', Design:'✏️', 'Video AI':'🎬'
+};
+
+var REGIONAL_SUGGESTIONS = [
+  { name:'ShareChat', icon:'💬' },
+  { name:'Moj',       icon:'🎬' },
+  { name:'Koo',       icon:'🐦' },
+  { name:'Telegram',  icon:'✈️'  },
+  { name:'Snapchat',  icon:'👻' },
+  { name:'WeChat',    icon:'💚' },
+  { name:'Line',      icon:'💚' },
+  { name:'VK',        icon:'🔵' },
+  { name:'TikTok',    icon:'🎵' },
+  { name:'Lemon8',    icon:'🍋' },
+  { name:'BeReal',    icon:'📷' },
+  { name:'Discord',   icon:'🎮' },
+];
+
+function getCustomPlats() {
+  try { return JSON.parse(localStorage.getItem('cx-custom-plats') || '[]'); }
+  catch(e) { return []; }
+}
+
+function saveCustomPlats(arr) {
+  localStorage.setItem('cx-custom-plats', JSON.stringify(arr));
+}
+
+function openAddPlat() {
+  var custom = getCustomPlats().map(function(p) { return p.name; });
+  var suggs = document.getElementById('platSuggestions');
+  if (suggs) {
+    suggs.innerHTML = '';
+    REGIONAL_SUGGESTIONS.forEach(function(s) {
+      if (custom.indexOf(s.name) >= 0) return; // already added
+      var d = document.createElement('div');
+      d.className = 'add-plat-sug';
+      d.textContent = s.icon + ' ' + s.name;
+      d.onclick = function() {
+        var inp = document.getElementById('addPlatInput');
+        if (inp) inp.value = s.name;
+      };
+      suggs.appendChild(d);
+    });
+  }
+  var inp = document.getElementById('addPlatInput');
+  if (inp) inp.value = '';
+  document.getElementById('addPlatOverlay').classList.add('open');
+  setTimeout(function() { if (inp) inp.focus(); }, 100);
+}
+
+function closeAddPlat() {
+  document.getElementById('addPlatOverlay').classList.remove('open');
+}
+
+function saveCustomPlat() {
+  var inp = document.getElementById('addPlatInput');
+  var name = inp ? inp.value.trim() : '';
+  if (!name) { showToast('Please enter a platform name', true); return; }
+  // Pick icon from suggestions or use default
+  var match = REGIONAL_SUGGESTIONS.find(function(s) {
+    return s.name.toLowerCase() === name.toLowerCase();
+  });
+  var icon = match ? match.icon : '📱';
+  var custom = getCustomPlats();
+  // Check for duplicate
+  if (custom.some(function(p) { return p.name.toLowerCase() === name.toLowerCase(); })) {
+    showToast(name + ' is already added', true); return;
+  }
+  custom.push({ name: name, icon: icon });
+  saveCustomPlats(custom);
+  closeAddPlat();
+  showToast(icon + ' ' + name + ' added!');
+  renderSocialTiles();
+}
+
+function removeCustomPlat(name, e) {
+  e.stopPropagation();
+  var custom = getCustomPlats().filter(function(p) { return p.name !== name; });
+  saveCustomPlats(custom);
+  renderSocialTiles();
+  showToast(name + ' removed');
+}
+
+var SOC_PLATFORMS = [
+  { name:'Instagram',  icon:'📸', keyword:'instagram',  color:'#e1306c' },
+  { name:'LinkedIn',   icon:'💼', keyword:'linkedin',   color:'#0077b5' },
+  { name:'WhatsApp',   icon:'💬', keyword:'whatsapp',   color:'#25d366' },
+  { name:'Twitter/X',  icon:'🐦', keyword:'twitter',    color:'#1da1f2' },
+  { name:'YouTube',    icon:'▶️',  keyword:'youtube',    color:'#ff0000' },
+  { name:'Facebook',   icon:'📘', keyword:'facebook',   color:'#1877f2' },
+  { name:'Threads',    icon:'🧵', keyword:'threads',    color:'#000000' },
+  { name:'Reddit',     icon:'🤖', keyword:'reddit',     color:'#ff4500' },
+  { name:'Pinterest',  icon:'📌', keyword:'pinterest',  color:'#e60023' },
+];
+
+function countSocPrompts(keyword) {
+  return PROMPTS.filter(function(p) {
+    return p.cat === 'Social' && (
+      p.title.toLowerCase().indexOf(keyword) >= 0 ||
+      p.desc.toLowerCase().indexOf(keyword) >= 0
+    );
+  }).length;
+}
+
+function renderSocialTiles() {
+  var grid = document.getElementById('socialTilesGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  // Built-in platforms
+  SOC_PLATFORMS.forEach(function(plat) {
+    var count = countSocPrompts(plat.keyword);
+    if (count === 0) return;
+    var tile = document.createElement('div');
+    tile.className = 'soc-tile';
+    tile.innerHTML = '<div class="soc-tile-icon">' + plat.icon + '</div>'
+      + '<div class="soc-tile-name">' + plat.name + '</div>'
+      + '<div class="soc-tile-count">' + count + ' prompt' + (count !== 1 ? 's' : '') + '</div>';
+    tile.onclick = function() {
+      S.sub = plat.name === 'Twitter/X' ? 'Twitter' : plat.name;
+      S.cat = 'Social';
+      document.getElementById('socialTiles').style.display = 'none';
+      document.getElementById('promptsGrid').style.display = '';
+      renderCards();
+      renderSB();
+      var back = document.getElementById('socialBackBtn');
+      if (back) back.style.display = 'inline-flex';
+      var lbl = document.getElementById('socialSubLabel');
+      if (lbl) { lbl.textContent = plat.icon + ' ' + plat.name + ' prompts'; lbl.style.display = 'inline-block'; }
+    };
+    grid.appendChild(tile);
+  });
+
+  // Custom (user-added) platforms
+  getCustomPlats().forEach(function(plat) {
+    var tile = document.createElement('div');
+    tile.className = 'soc-tile';
+    tile.style.position = 'relative';
+    // Build with DOM to avoid quote issues
+    var del = document.createElement('div');
+    del.className = 'custom-tile-del';
+    del.title = 'Remove';
+    del.textContent = 'x';
+    (function(n){ del.onclick = function(e){ removeCustomPlat(n, e); }; })(plat.name);
+    tile.appendChild(del);
+    var ic = document.createElement('div'); ic.className = 'soc-tile-icon'; ic.textContent = plat.icon; tile.appendChild(ic);
+    var nm = document.createElement('div'); nm.className = 'soc-tile-name'; nm.textContent = plat.name; tile.appendChild(nm);
+    var ct = document.createElement('div'); ct.className = 'soc-tile-count'; ct.style.color = 'var(--ac)'; ct.textContent = 'Custom'; tile.appendChild(ct);
+    tile.onclick = function() {
+      // For custom platforms, search by name
+      S.search = plat.name.toLowerCase();
+      var si = document.getElementById('searchInput');
+      if (si) si.value = plat.name;
+      document.getElementById('socialTiles').style.display = 'none';
+      document.getElementById('promptsGrid').style.display = '';
+      renderCards();
+      var back = document.getElementById('socialBackBtn');
+      if (back) back.style.display = 'inline-flex';
+      var lbl = document.getElementById('socialSubLabel');
+      if (lbl) { lbl.textContent = plat.icon + ' ' + plat.name; lbl.style.display = 'inline-block'; }
+    };
+    grid.appendChild(tile);
+  });
+
+
+  // + Add platform tile
+  var addTile = document.createElement('div');
+  addTile.className = 'soc-tile-add';
+  addTile.innerHTML = '<div style="font-size:28px;margin-bottom:8px">➕</div>'
+    + '<div style="font-size:13px;font-weight:600;color:var(--ac)">Add platform</div>'
+    + '<div style="font-size:11px;color:var(--hint);margin-top:3px">ShareChat, Telegram, Koo...</div>';
+  addTile.onclick = openAddPlat;
+  grid.appendChild(addTile);
+}
+
+var FEATURED = [
+  { id:96,  img:'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=300&q=70', label:'Wildlife' },
+  { id:92,  img:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=70', label:'Landscape' },
+  { id:201, img:'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=300&q=70', label:'3D Render' },
+  { id:91,  img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=70', label:'Portrait' },
+  { id:211, img:'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=300&q=70', label:'Cinematic' },
+  { id:170, img:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&q=70', label:'Interior' }
+];
+
+var VIEW_MODS = {
+  'Normal': '',
+  '3D View': ', photorealistic 3D render, Octane quality, volumetric lighting, 8K',
+  'Cinematic': ', ARRI Alexa, anamorphic lens, film grain, golden hour, slow motion',
+  'Professional Studio': ', white seamless background, three-point studio lighting',
+  'Golden Hour': ', golden hour, warm sunlight, long shadows',
+  'Dark Dramatic': ', low key lighting, dramatic shadows',
+  'Anime Style': ', anime art style, cel shading, vibrant colors',
+  'Chrome Metal': ', chrome metallic finish, mirror reflections',
+  'Neon Glow': ', neon glow, cyberpunk colors, dark background'
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function freeLeft(t) { return Math.max(0, LIMITS[t] - (S.used[t] || 0)); }
+function isLocked(p) { return freeLeft(p.tier) <= 0; }
+
+function deduct(t) {
+  S.used[t] = (S.used[t] || 0) + 1;
+  localStorage.setItem('cx-' + t, S.used[t]);
+  updateCounts();
+}
+
+function updateCounts() {
+  var f = freeLeft('free'), a = freeLeft('advanced'), p = freeLeft('pro');
+  ['tc-f','sc-f'].forEach(function(id) { var el = document.getElementById(id); if (el) el.textContent = f; });
+  ['tc-a','sc-a'].forEach(function(id) { var el = document.getElementById(id); if (el) el.textContent = a; });
+  ['tc-p','sc-p'].forEach(function(id) { var el = document.getElementById(id); if (el) el.textContent = p; });
+  if (f === 0 && a === 0 && p === 0) {
+    var ub = document.getElementById('upgradeBanner');
+    if (ub) ub.classList.add('show');
+  }
+}
+
+function toggleLibHelp() {
+  var m = document.getElementById('libHelpMenu');
+  var btn = document.getElementById('libHelpBtn');
+  var open = m.style.display !== 'none';
+  m.style.display = open ? 'none' : 'block';
+  btn.style.background = open ? '#fff' : '#fff3f0';
+  btn.style.borderColor = open ? '#ddd' : '#ffcdc4';
+  btn.style.color = open ? '#888' : '#ff7043';
+}
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('libHelpWrap');
+  if(wrap && !wrap.contains(e.target)) {
+    var m = document.getElementById('libHelpMenu');
+    var btn = document.getElementById('libHelpBtn');
+    if(m) m.style.display = 'none';
+    if(btn) { btn.style.background='#fff'; btn.style.borderColor='#ddd'; btn.style.color='#888'; }
+  }
+});
+
+function showToast(msg, err) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (err ? ' err' : '');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function getValidSubs(cat) {
+  var subs = SUB_CATS[cat];
+  if (!subs) return [];
+  return subs.filter(function(sub) {
+    if (sub === 'All') return true;
+    var s = sub.toLowerCase();
+    return PROMPTS.some(function(p) {
+      return p.cat === cat && (
+        p.title.toLowerCase().indexOf(s) >= 0 ||
+        p.desc.toLowerCase().indexOf(s) >= 0
+      );
+    });
+  });
+}
+
+function getFiltered() {
+  var q = (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '').toLowerCase().trim();
+  var isPhoto = S.mode === 'photo';
+
+  return PROMPTS.filter(function(p) {
+    // Photo mode: only visual cats
+    if (isPhoto && !PHOTO_CATS[p.cat]) return false;
+
+    // Platform filter (text mode only)
+    if (!isPhoto && S.plat === 'ai'     && !AI_CATS[p.cat])  return false;
+    if (!isPhoto && S.plat === 'social' && !SOC_CATS[p.cat]) return false;
+
+    // Tier filter
+    if (S.tier !== 'all' && p.tier !== S.tier) return false;
+
+    // Category filter
+    if (S.cat !== 'All' && p.cat !== S.cat) return false;
+
+    // Sub-category filter
+    if (S.sub !== 'All') {
+      var s = S.sub.toLowerCase();
+      if (p.title.toLowerCase().indexOf(s) < 0 && p.desc.toLowerCase().indexOf(s) < 0) return false;
+    }
+
+    // Search
+    if (q) {
+      var inT = p.title.toLowerCase().indexOf(q) >= 0;
+      var inD = p.desc.toLowerCase().indexOf(q) >= 0;
+      var inC = p.cat.toLowerCase().indexOf(q) >= 0;
+      var inW = q.length > 2 && p.prompt.toLowerCase().indexOf(q) >= 0;
+      if (!inT && !inD && !inC && !inW) return false;
+    }
+
+    return true;
+  });
+}
+
+// ── RENDER SIDEBAR ────────────────────────────────────────────────────────────
+function renderSB() {
+  var modes = ['text','photo','ins'];
+  modes.forEach(function(m) {
+    var el = document.getElementById('sb-' + m);
+    if (!el) return;
+    el.className = 'sb-row' + (S.mode === m ? (m === 'photo' ? ' ag' : ' a') : '');
+  });
+
+  var isPhoto = S.mode === 'photo';
+  var isIns   = S.mode === 'ins';
+  var tc = document.getElementById('sb-text-cats');
+  var pc = document.getElementById('sb-photo-cats');
+  if (tc) tc.style.display = (!isPhoto && !isIns) ? 'block' : 'none';
+  if (pc) pc.style.display = isPhoto ? 'block' : 'none';
+
+  if (!isPhoto) {
+    var catLbl = document.getElementById('sbCatLabel');
+    if (catLbl) {
+      catLbl.textContent = S.plat === 'social' ? 'Social' : S.plat === 'ai' ? 'AI categories' : 'Category';
+    }
+    var cl = document.getElementById('sbCats');
+    if (cl) {
+      cl.innerHTML = '';
+      if (S.plat === 'social') {
+        // Social tab: show ONLY Social row
+        var row = document.createElement('div');
+        row.className = 'sb-row' + (S.cat === 'Social' ? ' a' : '');
+        row.textContent = 'Social';
+        row.onclick = function() { setCat('Social'); };
+        cl.appendChild(row);
+      } else if (S.plat === 'ai') {
+        // For AI tab: only AI categories
+        ['All','Email','Study','Coding','Business','Creative','Health','Travel','Personal','Finance','Marketing','Quick','HR','Parenting','Legal','Food','Tech'].forEach(function(cat) {
+          var isAct = cat === S.cat;
+          var r = document.createElement('div');
+          r.className = 'sb-row' + (isAct ? ' a' : '');
+          r.textContent = cat === 'All' ? '⊞  All' : cat;
+          r.onclick = (function(c){ return function(){ setCat(c); }; })(cat);
+          cl.appendChild(r);
+        });
+      } else {
+        // All tab: full list with sub-cats
+        TEXT_CATS.forEach(function(cat) {
+          var isAct = cat === S.cat;
+          var r = document.createElement('div');
+          r.className = 'sb-row' + (isAct ? ' a' : '');
+          r.textContent = cat === 'All' ? '⊞  All' : cat;
+          r.onclick = (function(c){ return function(){ setCat(c); }; })(cat);
+          cl.appendChild(r);
+          if (isAct && SUB_CATS[cat]) {
+            getValidSubs(cat).forEach(function(sub) {
+              var sd = document.createElement('div');
+              sd.className = 'sb-sub' + (sub === S.sub ? ' a' : '');
+              sd.textContent = sub;
+              sd.onclick = (function(s){ return function(){ setSub(s); }; })(sub);
+              cl.appendChild(sd);
+            });
+          }
+        });
+      }
+    }
+  } else {
+    var pl = document.getElementById('sbPhotoCats');
+    if (pl) {
+      pl.innerHTML = '';
+      PH_CATS.forEach(function(cat) {
+        var row = document.createElement('div');
+        row.className = 'sb-row' + (cat === S.cat ? ' ag' : '');
+        row.textContent = cat;
+        row.onclick = function() { setCat(cat); };
+        pl.appendChild(row);
+      });
+    }
+  }
+}
+
+// ── RENDER MOBILE CATS ────────────────────────────────────────────────────────
+function renderMobCats() {
+  var cats = S.mode === 'photo' ? PH_CATS : TEXT_CATS;
+  var mc = document.getElementById('mobCats');
+  if (mc) {
+    mc.innerHTML = '';
+    cats.forEach(function(c) {
+      var d = document.createElement('div');
+      d.className = 'chip' + (c === S.cat ? ' a' : '');
+      d.textContent = c;
+      d.onclick = function() { setCat(c); };
+      mc.appendChild(d);
+    });
+  }
+  // Only show sub-cats when browsing All (not filtered by platform tab)
+  var ms = document.getElementById('mobSubs');
+  if (ms) {
+    ms.innerHTML = '';
+    if (S.plat === 'all') {
+      var validSubs = getValidSubs(S.cat);
+      validSubs.forEach(function(s) {
+        var d = document.createElement('div');
+        d.className = 'chip' + (s === S.sub ? ' a' : '');
+        d.textContent = s;
+        d.onclick = function() { setSub(s); };
+        ms.appendChild(d);
+      });
+    }
+  }
+}
+
+// ── RENDER GALLERY ────────────────────────────────────────────────────────────
+function renderGallery(containerId) {
+  var g = document.getElementById(containerId);
+  if (!g) return;
+  g.innerHTML = '';
+  FEATURED.forEach(function(f) {
+    var p = PROMPTS.find(function(x) { return x.id === f.id; });
+    if (!p) return;
+    var locked = isLocked(p);
+    var tier = p.tier === 'free' ? 'Free' : p.tier === 'advanced' ? '⭐ Advanced' : '🔥 Pro';
+
+    var d = document.createElement('div');
+    d.className = 'gal-card';
+
+    var img = document.createElement('img');
+    img.src = f.img;
+    img.loading = 'lazy';
+    img.alt = f.label;
+    img.onerror = function() { this.style.display = 'none'; };
+    d.appendChild(img);
+
+    var lbl = document.createElement('div');
+    lbl.className = 'gal-label';
+    lbl.textContent = f.label;
+    d.appendChild(lbl);
+
+    var ov = document.createElement('div');
+    ov.className = 'gal-ov';
+    ov.innerHTML = '<div class="gal-ov-tier">' + tier + '</div>'
+      + '<div class="gal-ov-prompt">' + p.prompt.substring(0, 130) + '...</div>';
+
+    var btn = document.createElement('div');
+    btn.className = 'gal-ov-btn' + (locked ? ' lk' : '');
+    btn.textContent = locked ? '🔒 Upgrade' : '✦ Use prompt';
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      if (locked) { showUpgrade(p.tier); } else { openModal(p.id); }
+    };
+    ov.appendChild(btn);
+    d.appendChild(ov);
+
+    if (containerId === 'insGal') {
+      // In inspire view — click sets subject
+      d.onclick = function() {
+        var ins = document.getElementById('insSubject');
+        if (ins) ins.value = f.label + ' scene';
+        showToast('Subject set to "' + f.label + '" — pick a style and generate');
+      };
+    }
+    g.appendChild(d);
+  });
+}
+
+// ── RENDER CARDS ─────────────────────────────────────────────────────────────
+function renderCards() {
+  var isPhoto = S.mode === 'photo';
+  var gridId  = isPhoto ? 'photoGrid' : 'promptsGrid';
+  var emptyId = isPhoto ? 'emptyPhoto' : 'emptyText';
+  var grid  = document.getElementById(gridId);
+  var empty = document.getElementById(emptyId);
+  if (!grid) return;
+
+  // Social tiles mode: when Social tab is active and no sub-cat drilled into
+  var socTiles = document.getElementById('socialTiles');
+  var showSocTiles = !isPhoto && S.plat === 'social' && S.cat === 'All' && S.sub === 'All' && !S.search;
+  if (socTiles) {
+    socTiles.style.display = showSocTiles ? 'block' : 'none';
+    grid.style.display = showSocTiles ? 'none' : '';
+    if (showSocTiles) { renderSocialTiles(); return; }
+  }
+
+  var filtered = getFiltered();
+  grid.innerHTML = '';
+  if (empty) empty.style.display = filtered.length === 0 ? 'block' : 'none';
+
+  filtered.forEach(function(p) {
+    var locked = isLocked(p);
+    var isFull = p.tier !== 'free';
+    var badgeCls = p.tier === 'free' ? 'badge bf' : p.tier === 'advanced' ? 'badge ba' : 'badge bp';
+    var badgeTxt = p.tier === 'free' ? 'Free' : p.tier === 'advanced' ? '⭐ Adv' : '🔥 Pro';
+    var grad = GRADS[p.cat] || '135deg,#ccc,#aaa';
+    var thumb = THUMBS[p.cat];
+
+    var card = document.createElement('div');
+    card.className = 'card' + (locked ? ' lk' : '');
+
+    // Thumbnail
+    var tw = document.createElement('div');
+    tw.className = 'card-img';
+    tw.style.background = 'linear-gradient(' + grad + ')';
+    if (thumb) {
+      var img = document.createElement('img');
+      img.src = thumb;
+      img.loading = 'lazy';
+      img.alt = p.cat;
+      img.onerror = function() { this.style.display = 'none'; };
+      tw.appendChild(img);
+    } else {
+      tw.style.display = 'flex';
+      tw.style.alignItems = 'center';
+      tw.style.justifyContent = 'center';
+      tw.style.fontSize = '28px';
+      tw.style.height = '80px';
+      tw.textContent = ICONS[p.cat] || '✦';
+    }
+    card.appendChild(tw);
+
+    // Body
+    var body = document.createElement('div');
+    body.className = 'card-body';
+
+    // Top row
+    var top = document.createElement('div');
+    top.className = 'card-top';
+    var title = document.createElement('div');
+    title.className = 'card-title';
+    title.textContent = p.title;
+    var badge = document.createElement('span');
+    badge.className = badgeCls;
+    badge.textContent = badgeTxt;
+    top.appendChild(title);
+    top.appendChild(badge);
+    body.appendChild(top);
+
+    // Desc
+    var desc = document.createElement('div');
+    desc.className = 'card-desc';
+    desc.textContent = p.desc;
+    body.appendChild(desc);
+
+    // Preview
+    var prev = document.createElement('div');
+    prev.className = 'card-prev' + (p.tier === 'pro' ? ' pro' : p.tier === 'advanced' ? ' adv' : '');
+    if (isFull) {
+      var plbl = document.createElement('div');
+      plbl.style.cssText = 'font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;color:' + (p.tier === 'pro' ? 'var(--am)' : 'var(--pu)');
+      plbl.textContent = 'AI generation prompt';
+      prev.appendChild(plbl);
+    }
+    var ptxt = document.createElement('div');
+    ptxt.textContent = p.prompt.substring(0, isFull ? 160 : 100) + '...';
+    prev.appendChild(ptxt);
+    body.appendChild(prev);
+
+    // View buttons
+    if (p.views) {
+      var vw = document.createElement('div');
+      vw.className = 'card-views';
+      p.views.forEach(function(v, i) {
+        var b = document.createElement('button');
+        b.className = 'vbtn' + (i === 0 ? ' s' : '');
+        b.textContent = v;
+        b.onclick = function(e) {
+          e.stopPropagation();
+          vw.querySelectorAll('.vbtn').forEach(function(x) { x.classList.remove('s'); });
+          b.classList.add('s');
+        };
+        vw.appendChild(b);
+      });
+      body.appendChild(vw);
+    }
+
+    // Actions
+    var acts = document.createElement('div');
+    acts.className = 'card-acts';
+    if (locked) {
+      var lb = document.createElement('button');
+      lb.className = 'btn btn-lk';
+      lb.textContent = '🔒 Upgrade to unlock';
+      lb.onclick = function(e) { e.stopPropagation(); showUpgrade(p.tier); };
+      acts.appendChild(lb);
+    } else {
+      var ub = document.createElement('button');
+      ub.className = 'btn btn-ac';
+      ub.textContent = '✦ Customise & use';
+      ub.onclick = function(e) { e.stopPropagation(); openModal(p.id); };
+      acts.appendChild(ub);
+      var cb = document.createElement('button');
+      cb.className = 'btn-cp';
+      cb.textContent = 'Copy';
+      cb.onclick = function(e) { e.stopPropagation(); quickCopy(p.id); };
+      acts.appendChild(cb);
+    }
+    body.appendChild(acts);
+    card.appendChild(body);
+    grid.appendChild(card);
+  });
+}
+
+function renderAll() {
+  updateCounts();
+  renderSB();
+  renderMobCats();
+  renderCards();
+}
+
+// ── CONTROLS ──────────────────────────────────────────────────────────────────
+function setMode(m) {
+  S.mode = m;
+  S.cat = 'All';
+  S.sub = 'All';
+  S.tier = 'all';
+  S.plat = 'all';
+
+  // Show/hide views
+  ['text','photo','ins'].forEach(function(v) {
+    var el = document.getElementById('v-' + v);
+    if (el) el.style.display = v === m ? '' : 'none';
+  });
+
+  // Mobile buttons
+  var btnMap = { text:'at', photo:'aph', ins:'ains' };
+  ['text','photo','ins'].forEach(function(v) {
+    var el = document.getElementById('mb-' + v);
+    if (el) el.className = 'mob-btn' + (v === m ? ' ' + btnMap[v] : '');
+  });
+
+  // Hide platform filter buttons in Photo/Video and Inspire Me modes
+  // They only make sense for Text Prompts
+  var tbFilters = document.getElementById('tbFilters');
+  if (tbFilters) {
+    tbFilters.style.display = m === 'text' ? '' : 'none';
+  }
+
+  // Reset platform buttons to All when switching modes
+  document.querySelectorAll('.plat-btn').forEach(function(b) { b.classList.remove('act'); });
+  var allBtn = document.getElementById('btn-all');
+  if (allBtn) allBtn.classList.add('act');
+
+  renderAll();
+
+  // Render gallery for inspire view
+  if (m === 'ins') {
+    setTimeout(function() { renderGallery('insGal'); }, 50);
+  }
+}
+
+function setCat(cat) {
+  // Toggle: same cat collapses sub-cats; click again collapses entirely
+  if (S.cat === cat) {
+    if (S.sub !== 'All') {
+      S.sub = 'All';
+    } else {
+      S.cat = 'All';
+      S.sub = 'All';
+    }
+  } else {
+    S.cat = cat;
+    S.sub = 'All';
+  }
+  renderSB();
+  renderMobCats();
+  renderCards();
+}
+
+function setSub(sub) {
+  S.sub = sub;
+  renderSB();
+  renderMobCats();
+  renderCards();
+}
+
+function goBackSocial() {
+  S.cat = 'All';
+  S.sub = 'All';
+  document.getElementById('socialBackBtn').style.display = 'none';
+  var lbl = document.getElementById('socialSubLabel');
+  if (lbl) lbl.style.display = 'none';
+  renderCards();
+  renderSB();
+}
+
+function setPlat(val, el) {
+  S.plat = val;
+  S.sub = 'All';
+  // Social tab: auto-select Social category to show platform tiles immediately
+  if (val === 'social') {
+    S.cat = 'Social';
+  } else {
+    S.cat = 'All';
+  }
+  document.querySelectorAll('.plat-btn').forEach(function(b) { b.classList.remove('act'); });
+  if (el) el.classList.add('act');
+  renderAll();
+}
+
+function setTier(val, el) {
+  S.tier = val;
+  // Update all tier pill buttons (both text and photo grids)
+  document.querySelectorAll('.tier-pill').forEach(function(b) { b.classList.remove('act'); });
+  // Activate matching buttons in both grids
+  var ids = ['tp-' + (val==='all'?'all':val==='free'?'free':val==='advanced'?'advanced':'pro'),
+             'tpp-' + (val==='all'?'all':val==='free'?'free':val==='advanced'?'advanced':'pro')];
+  ids.forEach(function(id) { var b = document.getElementById(id); if (b) b.classList.add('act'); });
+  renderCards();
+}
+
+function onSearch() { renderCards(); }
+
+function quickCopy(id) {
+  var p = PROMPTS.find(function(x) { return x.id === id; });
+  if (!p || isLocked(p)) return;
+  navigator.clipboard.writeText(p.prompt).then(function() {
+    showToast('Copied! Paste in any AI ✓');
+  });
+  deduct(p.tier);
+}
+
+function showUpgrade(tier) {
+  var msg = tier === 'pro'
+    ? '🔥 Pro only — upgrade for cinematic prompts'
+    : '⭐ Advanced only — upgrade for 3D prompts';
+  showToast(msg);
+  var ub = document.getElementById('upgradeBanner');
+  if (ub) { ub.classList.add('show'); ub.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openModal(id) {
+  var p = PROMPTS.find(function(x) { return x.id === id; });
+  if (!p || isLocked(p)) return;
+  S.mPrompt = p;
+  S.mViewIdx = 0;
+  S.genOut = '';
+
+  document.getElementById('mTitle').textContent = p.title;
+  document.getElementById('mSubject').value = '';
+  document.getElementById('outBox').style.display = 'none';
+  document.getElementById('copyOutBtn').style.display = 'none';
+  document.getElementById('mPreview').style.display = 'none';
+  document.getElementById('mAnalysis').style.display = 'none';
+  document.getElementById('mAnalysis').textContent = '';
+  document.getElementById('mAnalysing').style.display = 'none';
+  mTab('type');
+
+  var vl = document.getElementById('mViewsLbl');
+  var mv = document.getElementById('mViews');
+  mv.innerHTML = '';
+
+  if (p.views && p.views.length) {
+    vl.style.display = 'block';
+    p.views.forEach(function(v, i) {
+      var d = document.createElement('div');
+      d.className = 'm-view' + (i === 0 ? ' s' : '');
+      var bc = i === 0 ? 'badge bf' : p.tier === 'advanced' ? 'badge ba' : 'badge bp';
+      var bt = i === 0 ? 'Free' : p.tier === 'advanced' ? '⭐' : '🔥';
+      d.innerHTML = '<div class="m-view-row"><span class="m-view-name">' + v + '</span>'
+        + '<span class="' + bc + '">' + bt + '</span></div>'
+        + '<div class="m-view-desc">' + v + ' style</div>';
+      d.onclick = function() {
+        mv.querySelectorAll('.m-view').forEach(function(o) { o.classList.remove('s'); });
+        d.classList.add('s');
+        S.mViewIdx = i;
+      };
+      mv.appendChild(d);
+    });
+  } else {
+    vl.style.display = 'none';
+  }
+
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  S.mPrompt = null;
+}
+
+function mTab(t) {
+  document.getElementById('ms-type').style.display   = t === 'type'   ? 'block' : 'none';
+  document.getElementById('ms-upload').style.display = t === 'upload' ? 'block' : 'none';
+  document.getElementById('mt-type').className   = 'mtab' + (t === 'type'   ? ' a' : '');
+  document.getElementById('mt-upload').className = 'mtab' + (t === 'upload' ? ' a' : '');
+  document.getElementById('genBtn').textContent = t === 'upload' ? '✦ Analyse & generate' : '✦ Generate my prompt';
+}
+
+function onMFile(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var prev = document.getElementById('mPreview');
+    prev.src = e.target.result;
+    prev.style.display = 'block';
+    if (!file.type.startsWith('video/')) {
+      analyseImg(e.target.result.split(',')[1], file.type || 'image/jpeg');
+    } else {
+      var anl = document.getElementById('mAnalysis');
+      anl.textContent = 'Video: ' + file.name;
+      anl.style.display = 'block';
+      document.getElementById('mSubject').value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+      mTab('type');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function analyseImg(b64, mime) {
+  document.getElementById('mAnalysing').style.display = 'block';
+  document.getElementById('mAnalysis').style.display = 'none';
+  var p = S.mPrompt;
+  var msg = p
+    ? 'Analyse this image in 2 sentences: subject, lighting, mood, style. Suggest subject for a "' + p.title + '" prompt.'
+    : 'Describe this image in 2 sentences for AI prompt generation.';
+  fetch('/api/claude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 300,
+      messages: [{ role: 'user', content: [
+        { type: 'image', source: { type: 'base64', media_type: mime, data: b64 } },
+        { type: 'text', text: msg }
+      ]}]
+    })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    var text = (data.content && data.content[0] && data.content[0].text) || 'Image uploaded. Describe subject below.';
+    document.getElementById('mAnalysing').style.display = 'none';
+    var anl = document.getElementById('mAnalysis');
+    anl.textContent = text;
+    anl.style.display = 'block';
+    document.getElementById('mSubject').value = text.split('.')[0].substring(0, 80);
+    mTab('type');
+  }).catch(function() {
+    document.getElementById('mAnalysing').style.display = 'none';
+  });
+}
+
+function doGenerate() {
+  if (!S.mPrompt) return;
+  var p = S.mPrompt;
+  var subj = document.getElementById('mSubject').value.trim();
+  var prompt = p.prompt;
+  if (subj) {
+    prompt = prompt.replace(/\[[A-Z \/]+\]/g, subj);
+  }
+  if (p.views && p.views[S.mViewIdx]) {
+    var mod = VIEW_MODS[p.views[S.mViewIdx]] || (', ' + p.views[S.mViewIdx] + ' style');
+    prompt += mod;
+  }
+  S.genOut = prompt;
+  var ob = document.getElementById('outBox');
+  ob.textContent = prompt;
+  ob.style.display = 'block';
+  document.getElementById('copyOutBtn').style.display = 'block';
+  deduct(p.tier);
+}
+
+function doCopyOut() {
+  if (!S.genOut) return;
+  navigator.clipboard.writeText(S.genOut).then(function() {
+    showToast('Copied! Paste in any AI ✓');
+    var b = document.getElementById('copyOutBtn');
+    b.textContent = '✓ Copied!';
+    setTimeout(function() { b.textContent = '⎘ Copy this prompt'; }, 2500);
+  });
+}
+
+// ── PHOTO PANEL ───────────────────────────────────────────────────────────────
+function onPFile(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var prev = document.getElementById('pPreview');
+    prev.src = e.target.result;
+    prev.style.display = 'block';
+    document.getElementById('pAnalysing').style.display = 'block';
+    document.getElementById('pAnalysis').style.display = 'none';
+    document.getElementById('pGen').style.display = 'none';
+    document.getElementById('pCopyBtn').style.display = 'none';
+    document.getElementById('pStyleRow').style.display = 'none';
+
+    if (!file.type.startsWith('video/')) {
+      var b64 = e.target.result.split(',')[1];
+      fetch('/api/claude', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 400,
+          messages: [{ role: 'user', content: [
+            { type: 'image', source: { type: 'base64', media_type: file.type || 'image/jpeg', data: b64 } },
+            { type: 'text', text: 'Analyse this image. Write 2 sentences describing: main subject, lighting, mood, visual style. Then write a professional Midjourney/DALL-E prompt for this image.' }
+          ]}]
+        })
+      }).then(function(r) { return r.json(); }).then(function(data) {
+        var text = (data.content && data.content[0] && data.content[0].text) || '';
+        document.getElementById('pAnalysing').style.display = 'none';
+        var sentences = text.split('.');
+        var analysis = sentences.slice(0, 2).join('.') + '.';
+        var promptPart = sentences.slice(2).join('.').trim() || text;
+        document.getElementById('pAnalysisText').textContent = analysis;
+        document.getElementById('pAnalysis').style.display = 'block';
+        document.getElementById('pGenText').textContent = promptPart;
+        document.getElementById('pGen').style.display = 'block';
+        document.getElementById('pCopyBtn').style.display = 'block';
+        document.getElementById('pStyleRow').style.display = 'flex';
+        S.panelPrompt = promptPart;
+      }).catch(function() {
+        document.getElementById('pAnalysing').style.display = 'none';
+        document.getElementById('pAnalysisText').textContent = 'Upload complete. Prompt generation unavailable.';
+        document.getElementById('pAnalysis').style.display = 'block';
+      });
+    } else {
+      document.getElementById('pAnalysing').style.display = 'none';
+      var vidPrompt = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ') + ', cinematic video, professional quality';
+      document.getElementById('pGenText').textContent = vidPrompt;
+      document.getElementById('pGen').style.display = 'block';
+      document.getElementById('pCopyBtn').style.display = 'block';
+      S.panelPrompt = vidPrompt;
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function doCopyPanel() {
+  if (!S.panelPrompt) return;
+  navigator.clipboard.writeText(S.panelPrompt).then(function() {
+    showToast('Copied! Paste in Midjourney or any AI ✓');
+  });
+}
+
+function applyPStyle(style) {
+  if (!S.panelPrompt) return;
+  var mods = {
+    '3d': ', photorealistic 3D render, Octane quality, volumetric lighting, subsurface scattering, 8K',
+    cin: ', ARRI Alexa, anamorphic lens, film grain, slow motion, golden hour, cinematic grade'
+  };
+  var base = S.panelPrompt.replace(/, photorealistic 3D.*$/, '').replace(/, ARRI Alexa.*$/, '');
+  S.panelPrompt = base + (mods[style] || '');
+  document.getElementById('pGenText').textContent = S.panelPrompt;
+  showToast(style === '3d' ? '⭐ 3D style applied' : '🔥 Cinematic style applied');
+}
+
+// ── INSPIRE ME ────────────────────────────────────────────────────────────────
+function setInsStyle(s, el) {
+  S.insStyle = s;
+  document.querySelectorAll('.ins-style').forEach(function(b) { b.classList.remove('s'); });
+  el.classList.add('s');
+}
+
+function doInspire() {
+  var subj = document.getElementById('insSubject').value.trim();
+  if (!subj) { showToast('Please describe your subject first', true); return; }
+  var tierNeeded = S.insStyle === '3d' ? 'advanced' : S.insStyle === 'cin' ? 'pro' : 'free';
+  if (freeLeft(tierNeeded) <= 0) { showUpgrade(tierNeeded); return; }
+  var mods = {
+    normal: 'high quality photography, natural lighting, sharp detail, beautiful composition, 8K resolution',
+    '3d':   'photorealistic 3D render, Octane Cycles, global illumination, ray-traced reflections, subsurface scattering, 8K',
+    cin:    'cinematic film, ARRI Alexa, anamorphic lens, film grain, slow motion, golden hour, Terrence Malick visual style'
+  };
+  S.insOut = subj + ', ' + (mods[S.insStyle] || mods.normal) + '.';
+  document.getElementById('insOut').textContent = S.insOut;
+  document.getElementById('insOut').style.display = 'block';
+  document.getElementById('insCopyBtn').style.display = 'block';
+  deduct(tierNeeded);
+}
+
+function doCopyIns() {
+  if (!S.insOut) return;
+  navigator.clipboard.writeText(S.insOut).then(function() {
+    showToast('Copied! ✓');
+  });
+}
+
+// ── LANGUAGE FROM MAIN APP ────────────────────────────────────────────────────
+var LANG_PH = {
+  'English':  'Search... try: sick leave, instagram, 3D render',
+  'Hindi':    'खोजें... जैसे: छुट्टी मेल, इंस्टाग्राम',
+  'Gujarati': 'શોધો... જેમ કે: રજા મેઈલ, ઇન્સ્ટાગ્રામ',
+  'Marathi':  'शोधा... जसे: रजा मेल, इन्स्टाग्राम',
+  'Tamil':    'தேடு... எ.கா: விடுப்பு மெயில்',
+  'Telugu':   'వెతకండి... ఉదా: సెలవు మెయిల్',
+  'Bengali':  'খুঁজুন... যেমন: ছুটির মেইল'
+};
+
+function applyLang() {
+  var stored = localStorage.getItem('clarix-lang') || 'English';
+  var lang = stored.split(' \u2014 ')[0];
+  var si = document.getElementById('searchInput');
+  // Search placeholder always in English — it's a UI label, not content
+  if (si) si.placeholder = 'Search... try: sick leave, instagram, 3D render';
+  var badge = document.getElementById('langBadge');
+  if (badge) {
+    if (lang !== 'English') {
+      badge.textContent = lang;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+applyLang();
+updateCounts();
+renderSB();
+renderMobCats();
+renderCards();
+</script>
+<!-- ADD PLATFORM OVERLAY -->
+<div class="add-plat-overlay" id="addPlatOverlay">
+  <div class="add-plat-box">
+    <div class="add-plat-title">➕ Add a platform</div>
+    <div class="add-plat-sub">Add any social media platform popular in your region. It will be saved for future visits.</div>
+    <div class="add-plat-suggestions" id="platSuggestions"></div>
+    <input class="add-plat-input" id="addPlatInput" placeholder="e.g. ShareChat, Telegram, Koo, WeChat...">
+    <div class="add-plat-row">
+      <button class="add-plat-cancel" onclick="closeAddPlat()">Cancel</button>
+      <button class="add-plat-save" onclick="saveCustomPlat()">Add platform</button>
+    </div>
+  </div>
+</div>
+<!-- MOBILE BOTTOM NAV -->
+<nav class="lib-bottom-nav">
+  <a href="index.html" class="lib-nav-item">
+    <span class="lib-nav-icon">⌂</span>
+    <span class="lib-nav-label">Home</span>
+  </a>
+  <a href="index.html" onclick="sessionStorage.setItem('clarix-goto','write')" class="lib-nav-item">
+    <span class="lib-nav-icon">✦</span>
+    <span class="lib-nav-label">Write</span>
+  </a>
+  <a href="library-final.html" class="lib-nav-item active">
+    <span class="lib-nav-icon">◫</span>
+    <span class="lib-nav-label">Library</span>
+  </a>
+  <a href="index.html" onclick="sessionStorage.setItem('clarix-goto','profile')" class="lib-nav-item">
+    <span class="lib-nav-icon">◎</span>
+    <span class="lib-nav-label">Profile</span>
+  </a>
+</nav>
+
+</body>
+</html>
