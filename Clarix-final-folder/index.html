@@ -441,7 +441,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .app-tile:hover .app-tile-use{opacity:1}
 
 /* ── LIBRARY PAGE ── */
-.library-wrap{padding:24px;max-width:1100px;margin:0 auto;width:100%}
+.library-wrap{padding:24px;max-width:1200px;margin:0 auto;width:100%}
 .lib-top{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
 .lib-search{
   flex:1;min-width:200px;display:flex;align-items:center;gap:8px;
@@ -461,37 +461,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .lib-filter-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
 .lib-section-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;letter-spacing:-0.3px;display:flex;align-items:center;justify-content:space-between}
 .lib-see-all{font-size:12px;color:var(--ac);cursor:pointer;font-weight:500}
-.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:28px}
 
 /* Library card */
 .lib-card{
-  border-radius:14px;overflow:hidden;cursor:pointer;
-  transition:all .22s;position:relative;
-  background:var(--surface);border:1px solid var(--border);
-  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+  border-radius:16px;overflow:hidden;cursor:pointer;
+  transition:all .28s cubic-bezier(.34,1.56,.64,1);position:relative;
+  background:#0f172a;border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
 }
-.lib-card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(0,0,0,0.12);border-color:transparent}
+.lib-card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 20px 48px rgba(0,0,0,0.5);border-color:rgba(255,112,67,0.4)}
 .lib-card:hover .lib-card-btn{opacity:1;transform:translateY(0)}
-.lib-card-thumb{height:130px;position:relative;overflow:hidden}
-.lib-card-thumb svg{width:100%;height:100%;transition:transform .3s ease}
-.lib-card:hover .lib-card-thumb svg{transform:scale(1.06)}
+.lib-card-thumb{height:160px;position:relative;overflow:hidden;background:#0f172a}
+.lib-card-thumb svg{width:100%;height:100%;transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.lib-card:hover .lib-card-thumb svg{transform:scale(1.08)}
 .lib-card-btn{
-  position:absolute;bottom:10px;left:50%;transform:translateX(-50%) translateY(8px);
-  background:rgba(255,255,255,0.95);color:var(--ac);border:none;border-radius:50px;
-  padding:7px 16px;font-size:11px;font-weight:700;cursor:pointer;
+  position:absolute;bottom:12px;left:50%;transform:translateX(-50%) translateY(8px);
+  background:rgba(255,112,67,0.92);color:#fff;border:none;border-radius:50px;
+  padding:8px 20px;font-size:12px;font-weight:700;cursor:pointer;
   opacity:0;transition:all .22s;white-space:nowrap;z-index:3;
-  box-shadow:0 4px 12px rgba(0,0,0,0.15);font-family:'DM Sans',sans-serif;
+  box-shadow:0 4px 16px rgba(255,112,67,0.5);font-family:'DM Sans',sans-serif;
+  backdrop-filter:blur(4px);
 }
-.lib-card-body{padding:11px 13px 12px}
-.lib-card-cat{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint);margin-bottom:4px}
-.lib-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.3}
-.lib-card-desc{font-size:11px;color:var(--hint);line-height:1.4;margin-bottom:8px}
+.lib-card-body{padding:12px 14px 14px;background:#0f172a}
+.lib-card-cat{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:rgba(255,255,255,0.45);margin-bottom:4px}
+.lib-card-title{font-size:13px;font-weight:600;color:rgba(255,255,255,0.9);margin-bottom:3px;line-height:1.3}
+.lib-card-desc{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.4;margin-bottom:8px}
 .lib-card-foot{display:flex;align-items:center;justify-content:space-between}
 .lib-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
 .lb-free{background:#e8f5f3;color:#0f6e56}
 .lb-adv{background:#ede9fe;color:#5b21b6}
 .lb-pro{background:#fff8e1;color:#854f0b}
-.lib-copy{font-size:11px;color:var(--hint);cursor:pointer;padding:3px 8px;border-radius:6px;border:1px solid var(--border);transition:all .15s}
+.lib-copy{font-size:11px;color:rgba(255,255,255,0.4);cursor:pointer;padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);transition:all .15s}
 .lib-copy:hover{color:var(--ac);border-color:var(--ac)}
 
 /* ── PROFILE PAGE ── */
@@ -640,6 +641,31 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
 /* Both copy/open rows */
 .both-copy-wrap,.both-open-wrap{display:flex;gap:6px;margin-bottom:6px}
+
+/* ── INSPIRE ME ── */
+#page-inspire{background:#080810}
+.insp-wrap{padding:20px;max-width:1200px;margin:0 auto;width:100%}
+.insp-h1{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px;background:linear-gradient(135deg,#ff7043,#ffb347);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.insp-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:16px}
+.insp-cats{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+.insp-cat{padding:6px 15px;border-radius:50px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.45);transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.insp-cat:hover{border-color:rgba(255,112,67,0.5);color:#ff7043}
+.insp-cat.active{background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;border-color:transparent}
+.insp-grid{columns:3;gap:12px;column-fill:balance}
+@media(max-width:600px){.insp-grid{columns:2}}
+.insp-card{break-inside:avoid;margin-bottom:12px;border-radius:14px;overflow:hidden;cursor:pointer;position:relative;border:1px solid rgba(255,255,255,0.07);transition:all .3s cubic-bezier(.34,1.56,.64,1);background:#131320}
+.insp-card:hover{transform:translateY(-5px) scale(1.015);border-color:rgba(255,112,67,0.5);box-shadow:0 24px 60px rgba(0,0,0,0.7)}
+.insp-card:hover .insp-ov{opacity:1}
+.insp-card:hover .insp-img{transform:scale(1.07)}
+.insp-img{width:100%;display:block;transition:transform .5s ease;object-fit:cover}
+.insp-ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:14px}
+.insp-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#ff7043;margin-bottom:3px}
+.insp-title{font-size:12px;font-weight:600;color:#fff;margin-bottom:9px;line-height:1.35}
+.insp-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 16px;border-radius:50px;background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;font-size:10px;font-weight:700;border:none;cursor:pointer;width:fit-content;box-shadow:0 4px 14px rgba(255,112,67,0.5);font-family:'DM Sans',sans-serif}
+.insp-badge{position:absolute;top:10px;left:10px;padding:3px 10px;border-radius:20px;font-size:9px;font-weight:700;backdrop-filter:blur(6px);text-transform:uppercase;letter-spacing:.05em}
+.ib-free{background:rgba(0,200,100,0.18);color:#4ade80;border:1px solid rgba(74,222,128,0.25)}
+.ib-pro{background:rgba(255,112,67,0.18);color:#ffb347;border:1px solid rgba(255,112,67,0.3)}
+.insp-shimmer{display:flex;align-items:center;justify-content:center;background:#131320;color:rgba(255,255,255,0.15);font-size:11px;width:100%}
 </style>
 </head>
 <body>
@@ -670,6 +696,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
     <span class="sb-item-icon">✦</span><span>Write prompt</span>
   </div>
   <div class="sb-item" id="nav-library" onclick="goPage('library',this)">
+    <span class="sb-item-icon">📚</span><span>Prompt Library</span>
+  </div>
+  <div class="sb-item" id="nav-inspire" onclick="goPage('inspire',this);initInspire()">
     <span class="sb-item-icon">✨</span><span>Inspire Me</span>
   </div>
   <div class="sb-item" id="nav-apps" onclick="goPage('apps',this)">
@@ -872,8 +901,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
       <!-- Platform pills -->
       <div class="plat-section">
-        <div class="plat-label" id="platformLabel">Select AI platform</div>
-        <div class="plat-scroll" id="aiPills">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="plat-label" id="platformLabel" style="margin-bottom:0">Select AI platform</div>
+          <button onclick="openModal()" style="display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;border:1.5px dashed var(--ac);background:var(--ac-bg);color:var(--ac);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">➕ Add platform</button>
+        </div>
+        <div id="aiPills" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px">
           <div class="platform-pill active" onclick="selectPlatform(this,'ChatGPT','ai')">🤖 ChatGPT</div>
           <div class="platform-pill" onclick="selectPlatform(this,'Claude','ai')">🧠 Claude</div>
           <div class="platform-pill" onclick="selectPlatform(this,'Gemini','ai')">✨ Gemini</div>
@@ -885,9 +917,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
           <div class="platform-pill" onclick="selectPlatform(this,'Pi','ai')">🌀 Pi</div>
           <div class="platform-pill" onclick="selectPlatform(this,'Poe','ai')">🎯 Poe</div>
           <div class="platform-pill" onclick="selectPlatform(this,'Mistral','ai')">⭐ Mistral</div>
-          <div class="platform-pill custom-pill" onclick="openModal()">➕ Add your platform</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Krutrim','ai')">🇮🇳 Krutrim</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Qwen','ai')">🌐 Qwen</div>
         </div>
-        <div class="plat-scroll" id="socialPills" style="display:none;margin-top:8px">
+        <div id="socialPills" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px">
           <div class="platform-pill" onclick="selectPlatform(this,'Instagram','social')">📸 Instagram</div>
           <div class="platform-pill" onclick="selectPlatform(this,'WhatsApp','social')">💬 WhatsApp</div>
           <div class="platform-pill" onclick="selectPlatform(this,'Twitter/X','social')">🐦 Twitter/X</div>
@@ -898,7 +931,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
           <div class="platform-pill" onclick="selectPlatform(this,'Threads','social')">🧵 Threads</div>
           <div class="platform-pill" onclick="selectPlatform(this,'Pinterest','social')">📌 Pinterest</div>
           <div class="platform-pill" onclick="selectPlatform(this,'Reddit','social')">🤖 Reddit</div>
-          <div class="platform-pill custom-pill" onclick="openModal()">➕ Add platform</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Telegram','social')">✈️ Telegram</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'ShareChat','social')">🇮🇳 ShareChat</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Moj','social')">🎬 Moj</div>
+          <div class="platform-pill" onclick="selectPlatform(this,'Josh','social')">🎭 Josh</div>
         </div>
       </div>
 
@@ -994,7 +1030,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
           <div class="output-tabs">
             <div class="output-tab active" onclick="showOutputTab('caption',this)">📝 Caption</div>
             <div class="output-tab" onclick="showOutputTab('prompt',this)">🤖 AI Prompt</div>
-            <div class="output-tab" onclick="showOutputTab('both',this)">⚡ Both</div>
           </div>
           <div class="output-pane active" id="pane-caption">
             <div class="output-text" id="socialCaption"></div>
@@ -1029,9 +1064,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
   <!-- ══ APPS PAGE ══ -->
   <div class="page" id="page-apps">
     <div class="apps-wrap">
-      <div class="apps-hero">
-        <div class="apps-title">⚡ Apps</div>
-        <div class="apps-sub">Choose a platform — Clarix optimises your prompt specifically for it</div>
+      <div class="apps-hero" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div class="apps-title">⚡ Apps</div>
+          <div class="apps-sub">Choose a platform — Clarix optimises your prompt specifically for it</div>
+        </div>
+        <button onclick="openModal()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:50px;border:1.5px dashed var(--ac);background:var(--ac-bg);color:var(--ac);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;margin-top:4px">
+          ➕ Add your platform
+        </button>
       </div>
 
       <div class="apps-section-title">🤖 AI platforms <span class="apps-section-count">11 platforms</span></div>
@@ -1086,6 +1126,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
   </div>
 
 </main>
+
+<!-- ══ INSPIRE ME PAGE ══ -->
+<div class="page" id="page-inspire">
+  <div class="insp-wrap">
+    <div class="insp-h1">✨ Inspire Me</div>
+    <div class="insp-sub">Click any image — get the perfect AI prompt to recreate it instantly</div>
+    <div class="insp-cats" id="inspCats">
+      <button class="insp-cat active" onclick="filterInspire('all',this)">All</button>
+      <button class="insp-cat" onclick="filterInspire('cinematic',this)">🎬 Cinematic</button>
+      <button class="insp-cat" onclick="filterInspire('portrait',this)">🧑 Portrait</button>
+      <button class="insp-cat" onclick="filterInspire('nature',this)">🌿 Nature</button>
+      <button class="insp-cat" onclick="filterInspire('architecture',this)">🏙️ Architecture</button>
+      <button class="insp-cat" onclick="filterInspire('abstract',this)">🎨 Abstract</button>
+      <button class="insp-cat" onclick="filterInspire('fantasy',this)">🔮 Fantasy</button>
+      <button class="insp-cat" onclick="filterInspire('3d',this)">💎 3D Art</button>
+    </div>
+    <div class="insp-grid" id="inspGrid"></div>
+  </div>
+</div>
 
 <!-- ══ OVERLAYS ══ -->
 <!-- Lang nudge -->
@@ -1146,6 +1205,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
     <div style="font-size:13px;color:#666;margin-bottom:20px;line-height:1.5" id="voiceLangSub">We detected you spoke in <strong id="voiceLangDetected">Russian</strong>. Switch language for better results?</div>
     <button onclick="voiceLangSwitch()" style="width:100%;background:#ff7043;color:#fff;border:none;padding:12px;border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px" id="voiceLangSwitchBtn">Yes, switch to <span id="voiceLangSwitchName">Russian</span></button>
     <button onclick="voiceLangKeep()" style="width:100%;background:#f5f5f5;color:#666;border:1px solid #e0e0e0;padding:12px;border-radius:50px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">Keep English & enhance anyway</button>
+  </div>
+</div>
+
+<!-- Inspire Me conflict confirm popup -->
+<div id="libConfirmOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:340px;text-align:center;animation:modalIn .25s ease">
+    <div style="font-size:36px;margin-bottom:10px">✏️</div>
+    <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px;color:#1a1a1a">You have an existing prompt</div>
+    <div style="font-size:13px;color:#666;margin-bottom:20px;line-height:1.5">What would you like to do with the library prompt?</div>
+    <button onclick="libConfirmNew()" style="width:100%;background:#ff7043;color:#fff;border:none;padding:12px;border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px">🆕 Replace — start fresh</button>
+    <button onclick="libConfirmKeep()" style="width:100%;background:#f5f5f5;color:#333;border:1px solid #e0e0e0;padding:12px;border-radius:50px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px">➕ Add to existing prompt</button>
+    <button onclick="libConfirmCancel()" style="width:100%;background:transparent;color:#999;border:none;padding:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif">Cancel</button>
   </div>
 </div>
 
@@ -1232,18 +1303,78 @@ var AI_APPS = [
 
 
 var LIB_CARDS = [
-  { cat:'Email · Business', title:'Professional sick leave', desc:'Formal leave request with all details', tier:'free', gradient:'linear-gradient(135deg,#fce7f3,#f9a8d4,#ec4899)', icon:'✉️', prompt:'Write a professional and polite sick leave email to my manager requesting leave for tomorrow. I am unwell with fever. Include: clear subject line, formal greeting, brief reason, expected return date, professional closing.' },
-  { cat:'Email · Career', title:'Salary negotiation', desc:'Negotiate compensation professionally', tier:'adv', gradient:'linear-gradient(135deg,#fef3c7,#fcd34d,#f59e0b)', icon:'💰', prompt:'Write a confident but respectful email negotiating a salary of [AMOUNT] for the [ROLE] position. Mention my experience, market research, and express continued interest in the role.' },
-  { cat:'Email · Networking', title:'Meeting request', desc:'Schedule meetings professionally', tier:'free', gradient:'linear-gradient(135deg,#dbeafe,#93c5fd,#3b82f6)', icon:'🤝', prompt:'Write a professional email requesting a meeting with [PERSON] to discuss [TOPIC]. Suggest [TIME] as a preferred slot and offer flexibility. Keep it concise and respectful.' },
-  { cat:'Email · Job', title:'Follow-up after interview', desc:'Post-interview thank you email', tier:'free', gradient:'linear-gradient(135deg,#dcfce7,#86efac,#22c55e)', icon:'🎯', prompt:'Write a warm, professional follow-up email after a job interview for the role of [ROLE] at [COMPANY]. Thank the interviewer, reiterate my interest, and mention one key point from the interview.' },
-  { cat:'Instagram · Travel', title:'Travel caption', desc:'Captivating post with hashtags', tier:'free', gradient:'linear-gradient(135deg,#fce7f3,#fbcfe8,#ec4899)', icon:'📸', prompt:'Write a captivating Instagram caption for a travel photo from [LOCATION]. Make it engaging, include a call to action, and add 10 relevant hashtags.' },
-  { cat:'LinkedIn · Career', title:'Achievement post', desc:'Share milestones professionally', tier:'free', gradient:'linear-gradient(135deg,#ede9fe,#c4b5fd,#8b5cf6)', icon:'💼', prompt:'Write an engaging LinkedIn post about my recent achievement: [ACHIEVEMENT]. Make it professional yet personal, highlight the journey, and end with a lesson or insight for my network.' },
-  { cat:'Instagram · Viral', title:'Reel hook line', desc:'Stop scrollers in 3 seconds', tier:'pro', gradient:'linear-gradient(135deg,#ffedd5,#fdba74,#f97316)', icon:'🔥', prompt:'Write 5 powerful hook lines for a [TOPIC] Instagram reel that will stop people from scrolling in the first 3 seconds. Make them curious, bold, and conversation-starting.' },
-  { cat:'Coding · Debug', title:'Debug my code', desc:'Find errors, get clear explanations', tier:'free', gradient:'linear-gradient(135deg,#f0fdf4,#86efac,#22c55e)', icon:'💻', prompt:'I have a bug in my [LANGUAGE] code. Here is the code: [CODE]. Please identify what is wrong, explain why it is happening, and provide the fixed version with comments.' },
-  { cat:'WhatsApp · Personal', title:'Message to a friend', desc:'Casual, fun, natural tone', tier:'free', gradient:'linear-gradient(135deg,#dcfce7,#6ee7b7,#10b981)', icon:'💬', prompt:'Write a casual and friendly WhatsApp message to my friend asking if they want to meet this weekend. Keep it light, fun, and natural. Maybe add a small joke or emoji.' },
-  { cat:'Business · Sales', title:'Cold outreach email', desc:'Pitch your product professionally', tier:'adv', gradient:'linear-gradient(135deg,#e0f2fe,#7dd3fc,#0ea5e9)', icon:'📧', prompt:'Write a concise cold outreach email introducing [PRODUCT/SERVICE] to [TARGET CUSTOMER]. Focus on the problem it solves, include one strong stat, and end with a clear call to action.' },
-  { cat:'Study · Planning', title:'Study plan creator', desc:'Structured exam preparation', tier:'free', gradient:'linear-gradient(135deg,#fef9c3,#fde047,#ca8a04)', icon:'📚', prompt:'Create a detailed [DAYS]-day study plan for my [SUBJECT] exam covering [TOPICS]. Include daily goals, revision sessions, practice tests, and breaks. Make it realistic and structured.' },
-  { cat:'Creative · Writing', title:'Story starter', desc:'Begin any creative writing piece', tier:'pro', gradient:'linear-gradient(135deg,#fae8ff,#e879f9,#a855f7)', icon:'✍️', prompt:'Write a compelling opening paragraph for a [GENRE] story set in [SETTING]. Introduce the main character [CHARACTER NAME], establish the mood, and end with a hook that makes readers want to continue.' },
+  { cat:'Email · Business', title:'Professional sick leave', desc:'Doctor-approved, manager-ready', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0f172a"/><circle cx="220" cy="30" r="80" fill="#ec4899" opacity="0.12"/><circle cx="40" cy="140" r="60" fill="#f43f5e" opacity="0.08"/><rect x="40" y="45" width="180" height="12" rx="6" fill="#ec4899" opacity="0.6"/><rect x="40" y="67" width="140" height="8" rx="4" fill="#f9a8d4" opacity="0.4"/><rect x="40" y="85" width="160" height="8" rx="4" fill="#f9a8d4" opacity="0.3"/><rect x="40" y="103" width="120" height="8" rx="4" fill="#f9a8d4" opacity="0.2"/><circle cx="200" cy="110" r="30" fill="#ec4899" opacity="0.15" stroke="#ec4899" stroke-width="1"/><path d="M186,110 L196,120 L216,100" stroke="#ec4899" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.8"/>',
+    prompt:'Write a professional and polite sick leave email to my manager requesting leave for tomorrow. I am unwell with fever. Include: clear subject line, formal greeting, brief reason, expected return date, professional closing.' },
+  { cat:'LinkedIn · Career', title:'Achievement post', desc:'Viral, professional, engaging', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a0f1e"/><circle cx="0" cy="0" r="120" fill="#0077b5" opacity="0.18"/><rect x="30" y="120" width="18" height="30" rx="4" fill="#0077b5" opacity="0.5"/><rect x="58" y="95" width="18" height="55" rx="4" fill="#0077b5" opacity="0.65"/><rect x="86" y="70" width="18" height="80" rx="4" fill="#0077b5" opacity="0.75"/><rect x="114" y="50" width="18" height="100" rx="4" fill="#0077b5" opacity="0.85"/><rect x="142" y="30" width="18" height="120" rx="4" fill="#38bdf8" opacity="0.9"/><path d="M39,117 L67,92 L95,67 L123,47 L151,27 L200,60" fill="none" stroke="#7dd3fc" stroke-width="2" stroke-linecap="round" opacity="0.8"/><circle cx="200" cy="60" r="5" fill="#7dd3fc" opacity="0.9"/>',
+    prompt:'Write an engaging LinkedIn post about my recent achievement: [ACHIEVEMENT]. Make it professional yet personal, highlight the journey, and end with a lesson or insight for my network.' },
+  { cat:'Instagram · Travel', title:'Travel caption', desc:'10 hashtags, wanderlust vibes', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0c0a1a"/><circle cx="130" cy="50" r="90" fill="#f97316" opacity="0.08"/><path d="M0,100 Q65,40 130,90 Q195,140 260,80 L260,160 L0,160 Z" fill="#f97316" opacity="0.12"/><path d="M0,115 Q65,65 130,105 Q195,145 260,95 L260,160 L0,160 Z" fill="#fb923c" opacity="0.1"/><circle cx="200" cy="45" r="25" fill="#fbbf24" opacity="0.4"/><circle cx="200" cy="45" r="16" fill="#fbbf24" opacity="0.3"/><path d="M60,85 L80,55 L100,85 Z" fill="#f97316" opacity="0.5"/><path d="M100,95 L130,52 L160,95 Z" fill="#fb923c" opacity="0.6"/><path d="M148,100 L168,75 L188,100 Z" fill="#f97316" opacity="0.4"/>',
+    prompt:'Write a captivating Instagram caption for a travel photo from [LOCATION]. Make it engaging, include a call to action, and add 10 relevant hashtags.' },
+  { cat:'Instagram · Viral', title:'Reel hook line', desc:'Stop the scroll in 3 seconds', tier:'pro',
+    svg:'<rect width="260" height="160" fill="#0d0010"/><circle cx="130" cy="80" r="100" fill="#a855f7" opacity="0.1"/><circle cx="130" cy="80" r="65" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.4"/><circle cx="130" cy="80" r="40" fill="none" stroke="#c084fc" stroke-width="1.5" opacity="0.5"/><circle cx="130" cy="80" r="20" fill="#a855f7" opacity="0.3"/><path d="M119,72 L119,88 L145,80 Z" fill="#e879f9" opacity="0.8"/><circle cx="60" cy="30" r="3" fill="#c084fc" opacity="0.6"/><circle cx="200" cy="140" r="4" fill="#a855f7" opacity="0.5"/><circle cx="220" cy="50" r="2" fill="#e879f9" opacity="0.7"/><circle cx="40" cy="120" r="3" fill="#c084fc" opacity="0.4"/>',
+    prompt:'Write 5 powerful hook lines for a [TOPIC] Instagram reel that will stop people from scrolling in the first 3 seconds. Make them curious, bold, and conversation-starting.' },
+  { cat:'WhatsApp · Personal', title:'Message to a friend', desc:'Casual, fun, meet-up ready', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a1a0a"/><circle cx="130" cy="80" r="70" fill="#25d366" opacity="0.07"/><rect x="35" y="35" width="120" height="32" rx="14" fill="#25d366" opacity="0.25"/><polygon points="35,67 35,78 50,67" fill="#25d366" opacity="0.25"/><rect x="105" y="82" width="120" height="28" rx="13" fill="#128c7e" opacity="0.22"/><polygon points="225,82 225,93 210,82" fill="#128c7e" opacity="0.22"/><circle cx="65" cy="51" r="4" fill="#25d366" opacity="0.6"/><circle cx="85" cy="51" r="4" fill="#25d366" opacity="0.6"/><circle cx="105" cy="51" r="4" fill="#25d366" opacity="0.6"/><circle cx="130" cy="96" r="4" fill="#128c7e" opacity="0.5"/><circle cx="150" cy="96" r="4" fill="#128c7e" opacity="0.5"/>',
+    prompt:'Write a casual and friendly WhatsApp message to my friend asking if they want to meet this weekend. Keep it light, fun, and natural. Maybe add a small joke or emoji.' },
+  { cat:'Coding · Debug', title:'Debug my code', desc:'Find bugs, get fixes + explanations', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a1a0a"/><rect x="20" y="25" width="220" height="110" rx="10" fill="#10b981" opacity="0.08" stroke="#10b981" stroke-width="1" opacity="0.3"/><rect x="35" y="42" width="80" height="8" rx="4" fill="#10b981" opacity="0.7"/><rect x="35" y="58" width="130" height="7" rx="3" fill="#34d399" opacity="0.5"/><rect x="50" y="72" width="100" height="7" rx="3" fill="#6ee7b7" opacity="0.45"/><rect x="50" y="86" width="90" height="7" rx="3" fill="#6ee7b7" opacity="0.4"/><rect x="35" y="100" width="120" height="7" rx="3" fill="#34d399" opacity="0.5"/><circle cx="195" cy="75" r="22" fill="#ef4444" opacity="0.2" stroke="#ef4444" stroke-width="1.5"/><path d="M186,75 L194,83 L208,65" stroke="#ef4444" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.8"/>',
+    prompt:'I have a bug in my [LANGUAGE] code. Here is the code: [CODE]. Please identify what is wrong, explain why it is happening, and provide the fixed version with comments.' },
+  { cat:'Email · Career', title:'Salary negotiation', desc:'Get the pay you deserve', tier:'adv',
+    svg:'<rect width="260" height="160" fill="#0a0a00"/><circle cx="130" cy="80" r="70" fill="#f59e0b" opacity="0.1"/><path d="M95,110 L95,55 M95,55 L105,65 M95,55 L85,65" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/><circle cx="130" cy="80" r="28" fill="none" stroke="#f59e0b" stroke-width="2" opacity="0.5"/><path d="M125,75 Q130,68 135,75 Q140,82 130,87 Q120,82 125,75Z" fill="#fcd34d" opacity="0.6"/><text x="130" y="85" text-anchor="middle" font-size="16" font-weight="900" fill="#fbbf24" opacity="0.8" font-family="serif">₹</text><circle cx="185" cy="45" r="15" fill="#f59e0b" opacity="0.25"/><circle cx="75" cy="125" r="12" fill="#fbbf24" opacity="0.2"/>',
+    prompt:'Write a confident but respectful email negotiating a salary of [AMOUNT] for the [ROLE] position. Mention my experience, market research, and express continued interest in the role.' },
+  { cat:'Business · Sales', title:'Cold outreach email', desc:'Open doors, close deals', tier:'adv',
+    svg:'<rect width="260" height="160" fill="#0a0f1a"/><circle cx="260" cy="0" r="100" fill="#0ea5e9" opacity="0.15"/><path d="M30,80 L80,60 L130,80 L180,55 L230,70" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" opacity="0.7"/><circle cx="30" cy="80" r="5" fill="#0ea5e9" opacity="0.8"/><circle cx="80" cy="60" r="5" fill="#0ea5e9" opacity="0.8"/><circle cx="130" cy="80" r="5" fill="#0ea5e9" opacity="0.8"/><circle cx="180" cy="55" r="5" fill="#0ea5e9" opacity="0.8"/><circle cx="230" cy="70" r="5" fill="#38bdf8" opacity="0.9"/><rect x="20" y="100" width="220" height="1" fill="#0ea5e9" opacity="0.2"/><rect x="20" y="110" width="180" height="6" rx="3" fill="#7dd3fc" opacity="0.3"/><rect x="20" y="122" width="140" height="6" rx="3" fill="#7dd3fc" opacity="0.2"/>',
+    prompt:'Write a concise cold outreach email introducing [PRODUCT/SERVICE] to [TARGET CUSTOMER]. Focus on the problem it solves, include one strong stat, and end with a clear call to action.' },
+  { cat:'Study · Planning', title:'Study plan creator', desc:'Ace your exams, stress-free', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a0a00"/><rect x="25" y="25" width="210" height="110" rx="8" fill="#ca8a04" opacity="0.08" stroke="#ca8a04" stroke-width="1" opacity="0.3"/><rect x="40" y="40" width="60" height="24" rx="4" fill="#fbbf24" opacity="0.3"/><rect x="110" y="40" width="60" height="24" rx="4" fill="#fcd34d" opacity="0.25"/><rect x="180" y="40" width="40" height="24" rx="4" fill="#fbbf24" opacity="0.2"/><rect x="40" y="72" width="180" height="8" rx="4" fill="#f59e0b" opacity="0.5"/><rect x="40" y="88" width="150" height="8" rx="4" fill="#fbbf24" opacity="0.4"/><rect x="40" y="104" width="120" height="8" rx="4" fill="#fcd34d" opacity="0.35"/><circle cx="195" cy="115" r="18" fill="#f59e0b" opacity="0.2"/><path d="M188,115 L193,120 L205,108" stroke="#fbbf24" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.8"/>',
+    prompt:'Create a detailed [DAYS]-day study plan for my [SUBJECT] exam covering [TOPICS]. Include daily goals, revision sessions, practice tests, and breaks. Make it realistic and structured.' },
+  { cat:'Creative · Writing', title:'Story starter', desc:'First paragraph that hooks readers', tier:'pro',
+    svg:'<rect width="260" height="160" fill="#0d0010"/><circle cx="50" cy="50" r="60" fill="#7c3aed" opacity="0.12"/><circle cx="210" cy="120" r="50" fill="#a855f7" opacity="0.1"/><path d="M40,130 Q80,70 130,100 Q180,130 220,60" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/><rect x="35" y="55" width="90" height="7" rx="3" fill="#c084fc" opacity="0.5"/><rect x="35" y="70" width="70" height="7" rx="3" fill="#c084fc" opacity="0.4"/><rect x="35" y="85" width="80" height="7" rx="3" fill="#c084fc" opacity="0.35"/><rect x="35" y="100" width="60" height="7" rx="3" fill="#c084fc" opacity="0.3"/><path d="M170,40 L175,25 L180,40 L195,45 L180,50 L175,65 L170,50 L155,45 Z" fill="#e879f9" opacity="0.7"/>',
+    prompt:'Write a compelling opening paragraph for a [GENRE] story set in [SETTING]. Introduce the main character [CHARACTER NAME], establish the mood, and end with a hook that makes readers want to continue.' },
+  { cat:'Email · Job', title:'Follow-up after interview', desc:'Thank you that gets you hired', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a1a0a"/><circle cx="130" cy="65" r="50" fill="#22c55e" opacity="0.1"/><rect x="55" y="30" width="150" height="90" rx="10" fill="#22c55e" opacity="0.08" stroke="#22c55e" stroke-width="1" opacity="0.3"/><path d="M55,55 L130,100 L205,55" fill="none" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><circle cx="130" cy="115" r="20" fill="#16a34a" opacity="0.2"/><path d="M122,115 L128,121 L140,109" stroke="#4ade80" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.8"/>',
+    prompt:'Write a warm, professional follow-up email after a job interview for the role of [ROLE] at [COMPANY]. Thank the interviewer, reiterate my interest, and mention one key point from the interview.' },
+  { cat:'Email · Networking', title:'Meeting request', desc:'Get on their calendar fast', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a0f1a"/><circle cx="80" cy="70" r="35" fill="#3b82f6" opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/><circle cx="180" cy="70" r="35" fill="#6366f1" opacity="0.2" stroke="#6366f1" stroke-width="1.5"/><path d="M115,70 L145,70" stroke="#93c5fd" stroke-width="2" stroke-linecap="round" opacity="0.6" stroke-dasharray="4 3"/><circle cx="80" cy="70" r="12" fill="#3b82f6" opacity="0.5"/><circle cx="180" cy="70" r="12" fill="#6366f1" opacity="0.5"/><rect x="60" y="115" width="40" height="25" rx="6" fill="#3b82f6" opacity="0.2"/><rect x="160" y="115" width="40" height="25" rx="6" fill="#6366f1" opacity="0.2"/><text x="80" y="132" text-anchor="middle" font-size="9" fill="#93c5fd" opacity="0.7">You</text><text x="180" y="132" text-anchor="middle" font-size="9" fill="#a5b4fc" opacity="0.7">Them</text>',
+    prompt:'Write a professional email requesting a meeting with [PERSON] to discuss [TOPIC]. Suggest [TIME] as a preferred slot and offer flexibility. Keep it concise and respectful.' },
+  { cat:'YouTube · Content', title:'Video script intro', desc:'Hook viewers in 30 seconds', tier:'adv',
+    svg:'<rect width="260" height="160" fill="#0d0000"/><circle cx="130" cy="80" r="70" fill="#ff0000" opacity="0.1"/><rect x="40" y="35" width="180" height="90" rx="12" fill="#ff0000" opacity="0.15" stroke="#ff0000" stroke-width="1" opacity="0.4"/><circle cx="130" cy="80" r="32" fill="#ff0000" opacity="0.2"/><path d="M118,65 L118,95 L155,80 Z" fill="#ff4444" opacity="0.8"/><circle cx="58" cy="53" r="6" fill="#ff6666" opacity="0.5"/><circle cx="78" cy="53" r="6" fill="#ff6666" opacity="0.5"/><circle cx="98" cy="53" r="6" fill="#ff6666" opacity="0.5"/>',
+    prompt:'Write a compelling 30-second video intro script for a YouTube video about [TOPIC]. Start with a hook question, tease the value, and end with a clear reason to keep watching.' },
+  { cat:'Twitter · Viral', title:'Twitter thread', desc:'7-tweet thread that goes viral', tier:'adv',
+    svg:'<rect width="260" height="160" fill="#0d0d0d"/><circle cx="50" cy="40" r="18" fill="#fff" opacity="0.08"/><rect x="75" y="30" width="130" height="8" rx="4" fill="#fff" opacity="0.4"/><rect x="75" y="44" width="100" height="6" rx="3" fill="#fff" opacity="0.25"/><line x1="60" y1="60" x2="60" y2="80" stroke="#fff" stroke-width="1" opacity="0.2"/><circle cx="50" cy="90" r="18" fill="#fff" opacity="0.06"/><rect x="75" y="80" width="120" height="8" rx="4" fill="#fff" opacity="0.35"/><rect x="75" y="94" width="90" height="6" rx="3" fill="#fff" opacity="0.2"/><line x1="60" y1="110" x2="60" y2="130" stroke="#fff" stroke-width="1" opacity="0.2"/><circle cx="50" cy="140" r="18" fill="#fff" opacity="0.05"/><rect x="75" y="130" width="110" height="8" rx="4" fill="#fff" opacity="0.3"/>',
+    prompt:'Write a compelling 7-tweet Twitter/X thread about [TOPIC]. Start with a bold hook tweet, build with insights, and end with a CTA. Number each tweet 1/7, 2/7 etc.' },
+  { cat:'Instagram · Brand', title:'Brand story post', desc:'Build your personal brand', tier:'free',
+    svg:'<rect width="260" height="160" fill="#1a0a14"/><defs><linearGradient id="ig_grad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="30%" stop-color="#e1306c"/><stop offset="60%" stop-color="#833ab4"/><stop offset="100%" stop-color="#5851db"/></linearGradient></defs><circle cx="130" cy="80" r="60" fill="none" stroke="url(#ig_grad)" stroke-width="2.5" opacity="0.6"/><circle cx="130" cy="80" r="42" fill="none" stroke="url(#ig_grad)" stroke-width="1.5" opacity="0.4"/><circle cx="130" cy="80" r="20" fill="url(#ig_grad)" opacity="0.25"/><circle cx="168" cy="42" r="8" fill="#e1306c" opacity="0.6"/>',
+    prompt:'Write an Instagram post telling my brand story — who I am, what I do, why I started, and what value I offer. Make it personal, relatable, and end with a question for engagement.' },
+  { cat:'LinkedIn · Thought', title:'Thought leadership post', desc:'Position yourself as an expert', tier:'adv',
+    svg:'<rect width="260" height="160" fill="#040e18"/><circle cx="130" cy="80" r="55" fill="#0077b5" opacity="0.1"/><path d="M80,110 Q130,30 180,110" fill="none" stroke="#0077b5" stroke-width="2" opacity="0.5"/><circle cx="80" cy="110" r="6" fill="#0077b5" opacity="0.7"/><circle cx="130" cy="55" r="6" fill="#38bdf8" opacity="0.8"/><circle cx="180" cy="110" r="6" fill="#0077b5" opacity="0.7"/><rect x="35" y="125" width="190" height="7" rx="3" fill="#0ea5e9" opacity="0.3"/><rect x="55" y="138" width="150" height="6" rx="3" fill="#7dd3fc" opacity="0.2"/>',
+    prompt:'Write a thought leadership LinkedIn post about [INDUSTRY TREND or INSIGHT]. Share your unique perspective, back it with experience, and invite your network to debate.' },
+  { cat:'AI · Productivity', title:'ChatGPT mega prompt', desc:'Get 10x better AI responses', tier:'pro',
+    svg:'<rect width="260" height="160" fill="#0d1117"/><circle cx="130" cy="80" r="55" fill="#10a37f" opacity="0.12"/><circle cx="130" cy="80" r="35" fill="none" stroke="#10a37f" stroke-width="1.5" opacity="0.5"/><path d="M105,70 L125,60 L145,70 L145,90 L125,100 L105,90 Z" fill="#10a37f" opacity="0.2" stroke="#10a37f" stroke-width="1.2"/><circle cx="130" cy="80" r="12" fill="#10a37f" opacity="0.4"/><circle cx="60" cy="35" r="4" fill="#10a37f" opacity="0.4"/><circle cx="200" cy="130" r="4" fill="#10a37f" opacity="0.4"/><line x1="64" y1="39" x2="98" y2="65" stroke="#10a37f" stroke-width="1" opacity="0.3"/><line x1="162" y1="95" x2="196" y2="126" stroke="#10a37f" stroke-width="1" opacity="0.3"/>',
+    prompt:'Create a detailed mega-prompt for ChatGPT to help me with [TASK]. Include role assignment, context, specific instructions, output format, tone, and examples. Make it comprehensive and reusable.' },
+  { cat:'AI · Image', title:'Image generation prompt', desc:'Midjourney/DALL-E ready', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0f0a1a"/><rect x="20" y="20" width="100" height="75" rx="8" fill="#7c3aed" opacity="0.2"/><rect x="140" y="20" width="100" height="35" rx="8" fill="#a855f7" opacity="0.2"/><rect x="140" y="65" width="100" height="30" rx="8" fill="#6d28d9" opacity="0.2"/><circle cx="70" cy="57" r="20" fill="#a855f7" opacity="0.3"/><path d="M20,95 L60,65 L90,85 L120,55 L120,95 Z" fill="#7c3aed" opacity="0.3"/><circle cx="190" cy="37" r="12" fill="#fbbf24" opacity="0.4"/><rect x="140" y="105" width="100" height="35" rx="8" fill="#4c1d95" opacity="0.3"/>',
+    prompt:'Write a detailed image generation prompt for [SUBJECT/SCENE]. Include art style, lighting, mood, camera angle, color palette, and quality modifiers for Midjourney or DALL-E. Make it vivid and specific.' },
+  { cat:'Business · Pitch', title:'Startup elevator pitch', desc:'60 seconds to impress investors', tier:'pro',
+    svg:'<rect width="260" height="160" fill="#050f1a"/><path d="M30,130 L80,70 L130,100 L180,40 L230,80" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/><circle cx="230" cy="80" r="8" fill="#38bdf8" opacity="0.9"/><path d="M30,130 L80,70 L130,100 L180,40 L230,80 L230,160 L30,160 Z" fill="#0ea5e9" opacity="0.06"/><rect x="30" y="140" width="30" height="3" rx="1" fill="#0ea5e9" opacity="0.4"/><rect x="80" y="140" width="30" height="3" rx="1" fill="#0ea5e9" opacity="0.4"/><rect x="130" y="140" width="30" height="3" rx="1" fill="#0ea5e9" opacity="0.4"/>',
+    prompt:'Write a compelling 60-second elevator pitch for my startup [NAME] that does [WHAT IT DOES]. Include the problem, solution, market size, traction, and a clear ask. Make it memorable and investor-ready.' },
+  { cat:'Personal · Bio', title:'Social media bio', desc:'Profile bio that converts', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a0a14"/><circle cx="130" cy="65" r="40" fill="#6366f1" opacity="0.15" stroke="#6366f1" stroke-width="1.5"/><circle cx="130" cy="65" r="25" fill="#6366f1" opacity="0.2"/><circle cx="130" cy="55" r="12" fill="#818cf8" opacity="0.4"/><path d="M104,80 Q130,100 156,80" fill="#6366f1" opacity="0.3"/><rect x="60" y="115" width="140" height="7" rx="3" fill="#818cf8" opacity="0.5"/><rect x="75" y="128" width="110" height="6" rx="3" fill="#6366f1" opacity="0.4"/><rect x="90" y="140" width="80" height="6" rx="3" fill="#818cf8" opacity="0.3"/>',
+    prompt:'Write a compelling social media bio for [PLATFORM] for someone who is [PROFESSION/ROLE]. Include personality, value proposition, achievements, and a call to action. Keep it under 160 characters.' },
+  { cat:'YouTube · SEO', title:'Video title + description', desc:'Rank on YouTube search', tier:'adv',
+    svg:'<rect width="260" height="160" fill="#0d0000"/><rect x="25" y="30" width="210" height="100" rx="10" fill="#ff0000" opacity="0.08" stroke="#ff0000" stroke-width="1" opacity="0.3"/><rect x="40" y="50" width="180" height="14" rx="6" fill="#ff4444" opacity="0.5"/><rect x="40" y="72" width="150" height="8" rx="4" fill="#fca5a5" opacity="0.4"/><rect x="40" y="86" width="130" height="7" rx="3" fill="#fca5a5" opacity="0.3"/><rect x="40" y="99" width="110" height="7" rx="3" fill="#fca5a5" opacity="0.25"/><circle cx="195" cy="110" r="15" fill="#ff0000" opacity="0.3"/><path d="M189,110 L189,120 L201,115 Z" fill="#ff6666" opacity="0.7"/>',
+    prompt:'Write an SEO-optimized YouTube video title and description for a video about [TOPIC]. Include primary keyword in title, write a 200-word description with timestamps, keywords, and CTA to subscribe.' },
+  { cat:'Coding · AI', title:'Code review prompt', desc:'Get expert-level code feedback', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a1a0a"/><rect x="20" y="20" width="220" height="120" rx="10" fill="#10b981" opacity="0.06"/><rect x="35" y="35" width="10" height="10" rx="2" fill="#ef4444" opacity="0.7"/><rect x="52" y="35" width="10" height="10" rx="2" fill="#fbbf24" opacity="0.7"/><rect x="69" y="35" width="10" height="10" rx="2" fill="#10b981" opacity="0.7"/><rect x="35" y="58" width="60" height="7" rx="3" fill="#10b981" opacity="0.7"/><rect x="35" y="72" width="100" height="6" rx="3" fill="#6ee7b7" opacity="0.5"/><rect x="50" y="85" width="80" height="6" rx="3" fill="#34d399" opacity="0.45"/><rect x="50" y="98" width="90" height="6" rx="3" fill="#34d399" opacity="0.4"/><rect x="35" y="111" width="70" height="6" rx="3" fill="#6ee7b7" opacity="0.5"/>',
+    prompt:'Review my [LANGUAGE] code for: bugs, performance issues, security vulnerabilities, and best practices. Suggest improvements with explanations. Here is my code: [CODE]' },
+  { cat:'Personal · Growth', title:'Morning motivation', desc:'Start your day with purpose', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a0500"/><circle cx="130" cy="90" r="75" fill="#f97316" opacity="0.08"/><path d="M0,100 Q130,30 260,100" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.4"/><circle cx="130" cy="40" r="30" fill="#fbbf24" opacity="0.2"/><circle cx="130" cy="40" r="18" fill="#fbbf24" opacity="0.3"/><path d="M130,15 L130,5 M100,25 L92,17 M160,25 L168,17 M85,40 L75,40 M175,40 L185,40" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity="0.5"/><rect x="35" y="115" width="190" height="7" rx="3" fill="#f97316" opacity="0.4"/><rect x="55" y="128" width="150" height="6" rx="3" fill="#fbbf24" opacity="0.3"/>',
+    prompt:'Write an inspiring morning motivation message about [GOAL or THEME]. Make it energising, specific, and action-oriented. Include one powerful quote and three actionable steps to start the day right.' },
+  { cat:'Business · Review', title:'Google review reply', desc:'Turn reviews into trust signals', tier:'free',
+    svg:'<rect width="260" height="160" fill="#0a0f00"/><circle cx="130" cy="70" r="50" fill="#22c55e" opacity="0.1"/><path d="M108,55 L115,75 L130,40 L145,75 L152,55 L165,75 L130,110 L95,75 Z" fill="#fbbf24" opacity="0.5"/><path d="M130,40 L145,75 L152,55 L165,75 L130,110 L95,75 L108,55 L115,75 Z" fill="#fbbf24" opacity="0.3"/><circle cx="130" cy="75" r="5" fill="#fcd34d" opacity="0.7"/><rect x="35" y="125" width="190" height="7" rx="3" fill="#16a34a" opacity="0.4"/><rect x="55" y="138" width="150" height="6" rx="3" fill="#4ade80" opacity="0.3"/>',
+    prompt:'Write a professional and warm reply to this Google review for my business: [REVIEW TEXT]. Thank them genuinely, address any concerns, and invite them back. Keep it under 100 words.' },
 ];
 
 
@@ -1359,7 +1490,7 @@ function setMode(mode){
   var so=document.getElementById('socialOutput'); if(so) so.classList.remove('visible');
   var du=document.getElementById('dualOutput'); if(du) du.classList.remove('visible');
   if(mode==='ai'){
-    aiPills.style.display='flex';
+    aiPills.style.display='flex';aiPills.style.flexWrap='wrap';
     socPills.style.display='none';
     lbl.textContent='Select AI platform';
     bothAIChosen=false;
@@ -1367,7 +1498,7 @@ function setMode(mode){
     selectPlatformByName('ChatGPT','ai');
   } else if(mode==='social'){
     aiPills.style.display='none';
-    socPills.style.display='flex';
+    socPills.style.display='flex';socPills.style.flexWrap='wrap';
     lbl.textContent='Select social platform';
     bothAIChosen=false;
     bothSocialChosen=false;
@@ -1375,7 +1506,7 @@ function setMode(mode){
   } else {
     // BOTH mode — show both pill rows
     aiPills.style.display='flex';
-    socPills.style.display='flex';
+    socPills.style.display='flex';socPills.style.flexWrap='wrap';
     lbl.textContent='Select AI + Social platform';
     // Auto-select ChatGPT on AI side if none active
     var aiActive = document.querySelector('#aiPills .platform-pill.active');
@@ -1551,6 +1682,27 @@ function applyFixes(text){
   fixed=fixed.replace(/(^\s*\w|[.!?]\s+\w)/g,c=>c.toUpperCase());
   if(fixed.length>10&&!/[.!?]$/.test(fixed.trim())) fixed=fixed.trim()+'.';
   return{fixed,fixes:fixes.slice(0,4)};
+}
+
+// Returns a clean English sentence from any input for use in social captions
+function getCleanEnglishTopic(text, intent) {
+  var intentSentences = {
+    email: 'Not feeling well today — taking a sick day as advised by my doctor.',
+    linkedin: 'Excited to share a recent professional milestone and achievement.',
+    debug: 'Working through a challenging code problem and finding solutions.',
+    study: 'Preparing hard for upcoming exams with a structured study plan.',
+    whatsapp: 'Catching up with friends and planning to meet soon.',
+    travel: 'Exploring a new destination and making amazing memories.',
+    food: 'Discovering amazing food and new flavours worth sharing.',
+    motivational: 'Staying motivated and focused on personal growth every day.',
+    social: 'Sharing something exciting that happened recently.',
+    general: 'Something worth sharing with my followers today.'
+  };
+  // If text is mostly Latin and looks like proper English, use it directly
+  var isCleanEnglish = /^[a-zA-Z0-9\s.,!?'"()\-:;]+$/.test(text.trim()) && text.trim().split(' ').length > 4;
+  if(isCleanEnglish) return text;
+  // Otherwise return intent-based clean sentence
+  return intentSentences[intent] || intentSentences['general'];
 }
 
 function detectIntent(t){
@@ -1964,9 +2116,11 @@ function processPrompt(input){
     const aiVars=buildAIVariations(fixed,intent,selectedAIPlatform);
     renderAIVariations(aiVars);
     safeShow('aiOutput');
+    // FIXED: Always use clean English for social captions - never raw Hinglish/Hindi
+    const cleanSocialTopic = getCleanEnglishTopic(fixed, intent);
     const socStyle=SOCIAL_STYLES[selectedSocialPlatform]||SOCIAL_STYLES['Instagram'];
-    const socCaption=socStyle.caption(fixed,intent);
-    const socPrompt=socStyle.prompt(fixed,intent);
+    const socCaption=socStyle.caption(cleanSocialTopic,intent);
+    const socPrompt=socStyle.prompt(cleanSocialTopic,intent);
     safeText('socialOutputName',selectedSocialPlatform);
     safeText('socialCaption',socCaption);
     safeText('socialPrompt',socPrompt);
@@ -1975,7 +2129,7 @@ function processPrompt(input){
     safeShow('socialOutput');
     currentResult=aiVars[0];
     currentSocialResult=socCaption;
-    safeText('copyBtn','⎘ Copy AI prompt');
+    safeText('copyBtn','⎋ Copy AI prompt');
     safeText('openBtnName',selectedAIPlatform);
     safeDisp('bothOpenWrap','flex');
     safeDisp('bothCopyWrap','flex');
@@ -2674,24 +2828,24 @@ function renderLibCards() {
     html += '<div class="lib-grid" data-section="' + sec.key + '">';
     cards.forEach(function(card, idx) {
       var tid = 'lc' + idx + card.title.replace(/[^a-zA-Z]/g,'');
-      var colors = card.gradient.match(/#[a-f0-9]{6}/gi) || ['#fce7f3','#f9a8d4','#ec4899'];
+      var grad2 = card.gradient || 'linear-gradient(135deg,#fce7f3,#f9a8d4,#ec4899)'; var colors = grad2.match(/#[a-f0-9]{6}/gi) || ['#fce7f3','#f9a8d4','#ec4899'];
       var tierBadge = card.tier === 'free' ? '<span class="lib-badge lb-free">Free</span>' :
                       card.tier === 'adv'  ? '<span class="lib-badge lb-adv">Advanced</span>' :
                                              '<span class="lib-badge lb-pro">Pro</span>';
       html += '<div class="lib-card" data-idx="' + idx + '" data-cat="' + card.cat.toLowerCase() + '" data-title="' + card.title + '">';
       html += '<div class="lib-card-thumb">';
-      html += '<svg viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">';
-      html += '<defs><linearGradient id="' + tid + '" x1="0%" y1="100%" x2="100%" y2="0%">';
-      html += '<stop offset="0%" stop-color="' + colors[0] + '"/>';
-      html += '<stop offset="50%" stop-color="' + colors[1] + '"/>';
-      html += '<stop offset="100%" stop-color="' + colors[2] + '"/>';
-      html += '</linearGradient></defs>';
-      html += '<rect width="260" height="130" fill="url(#' + tid + ')"/>';
-      html += '<circle cx="200" cy="20" r="50" fill="rgba(255,255,255,0.1)"/>';
-      html += '<circle cx="40" cy="110" r="40" fill="rgba(0,0,0,0.08)"/>';
-      var letter = card.cat.charAt(0).toUpperCase();
-      html += '<text x="130" y="88" text-anchor="middle" font-size="52" font-weight="800" fill="rgba(255,255,255,0.4)" font-family="Georgia,serif">' + letter + '</text>';
-      html += '</svg>';
+      if(card.svg) {
+        html += '<svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">' + card.svg + '</svg>';
+      } else {
+        var grad = card.gradient || 'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)';
+        var colors2 = grad.match(/#[a-f0-9]{6}/gi) || ['#1a1a2e','#16213e','#0f3460'];
+        html += '<svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">';
+        html += '<defs><linearGradient id="' + tid + '" x1="0%" y1="100%" x2="100%" y2="0%">';
+        html += '<stop offset="0%" stop-color="' + (colors2[0]||'#1a1a2e') + '"/><stop offset="100%" stop-color="' + (colors2[2]||colors2[0]||'#0f3460') + '"/>';
+        html += '</linearGradient></defs>';
+        html += '<rect width="260" height="160" fill="url(#' + tid + ')"/>';
+        html += '</svg>';
+      }
       html += '<button class="lib-card-btn" data-idx="' + idx + '">✦ Use prompt</button>';
       html += '</div>';
       html += '<div class="lib-card-body">';
@@ -2730,7 +2884,23 @@ function renderLibCards() {
   window._libCurrentFilter = 'all';
 }
 
+var _pendingLibCard = null;
+
 function loadLibCardByIdx(idx) {
+  var card = LIB_CARDS[idx];
+  if (!card) return;
+  var existing = document.getElementById('promptInput').value.trim();
+  if(existing && existing.length > 3) {
+    // There is existing content — ask user
+    _pendingLibCard = idx;
+    var overlay = document.getElementById('libConfirmOverlay');
+    if(overlay) overlay.style.display = 'flex';
+    return;
+  }
+  _applyLibCard(idx);
+}
+
+function _applyLibCard(idx) {
   var card = LIB_CARDS[idx];
   if (!card) return;
   document.getElementById('liveResult').classList.remove('visible');
@@ -2741,6 +2911,30 @@ function loadLibCardByIdx(idx) {
   onInput(document.getElementById('promptInput'));
   goPage('write', document.getElementById('nav-write'));
   showToast('✦ Prompt loaded — click Enhance!');
+}
+
+function libConfirmNew() {
+  document.getElementById('libConfirmOverlay').style.display = 'none';
+  if(_pendingLibCard !== null) _applyLibCard(_pendingLibCard);
+  _pendingLibCard = null;
+}
+
+function libConfirmKeep() {
+  document.getElementById('libConfirmOverlay').style.display = 'none';
+  // Append to existing prompt instead
+  var card = LIB_CARDS[_pendingLibCard];
+  _pendingLibCard = null;
+  if(!card) return;
+  var ta = document.getElementById('promptInput');
+  ta.value = (ta.value.trim() + ' ' + card.prompt).trim();
+  onInput(ta);
+  goPage('write', document.getElementById('nav-write'));
+  showToast('✦ Prompt added to existing!');
+}
+
+function libConfirmCancel() {
+  document.getElementById('libConfirmOverlay').style.display = 'none';
+  _pendingLibCard = null;
 }
 
 function copyLibCardByIdx(idx) {
@@ -2831,6 +3025,138 @@ document.addEventListener('click', function(e) {
     if (!e.target.closest('.help-menu-wrap')) closeHelpMenu();
   }
 });
+// ── INSPIRE ME ────────────────────────────────────────────────────
+var INSPIRE_CARDS = [
+  // Cinematic
+  {q:'cinematic aerial city golden hour fog',        cat:'cinematic',     tag:'Cinematic',    tier:'free', h:240, p:'Cinematic aerial shot of a city at golden hour, fog rolling through skyscrapers, warm orange light, long exposure, drone photography, ultra wide angle, 8K'},
+  {q:'film noir rain street neon reflection night',  cat:'cinematic',     tag:'Cinematic',    tier:'pro',  h:210, p:'Film noir street scene at night, neon signs reflecting in wet pavement, lone figure with umbrella, heavy rain, dramatic shadows, cinematic 35mm film style, ultra realistic'},
+  {q:'milky way stars mountain long exposure',       cat:'cinematic',     tag:'Cinematic',    tier:'free', h:255, p:'Milky Way galaxy over dramatic mountain landscape, long exposure photography, star trails, crystal clear night sky, epic composition, 8K astrophotography'},
+  // Portrait
+  {q:'editorial fashion portrait studio dramatic',   cat:'portrait',      tag:'Portrait',     tier:'pro',  h:280, p:'High-fashion editorial portrait with dramatic studio lighting, Vogue-style composition, flawless skin, intense gaze, shot on Hasselblad medium format, 8K resolution'},
+  {q:'golden hour portrait bokeh backlight hair',    cat:'portrait',      tag:'Portrait',     tier:'free', h:230, p:'Stunning outdoor portrait at golden hour, warm backlit glow illuminating hair like a halo, creamy bokeh background, shot on 85mm f/1.2, magazine cover quality, 8K'},
+  {q:'black white cinematic close up face emotion',  cat:'portrait',      tag:'Portrait',     tier:'free', h:265, p:'Dramatic black and white cinematic close-up portrait, strong emotional expression, chiaroscuro lighting, film grain texture, Leica camera aesthetic, 8K'},
+  // Nature
+  {q:'bioluminescent ocean waves night beach',       cat:'nature',        tag:'Nature',       tier:'free', h:220, p:'Magical bioluminescent ocean waves glowing electric blue on dark beach at night, Milky Way visible above, long exposure photography, surreal and ethereal, 8K'},
+  {q:'aerial amazon rainforest mist sunrise drone',  cat:'nature',        tag:'Nature',       tier:'free', h:250, p:'Breathtaking aerial drone view of Amazon rainforest at sunrise, morning mist rising from canopy, golden light filtering through, cinematic landscape photography, 8K'},
+  {q:'frozen ice cave blue light crystal',           cat:'nature',        tag:'Nature',       tier:'pro',  h:235, p:'Inside a magical frozen ice cave with deep blue crystalline walls, shafts of ethereal light, incredible ice formations, adventure photography, ultra detailed, 8K'},
+  // Architecture
+  {q:'luxury penthouse interior night city view',    cat:'architecture',  tag:'Architecture', tier:'pro',  h:210, p:'Ultra-luxury penthouse interior at night, floor-to-ceiling windows overlooking glowing city skyline, minimalist design, warm ambient lighting, architectural photography, 8K'},
+  {q:'futuristic white minimal architecture lines',  cat:'architecture',  tag:'Architecture', tier:'free', h:240, p:'Futuristic minimalist white architecture with clean geometric lines, dramatic shadows, ultra modern design, professional architectural photography, 8K render'},
+  {q:'ancient temple jungle overgrown sunrise',      cat:'architecture',  tag:'Architecture', tier:'free', h:260, p:'Ancient temple ruins swallowed by jungle at sunrise, dramatic god rays through mist, moss-covered stones, atmospheric adventure photography, 8K'},
+  // Abstract
+  {q:'colorful paint explosion abstract macro art',  cat:'abstract',      tag:'Abstract',     tier:'free', h:225, p:'Explosive abstract paint macro photography, vibrant color collision, high-speed water drops, dynamic composition, studio lighting, ultra detailed, 8K art photography'},
+  {q:'deep space nebula galaxy stars cosmic',        cat:'abstract',      tag:'Abstract',     tier:'pro',  h:245, p:'Stunning deep space nebula with swirling cosmic gas clouds, vibrant purple and blue tones, thousands of stars, NASA Hubble telescope style, ultra realistic, 8K'},
+  {q:'light painting long exposure abstract motion', cat:'abstract',      tag:'Abstract',     tier:'free', h:215, p:'Mesmerizing light painting photography with long exposure, flowing neon light trails, perfect circles, dark background, ultra creative abstract art, 8K'},
+  // Fantasy
+  {q:'epic dragon fantasy sky fire cinematic',       cat:'fantasy',       tag:'Fantasy',      tier:'pro',  h:250, p:'Epic fantasy dragon soaring through storm clouds, breathing fire, dramatic lighting, highly detailed scales, cinematic composition, digital concept art, 8K render'},
+  {q:'magical forest fairy lights glowing mushroom', cat:'fantasy',       tag:'Fantasy',      tier:'free', h:235, p:'Enchanted magical forest with glowing fairy lights, giant luminous mushrooms, mystical fog, ethereal atmosphere, fantasy concept art meets photography, 8K'},
+  // 3D Art
+  {q:'hyperrealistic 3d render chrome ball reflection', cat:'3d',         tag:'3D Art',       tier:'pro',  h:220, p:'Hyperrealistic 3D render of a chrome reflective sphere floating in space, perfect reflections of environment, dramatic studio lighting, octane render, 8K'},
+  {q:'glass morphism 3d floating objects pastel',    cat:'3d',            tag:'3D Art',       tier:'free', h:240, p:'Glassmorphism 3D render with floating transparent glass shapes, soft caustic light effects, pastel gradient background, minimal aesthetic, Blender render, 8K'},
+];
+
+var _inspireInited = false;
+var _inspireCurFilter = 'all';
+
+function initInspire(){
+  if(_inspireInited) return;
+  _inspireInited = true;
+  loadInspire('all');
+}
+
+function filterInspire(cat, btn){
+  _inspireCurFilter = cat;
+  document.querySelectorAll('.insp-cat').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  loadInspire(cat);
+}
+
+function loadInspire(cat){
+  var grid = document.getElementById('inspGrid');
+  if(!grid) return;
+  var list = cat==='all' ? INSPIRE_CARDS : INSPIRE_CARDS.filter(function(c){ return c.cat===cat; });
+  grid.innerHTML = '';
+
+  list.forEach(function(card, i){
+    var div = document.createElement('div');
+    div.className = 'insp-card';
+    var imgUrl = 'https://source.unsplash.com/400x' + card.h + '/?' + encodeURIComponent(card.q) + '&t=' + (Date.now()+i);
+    var shimId = 'ish' + i + cat.replace(/[^a-z]/g,'');
+
+    // shimmer placeholder
+    var shim = document.createElement('div');
+    shim.className = 'insp-shimmer';
+    shim.id = shimId;
+    shim.style.height = card.h + 'px';
+    shim.textContent = 'Loading...';
+
+    // image
+    var img = document.createElement('img');
+    img.className = 'insp-img';
+    img.style.height = card.h + 'px';
+    img.style.display = 'none';
+    img.src = imgUrl;
+    img.alt = card.tag;
+    img.onload = function(){
+      this.style.display = 'block';
+      var s = document.getElementById(shimId);
+      if(s) s.style.display = 'none';
+    };
+    img.onerror = function(){
+      var s = document.getElementById(shimId);
+      if(s){ s.style.color = 'rgba(255,255,255,0.25)'; s.textContent = card.tag; }
+    };
+
+    // badge
+    var badge = document.createElement('div');
+    badge.className = 'insp-badge ' + (card.tier==='pro' ? 'ib-pro' : 'ib-free');
+    badge.textContent = card.tier==='pro' ? '⚡ Pro' : '✓ Free';
+
+    // overlay
+    var ov = document.createElement('div');
+    ov.className = 'insp-ov';
+
+    var tag = document.createElement('div');
+    tag.className = 'insp-tag';
+    tag.textContent = card.tag;
+
+    var title = document.createElement('div');
+    title.className = 'insp-title';
+    title.textContent = card.q.charAt(0).toUpperCase() + card.q.slice(1);
+
+    var btn = document.createElement('button');
+    btn.className = 'insp-btn';
+    btn.textContent = '✦ Get prompt';
+    btn.onclick = (function(idx, c){ return function(e){ e.stopPropagation(); useInspirePrompt(idx, c); }; })(i, cat);
+
+    ov.appendChild(tag);
+    ov.appendChild(title);
+    ov.appendChild(btn);
+
+    div.appendChild(shim);
+    div.appendChild(img);
+    div.appendChild(badge);
+    div.appendChild(ov);
+    grid.appendChild(div);
+  });
+}
+
+function useInspirePrompt(idx, cat){
+  var list = (cat && cat!=='all') ? INSPIRE_CARDS.filter(function(c){ return c.cat===cat; }) : INSPIRE_CARDS;
+  var card = list[idx];
+  if(!card) return;
+  // Go to write page and load the prompt
+  goPage('write', document.getElementById('nav-write'));
+  setMode('ai');
+  // Auto-select Midjourney-friendly platform
+  var ta = document.getElementById('promptInput');
+  if(ta){
+    ta.value = card.p;
+    onInput(ta);
+  }
+  showToast('✦ Image prompt loaded — click Enhance!');
+}
+
 </script>
 </body>
 </html>
