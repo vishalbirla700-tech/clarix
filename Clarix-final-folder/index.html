@@ -1113,12 +1113,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 <div class="overlay" id="customPlatModal">
   <div class="modal">
     <div class="modal-title">➕ Add your platform</div>
-    <div class="modal-sub">Add any AI or social media platform not listed</div>
-    <input id="customPlatName" placeholder="e.g. Notion AI, Discord..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px">
-    <input id="customPlatUrl" placeholder="URL (optional) e.g. https://notion.so" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:14px">
+    <div class="modal-sub">Add any AI or social media platform not in the list</div>
+    <input id="customPlatName" placeholder="e.g. Notion AI, VK, WeChat, Baidu..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px">
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint);margin-bottom:8px">Platform type</div>
+      <select id="customPlatType" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;background:var(--surface);color:var(--text)">
+        <option value="ai">🤖 AI Platform (ChatGPT-style)</option>
+        <option value="social">📱 Social Media Platform</option>
+      </select>
+    </div>
     <div style="display:flex;gap:8px">
       <button onclick="closeModal()" style="flex:1;padding:10px;border-radius:var(--rs);border:1px solid var(--border);background:#f5f5f5;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px">Cancel</button>
-      <button onclick="addCustomPlatform()" style="flex:2;padding:10px;border-radius:var(--rs);border:none;background:var(--ac);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600">Add platform</button>
+      <button onclick="addCustomPlatform()" style="flex:2;padding:10px;border-radius:var(--rs);border:none;background:var(--ac);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600">✦ Add platform</button>
     </div>
   </div>
 </div>
@@ -1129,6 +1135,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
     <div class="modal-title">Select both platforms</div>
     <div class="modal-sub">Choose one AI platform and one social platform</div>
     <button onclick="closeBothPopup()" style="width:100%;padding:10px;border-radius:var(--rs);border:1px solid var(--border);background:#f5f5f5;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif">OK</button>
+  </div>
+</div>
+
+<!-- Voice Language Mismatch Popup -->
+<div style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:300;background:rgba(0,0,0,0.5)" id="voiceLangPopupOverlay">
+  <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:340px;text-align:center;animation:modalIn .25s ease;margin:20px">
+    <div style="font-size:36px;margin-bottom:10px">🌐</div>
+    <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px;color:#1a1a1a" id="voiceLangTitle">Different language detected!</div>
+    <div style="font-size:13px;color:#666;margin-bottom:20px;line-height:1.5" id="voiceLangSub">We detected you spoke in <strong id="voiceLangDetected">Russian</strong>. Switch language for better results?</div>
+    <button onclick="voiceLangSwitch()" style="width:100%;background:#ff7043;color:#fff;border:none;padding:12px;border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px" id="voiceLangSwitchBtn">Yes, switch to <span id="voiceLangSwitchName">Russian</span></button>
+    <button onclick="voiceLangKeep()" style="width:100%;background:#f5f5f5;color:#666;border:1px solid #e0e0e0;padding:12px;border-radius:50px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">Keep English & enhance anyway</button>
   </div>
 </div>
 
@@ -1177,6 +1194,14 @@ var SOCIAL_APPS = [
     svg:'<rect width="260" height="120" fill="#111"/><path d="M130,20 Q165,20 175,45 Q185,68 165,80 Q145,92 125,82 Q105,72 108,50 Q111,30 130,28" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.5" stroke-linecap="round"/><circle cx="130" cy="95" r="5" fill="#fff" opacity="0.4"/>' },
   { name:'Pinterest', tag:'Pinterest', tagColor:'#fee2e2', tagText:'#991b1b', url:'https://pinterest.com', mode:'social',
     svg:'<rect width="260" height="120" fill="#1a0505"/><circle cx="130" cy="50" r="38" fill="none" stroke="#e60023" stroke-width="2" opacity="0.4"/><circle cx="130" cy="50" r="22" fill="#e60023" opacity="0.2"/><text x="130" y="60" text-anchor="middle" fill="#e60023" font-size="30" font-weight="900" opacity="0.6">P</text><line x1="130" y1="72" x2="130" y2="100" stroke="#e60023" stroke-width="2" opacity="0.3" stroke-linecap="round"/>' },
+  { name:'Telegram', tag:'Global', tagColor:'#e0f2fe', tagText:'#0c4a6e', url:'https://web.telegram.org', mode:'social',
+    svg:'<rect width="260" height="120" fill="#0a1628"/><circle cx="130" cy="60" r="55" fill="#229ED9" opacity="0.15"/><circle cx="130" cy="60" r="35" fill="none" stroke="#229ED9" stroke-width="2" opacity="0.5"/><path d="M100,55 L170,38 L148,90 L128,72 L108,82 Z" fill="#229ED9" opacity="0.4"/><path d="M108,82 L128,72 L122,100 Z" fill="#229ED9" opacity="0.6"/>' },
+  { name:'ShareChat', tag:'India', tagColor:'#fff3f0', tagText:'#993c1d', url:'https://sharechat.com', mode:'social',
+    svg:'<rect width="260" height="120" fill="#1a0505"/><circle cx="130" cy="60" r="45" fill="#ff4500" opacity="0.15"/><rect x="100" y="35" width="60" height="50" rx="10" fill="#ff4500" opacity="0.3" stroke="#ff4500" stroke-width="1.5"/><circle cx="130" cy="60" r="15" fill="#ff4500" opacity="0.4"/>' },
+  { name:'Moj', tag:'India', tagColor:'#fce7f3', tagText:'#9d174d', url:'https://mojapp.in', mode:'social',
+    svg:'<rect width="260" height="120" fill="#1a0814"/><circle cx="130" cy="60" r="50" fill="#e91e8c" opacity="0.15"/><polygon points="110,38 110,82 165,60" fill="#e91e8c" opacity="0.5"/><circle cx="110" cy="60" r="8" fill="#e91e8c" opacity="0.4"/>' },
+  { name:'Josh', tag:'India', tagColor:'#fef3c7', tagText:'#92400e', url:'https://josh.social', mode:'social',
+    svg:'<rect width="260" height="120" fill="#1a1200"/><circle cx="130" cy="60" r="48" fill="#ff9800" opacity="0.12"/><path d="M108,30 L152,30 L152,72 Q152,90 130,90 Q108,90 108,72 Z" fill="#ff9800" opacity="0.25" stroke="#ff9800" stroke-width="1.5"/><circle cx="130" cy="58" r="16" fill="#ff9800" opacity="0.4"/>' },
 ];
 
 
@@ -1197,6 +1222,12 @@ var AI_APPS = [
     svg:'<rect width="260" height="120" fill="#0f0a1a"/><polygon points="0,120 55,50 90,88 130,30 168,70 205,22 260,78 260,120" fill="#7c3aed" opacity="0.15"/><polygon points="0,120 55,68 90,100 130,50 168,84 205,42 260,90 260,120" fill="#a78bfa" opacity="0.1"/><circle cx="200" cy="28" r="16" fill="#fbbf24" opacity="0.35"/><circle cx="200" cy="28" r="10" fill="#fbbf24" opacity="0.25"/><circle cx="50" cy="26" r="1.5" fill="#fff" opacity="0.7"/><circle cx="88" cy="18" r="1" fill="#fff" opacity="0.5"/><circle cx="168" cy="22" r="1.5" fill="#fff" opacity="0.6"/>' },
   { name:'DALL·E', tag:'OpenAI', tagColor:'#d1fae5', tagText:'#065f46', url:'https://labs.openai.com', mode:'ai',
     svg:'<rect width="260" height="120" fill="#0a1a0f"/><circle cx="60" cy="55" r="45" fill="#10b981" opacity="0.12"/><circle cx="200" cy="70" r="55" fill="#6ee7b7" opacity="0.08"/><path d="M30,90 Q75,35 120,72 Q165,110 210,52" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" opacity="0.4"/><circle cx="50" cy="38" r="9" fill="#ef4444" opacity="0.5"/><circle cx="73" cy="33" r="7" fill="#f59e0b" opacity="0.5"/><circle cx="94" cy="36" r="8" fill="#10b981" opacity="0.5"/><circle cx="115" cy="32" r="6" fill="#3b82f6" opacity="0.5"/><text x="162" y="72" text-anchor="middle" fill="#6ee7b7" font-size="12" font-weight="700" font-family="monospace" opacity="0.8">DALL·E</text>' },
+  { name:'Krutrim', tag:'India AI', tagColor:'#fff3f0', tagText:'#993c1d', url:'https://krutrim.ai', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#1a0a05"/><circle cx="130" cy="60" r="50" fill="#ff7043" opacity="0.12"/><path d="M90,80 L130,25 L170,80 M105,62 L155,62" fill="none" stroke="#ff7043" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>' },
+  { name:'Qwen', tag:'Alibaba', tagColor:'#fef3c7', tagText:'#92400e', url:'https://qwen.ai', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#0f0a00"/><circle cx="130" cy="60" r="45" fill="#ff6a00" opacity="0.15"/><circle cx="130" cy="60" r="28" fill="none" stroke="#ff6a00" stroke-width="2" opacity="0.6"/><circle cx="130" cy="60" r="12" fill="#ff6a00" opacity="0.35"/>' },
+  { name:'Le Chat', tag:'Mistral', tagColor:'#ede9fe', tagText:'#5b21b6', url:'https://chat.mistral.ai', mode:'ai',
+    svg:'<rect width="260" height="120" fill="#0a0510"/><circle cx="130" cy="60" r="45" fill="#7c3aed" opacity="0.12"/><path d="M90,75 Q130,30 170,75" fill="none" stroke="#7c3aed" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/><circle cx="110" cy="50" r="6" fill="#7c3aed" opacity="0.5"/><circle cx="150" cy="50" r="6" fill="#7c3aed" opacity="0.5"/>' },
 ];
 
 
@@ -1442,17 +1473,76 @@ function selectPlatform(el,name,type){
 }
 
 // ── Grammar rules ────────────────────────────────────
-const RULES=[[/\bbcoz\b/gi,'because'],[/\bbcz\b/gi,'because'],[/\bcoz\b/gi,'because'],
-  [/\bplz\b/gi,'please'],[/\bpls\b/gi,'please'],[/\bu r\b/gi,'you are'],[/\bur\b/g,'your'],
-  [/\btmrw\b/gi,'tomorrow'],[/\btmr\b/gi,'tomorrow'],[/\bthx\b/gi,'thanks'],
+const RULES=[
+  [/\bbcoz\b/gi,'because'],[/\bbcz\b/gi,'because'],[/\bcoz\b/gi,'because'],[/\bcuz\b/gi,'because'],
+  [/\bplz\b/gi,'please'],[/\bpls\b/gi,'please'],[/\bplez\b/gi,'please'],
+  [/\bu r\b/gi,'you are'],[/\bur\b/gi,'your'],
+  [/\btmrw\b/gi,'tomorrow'],[/\btmr\b/gi,'tomorrow'],[/\btomoro\b/gi,'tomorrow'],[/\btomorow\b/gi,'tomorrow'],
+  [/\bthx\b/gi,'thanks'],[/\bthnx\b/gi,'thanks'],[/\bty\b/gi,'thank you'],
   [/\bwanna\b/gi,'want to'],[/\bgonna\b/gi,'going to'],[/\bdunno\b/gi,"don't know"],
   [/\bkinda\b/gi,'kind of'],[/\bgotta\b/gi,'got to'],[/\bi m\b/gi,"I'm"],
   [/\bwld\b/gi,'would'],[/\bcud\b/gi,'could'],[/\bshud\b/gi,'should'],
   [/\babt\b/gi,'about'],[/\bbtw\b/gi,'by the way'],[/\basap\b/gi,'as soon as possible'],
-  [/\bgr8\b/gi,'great'],[/\bcant\b/g,"can't"],[/\bdont\b/g,"don't"],[/\bwont\b/g,"won't"],
-  [/\bisnt\b/g,"isn't"],[/\barent\b/g,"aren't"],[/\bhavent\b/g,"haven't"],
-  [/\bim\b/g,"I'm"],[/\bi have\b/g,'I have'],[/\bi am\b/g,'I am'],
-  [/\bi need\b/g,'I need'],[/\bi want\b/g,'I want'],[/\bwat\b/gi,'what'],[/\blol\b/gi,'']];
+  [/\bgr8\b/gi,'great'],[/\bn8\b/gi,'night'],[/\bl8r\b/gi,'later'],[/\bb4\b/gi,'before'],
+  [/\bcant\b/gi,"can't"],[/\bdont\b/gi,"don't"],[/\bwont\b/gi,"won't"],
+  [/\bisnt\b/gi,"isn't"],[/\barent\b/gi,"aren't"],[/\bhavent\b/gi,"haven't"],
+  [/\bcouldnt\b/gi,"couldn't"],[/\bwouldnt\b/gi,"wouldn't"],[/\bshouldnt\b/gi,"shouldn't"],
+  [/\bdidnt\b/gi,"didn't"],[/\bdoesnt\b/gi,"doesn't"],[/\bwasnt\b/gi,"wasn't"],
+  [/\bim\b/gi,"I'm"],[/\bi have\b/gi,'I have'],[/\bi am\b/gi,'I am'],
+  [/\bi need\b/gi,'I need'],[/\bi want\b/gi,'I want'],[/\bwat\b/gi,'what'],[/\blol\b/gi,''],
+  [/\bomg\b/gi,'oh my god'],[/\bfyi\b/gi,'for your information'],
+  [/\bidk\b/gi,"I don't know"],[/\bik\b/gi,'I know'],[/\bnvm\b/gi,'never mind'],
+  [/\bsry\b/gi,'sorry'],[/\bsorr\b/gi,'sorry'],
+  [/\btbh\b/gi,'to be honest'],[/\bttyl\b/gi,'talk to you later'],
+  [/\bbrb\b/gi,'be right back'],[/\bomw\b/gi,'on my way'],
+  [/\bmsg\b/gi,'message'],[/\bmssg\b/gi,'message'],
+  [/\bproblem\b/gi,'problem'],[/\bprblm\b/gi,'problem'],
+  [/\binfo\b/gi,'information'],
+  [/\bwll\b/gi,'well'],[/\bwel\b/gi,'well'],[/\bweel\b/gi,'well'],
+  [/\bdocter\b/gi,'doctor'],[/\bdokter\b/gi,'doctor'],[/\bdoktor\b/gi,'doctor'],[/\bdctor\b/gi,'doctor'],
+  [/\bmeil\b/gi,'mail'],[/\bmaill\b/gi,'mail'],[/\bmeail\b/gi,'email'],[/\bemail\b/gi,'email'],
+  [/\bbose\b/gi,'boss'],
+  [/\bfeaver\b/gi,'fever'],[/\bfevr\b/gi,'fever'],[/\bfevar\b/gi,'fever'],
+  [/\bleav\b/gi,'leave'],[/\bleve\b/gi,'leave'],
+  [/\bsik\b/gi,'sick'],
+  [/\bofice\b/gi,'office'],[/\boffise\b/gi,'office'],
+  [/\bmaneger\b/gi,'manager'],[/\bmangar\b/gi,'manager'],
+  [/\bcolague\b/gi,'colleague'],[/\bcolleeg\b/gi,'colleague'],
+  [/\bmetin\b/gi,'meeting'],[/\bmeting\b/gi,'meeting'],
+  [/\bpresentasion\b/gi,'presentation'],[/\bpresentaton\b/gi,'presentation'],
+  [/\brecieve\b/gi,'receive'],[/\brecieved\b/gi,'received'],[/\breceved\b/gi,'received'],
+  [/\bbelive\b/gi,'believe'],[/\bbeleive\b/gi,'believe'],[/\bbeleve\b/gi,'believe'],
+  [/\bseperate\b/gi,'separate'],[/\bseprate\b/gi,'separate'],
+  [/\bdefinately\b/gi,'definitely'],[/\bdefinatly\b/gi,'definitely'],[/\bdefintely\b/gi,'definitely'],
+  [/\bimmediatly\b/gi,'immediately'],[/\bimediatly\b/gi,'immediately'],
+  [/\bopurtunity\b/gi,'opportunity'],[/\boppurtunity\b/gi,'opportunity'],
+  [/\bresponsibilty\b/gi,'responsibility'],
+  [/\bconvinient\b/gi,'convenient'],[/\bconvienient\b/gi,'convenient'],
+  [/\bpayed\b/gi,'paid'],
+  [/\bwritting\b/gi,'writing'],[/\bwriteing\b/gi,'writing'],
+  [/\bgeting\b/gi,'getting'],[/\bgettng\b/gi,'getting'],
+  [/\bcomming\b/gi,'coming'],[/\bcomig\b/gi,'coming'],
+  [/\bstoping\b/gi,'stopping'],
+  [/\bplaning\b/gi,'planning'],
+  [/\bbeggining\b/gi,'beginning'],
+  [/\bsucseed\b/gi,'succeed'],[/\bsuccede\b/gi,'succeed'],
+  [/\bachivment\b/gi,'achievement'],[/\bacheivement\b/gi,'achievement'],
+  [/\bexperince\b/gi,'experience'],[/\bexpeience\b/gi,'experience'],
+  [/\bknowlege\b/gi,'knowledge'],[/\bknowldge\b/gi,'knowledge'],
+  [/\blanguege\b/gi,'language'],[/\blanguge\b/gi,'language'],
+  [/\badress\b/gi,'address'],[/\baddres\b/gi,'address'],
+  [/\bimportnt\b/gi,'important'],[/\bimportat\b/gi,'important'],
+  [/\bpossibe\b/gi,'possible'],[/\bposible\b/gi,'possible'],
+  [/\bprofesional\b/gi,'professional'],[/\bproffessional\b/gi,'professional'],
+  [/\bkaro\b/gi,'do it'],[/\bkarna\b/gi,'to do'],[/\blikho\b/gi,'write'],
+  [/\bbhejo\b/gi,'send'],[/\bbhejdo\b/gi,'please send'],
+  [/\bchutti\b/gi,'leave'],[/\bchhutti\b/gi,'leave'],
+  [/\bbukhar\b/gi,'fever'],[/\bbukar\b/gi,'fever'],[/\bbukhaar\b/gi,'fever'],
+  [/\bbimar\b/gi,'unwell'],[/\bbimaar\b/gi,'unwell'],
+  [/\bthik\b/gi,'fine'],[/\btheek\b/gi,'fine'],
+  [/\baccha\b/gi,'good'],[/\bacha\b/gi,'good'],
+  [/\bbahut\b/gi,'very'],[/\bbohot\b/gi,'very'],
+];
 
 function applyFixes(text){
   if(!autocorrectEnabled) return{fixed:text,fixes:[]};
@@ -1911,13 +2001,25 @@ function processPrompt(input){
   } else {
     const style=SOCIAL_STYLES[selectedPlatform]||SOCIAL_STYLES['Instagram'];
     let caption, prompt;
-    if(isNonEngInput) {
-      caption = style.caption(fixed || input, intent);
-      prompt = style.prompt(fixed || input, intent);
-    } else {
-      caption = style.caption(fixed, intent);
-      prompt = style.prompt(fixed, intent);
-    }
+    // For Hinglish/non-English input, use intent-based English topic
+    // so caption never contains raw Hindi/Hinglish words
+    const intentTopics={
+      email:'sick leave request to manager',
+      linkedin:'professional achievement and career milestone',
+      debug:'code debugging and problem solving',
+      study:'study plan and exam preparation',
+      explain:'learning and understanding a concept',
+      whatsapp:'casual friendly message',
+      travel:'travel adventure and exploration',
+      food:'food and dining experience',
+      motivational:'motivation and personal growth',
+      social:'sharing a life update',
+      general:'personal experience and thoughts'
+    };
+    const isHinglishInput = detectedLang === 'Hinglish' || nonLatin;
+    const topicForCaption = isHinglishInput ? (intentTopics[intent] || 'sharing an update') : fixed;
+    caption = style.caption(topicForCaption, intent);
+    prompt = style.prompt(topicForCaption, intent);
     safeText('socialOutputName',selectedPlatform);
     safeText('socialCaption',caption);
     safeText('socialPrompt',prompt);
@@ -2035,6 +2137,90 @@ function openPlatform(){
 }
 
 // ── Voice ────────────────────────────────────────────
+// ── Voice Language Detection ─────────────────────────
+var _voicePendingText = '';
+var _voiceDetectedLang = '';
+var _voiceDetectedCode = '';
+
+// Language detection map for voice scripts
+var VOICE_LANG_SCRIPTS = [
+  { name:'Russian', code:'ru-RU', test:/[а-яёА-ЯЁ]/ },
+  { name:'Hindi', code:'hi-IN', test:/[ऀ-ॿ]/ },
+  { name:'Arabic', code:'ar-SA', test:/[؀-ۿ]/ },
+  { name:'Chinese', code:'zh-CN', test:/[一-鿿]/ },
+  { name:'Japanese', code:'ja-JP', test:/[぀-ヿ]/ },
+  { name:'Korean', code:'ko-KR', test:/[가-힯]/ },
+  { name:'Tamil', code:'ta-IN', test:/[஀-௿]/ },
+  { name:'Telugu', code:'te-IN', test:/[ఀ-౿]/ },
+  { name:'Gujarati', code:'gu-IN', test:/[઀-૿]/ },
+  { name:'Bengali', code:'bn-IN', test:/[ঀ-৿]/ },
+  { name:'Kannada', code:'kn-IN', test:/[ಀ-೿]/ },
+  { name:'Malayalam', code:'ml-IN', test:/[ഀ-ൿ]/ },
+  { name:'Marathi', code:'mr-IN', test:/[ऀ-ॿ]/ },
+  { name:'Punjabi', code:'pa-IN', test:/[਀-੿]/ },
+  { name:'French', code:'fr-FR', test:/[àâçéèêëîïôùûüÿæœ]/i },
+  { name:'German', code:'de-DE', test:/[äöüÄÖÜß]/i },
+  { name:'Spanish', code:'es-ES', test:/[ñáéíóúüÁÉÍÓÚÜÑ]/i },
+];
+
+function detectVoiceLang(text) {
+  for(var i=0; i<VOICE_LANG_SCRIPTS.length; i++){
+    if(VOICE_LANG_SCRIPTS[i].test.test(text)) return VOICE_LANG_SCRIPTS[i].name;
+  }
+  // Check for Hinglish patterns in Latin script
+  if(/\b(hai|hain|ka|ki|ke|mein|ko|se|ne|plz|yaar|bhai|karo|nahi|acha|theek|bukhar|chutti)\b/i.test(text)) return 'Hinglish';
+  return null; // English or undetected
+}
+
+function showVoiceLangPopup(text, langName) {
+  _voicePendingText = text;
+  _voiceDetectedLang = langName;
+  // Find matching language code
+  var match = VOICE_LANG_SCRIPTS.find(function(l){ return l.name === langName; });
+  _voiceDetectedCode = match ? match.code : 'en-IN';
+  // Update popup UI
+  var detected = document.getElementById('voiceLangDetected');
+  var switchName = document.getElementById('voiceLangSwitchName');
+  if(detected) detected.textContent = langName;
+  if(switchName) switchName.textContent = langName;
+  // Show popup
+  var overlay = document.getElementById('voiceLangPopupOverlay');
+  if(overlay) overlay.style.display = 'flex';
+}
+
+function voiceLangSwitch() {
+  // Close popup
+  var overlay = document.getElementById('voiceLangPopupOverlay');
+  if(overlay) overlay.style.display = 'none';
+  // Switch to detected language
+  var match = VOICE_LANG_SCRIPTS.find(function(l){ return l.name === _voiceDetectedLang; });
+  if(match) {
+    selectLang(_voiceDetectedLang + (match.code !== 'en-IN' ? ' — ' + _voiceDetectedLang : ''), match.code, getLangFlag(_voiceDetectedLang));
+    // Re-set recognition language and try again
+    if(recognition) recognition.lang = match.code;
+  }
+  showToast('Switched to ' + _voiceDetectedLang + ' ✓');
+  setTimeout(function(){ processPrompt(_voicePendingText); }, 300);
+}
+
+function voiceLangKeep() {
+  // Close popup and process with current English setting
+  var overlay = document.getElementById('voiceLangPopupOverlay');
+  if(overlay) overlay.style.display = 'none';
+  showToast('✓ Heard: "' + _voicePendingText.substring(0,40) + (_voicePendingText.length>40?'...':'') + '"');
+  setTimeout(function(){ processPrompt(_voicePendingText); }, 300);
+}
+
+function getLangFlag(langName) {
+  var flags = {
+    'Russian':'🇷🇺','Hindi':'🇮🇳','Arabic':'🇸🇦','Chinese':'🇨🇳','Japanese':'🇯🇵',
+    'Korean':'🇰🇷','Tamil':'🇮🇳','Telugu':'🇮🇳','Gujarati':'🇮🇳','Bengali':'🇮🇳',
+    'Kannada':'🇮🇳','Malayalam':'🇮🇳','Marathi':'🇮🇳','Punjabi':'🇮🇳',
+    'French':'🇫🇷','German':'🇩🇪','Spanish':'🇪🇸','Hinglish':'🇮🇳'
+  };
+  return flags[langName] || '🌐';
+}
+
 function resetMicBtn(){
   isListening=false;
   var btn=document.getElementById('micBtn');
@@ -2063,9 +2249,7 @@ function toggleVoice(){
 
   recognition.onresult=(e)=>{
     const spokenText=e.results[0][0].transcript;
-    // Navigate to write page first
     goPage('write', document.getElementById('nav-write'));
-    // Fill the textarea
     const ta=document.getElementById('promptInput');
     if(ta){
       ta.value=spokenText;
@@ -2073,9 +2257,15 @@ function toggleVoice(){
       document.getElementById('charCount').textContent=spokenText.length;
       document.getElementById('clearBtn').style.display='block';
     }
-    showToast('✓ Heard: "'+spokenText.substring(0,40)+(spokenText.length>40?'...':'')+'"');
-    // Auto-enhance after short delay
-    setTimeout(function(){ processPrompt(spokenText); }, 400);
+    // Smart language mismatch detection
+    const spokenLangDetected = detectVoiceLang(spokenText);
+    const selectedBase = selectedLang.split(' — ')[0];
+    if(spokenLangDetected && spokenLangDetected !== selectedBase && selectedBase === 'English') {
+      showVoiceLangPopup(spokenText, spokenLangDetected);
+    } else {
+      showToast('✓ Heard: "'+spokenText.substring(0,40)+(spokenText.length>40?'...':'')+'"');
+      setTimeout(function(){ processPrompt(spokenText); }, 400);
+    }
   };
 
   recognition.onend=()=>{
@@ -2116,26 +2306,31 @@ function closeModal(){
 
 function addCustomPlatform(){
   var nameEl = document.getElementById('customPlatName');
+  var typeEl = document.getElementById('customPlatType');
   var name = nameEl ? nameEl.value.trim() : '';
-  if(!name) return;
-  if(!customPlatforms.includes(name)){
-    customPlatforms.push(name);
-    localStorage.setItem('clarix-customs',JSON.stringify(customPlatforms));
-    addPlatformPill(name);
+  var type = typeEl ? typeEl.value : 'ai';
+  if(!name) { showToast('Please enter a platform name', true); return; }
+  var key = name + '|' + type;
+  if(!customPlatforms.includes(key)){
+    customPlatforms.push(key);
+    localStorage.setItem('clarix-customs', JSON.stringify(customPlatforms));
+    addPlatformPill(name, type);
   }
   closeModal();
-  showToast(name+' added!');
+  showToast('✅ ' + name + ' added to ' + (type === 'ai' ? 'AI' : 'Social') + ' platforms!');
 }
 
-function addPlatformPill(name){
-  const wrap=document.querySelector('.platform-wrap');
+function addPlatformPill(name, type){
+  type = type || 'ai';
+  var wrap = document.getElementById(type === 'social' ? 'socialPills' : 'aiPills');
   if(!wrap) return;
-  const addBtn=wrap.querySelector('.custom-pill');
-  const pill=document.createElement('div');
-  pill.className='platform-pill';
-  pill.innerHTML=`<span class="dot"></span>${name}`;
-  pill.onclick=()=>selectPlatform(pill,name,'ai');
-  addBtn.parentNode.insertBefore(pill,addBtn);
+  var addBtn = wrap.querySelector('.custom-pill');
+  if(!addBtn) return;
+  var pill = document.createElement('div');
+  pill.className = 'platform-pill';
+  pill.textContent = '✦ ' + name;
+  pill.onclick = function(){ selectPlatform(pill, name, type); };
+  addBtn.parentNode.insertBefore(pill, addBtn);
 }
 
 // ── Helpers ───────────────────────────────────────────
@@ -2356,7 +2551,12 @@ function showToast(msg,isErr){
 }
 
 // ── Init ─────────────────────────────────────────────
-customPlatforms.forEach(name=>addPlatformPill(name));
+customPlatforms.forEach(function(entry){
+  var parts = entry.split('|');
+  var name = parts[0];
+  var type = parts[1] || 'ai';
+  addPlatformPill(name, type);
+});
 renderLangOptions();
 updateHomeStats();
 
@@ -2453,8 +2653,10 @@ function selectAppAndWrite(el) {
 // ── LIBRARY CARDS ────────────────────────────────────────────
 function renderLibCards() {
   var container = document.getElementById('libCardsContainer');
-  console.log('renderLibCards called, container:', container, 'LIB_CARDS:', LIB_CARDS ? LIB_CARDS.length : 'undefined');
-  if (!container) { console.error('libCardsContainer not found!'); return; }
+  if (!container) return;
+  // Guard: only render if empty or forced
+  if (container.innerHTML.trim() !== '' && !window._libForceRender) return;
+  window._libForceRender = false;
 
   var sections = [
     { key:'email',   title:'Email prompts',     filter:function(c){ return c.cat.toLowerCase().indexOf('email') >= 0; } },
