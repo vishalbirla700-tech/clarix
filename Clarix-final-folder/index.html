@@ -1691,26 +1691,23 @@ async function translateToLang(text, targetLangCode){
 async function showDualOutput(englishText){
   const langObj = LANGUAGES.find(l=>l.name===selectedLang);
   if(!langObj || selectedLang==='English' || selectedLang==='Hinglish'){
-    // No translation needed — hide dual, show English in main output
-    safeHide('dualLangOutput');
+    var du=document.getElementById('dualOutput');
+    if(du) du.style.display='none';
     return;
   }
   const langCode = langObj.code.split('-')[0];
-  const langShort = selectedLang.split(' — ')[0];
-  // Show loading state
+  const langShort = selectedLang.split(' — ')[0] || selectedLang;
   const dualEl = document.getElementById('dualOutput');
-  if(dualEl){
-    dualEl.style.display='block';
-    document.getElementById('dualLangLabel').textContent = langShort + ' version (translating...)';
-    document.getElementById('dualOrigText').textContent = '...';
-    document.getElementById('dualCopyLang').textContent = 'Copy ' + langShort;
-  }
-  // Translate
+  const origEl = document.getElementById('dualOrigText');
+  const lblEl = document.getElementById('dualLangLabel');
+  const cpyEl = document.getElementById('dualCopyLang');
+  if(dualEl) dualEl.style.display='block';
+  if(lblEl) lblEl.textContent = langShort + ' version';
+  if(origEl) origEl.textContent = 'Translating to ' + langShort + '...';
+  if(cpyEl) cpyEl.textContent = 'Copy ' + langShort;
   const translated = await translateToLang(englishText, langCode);
-  if(dualEl){
-    document.getElementById('dualLangLabel').textContent = langShort + ' version';
-    document.getElementById('dualOrigText').textContent = translated;
-  }
+  if(origEl) origEl.textContent = translated || englishText;
+  if(lblEl) lblEl.textContent = langShort + ' version ✔';
 }
 
 function processPrompt(input){
@@ -1844,7 +1841,8 @@ function processPrompt(input){
             + "4. Do NOT add any prefix or label\n"
             + "5. Just the " + langName + " translation only\n\n"
             + "English text to translate:\n" + engText;
-          fetch("/api/claude", {
+          var proxyUrl = window.location.hostname === 'localhost' ? '/.netlify/functions/claude-proxy' : '/api/claude';
+          fetch(proxyUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1856,13 +1854,9 @@ function processPrompt(input){
           .then(function(r){ return r.json(); })
           .then(function(d){
             var t = d.content && d.content[0] && d.content[0].text;
-            console.log("Translation result:", t);
             if(targetDotEl) targetDotEl.textContent = t ? t.trim() : engText;
           })
-          .catch(function(e){ 
-            console.error("Translation error:", e);
-            if(targetDotEl) targetDotEl.textContent = engText; 
-          });
+          .catch(function(){ if(targetDotEl) targetDotEl.textContent = engText; });
         }, 800);
       })(dotEl, cleanEng, ls);
     } else {
