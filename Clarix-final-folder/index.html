@@ -599,15 +599,95 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
 /* Mobile responsive */
 @media(max-width:768px){
+  /* Body: allow scroll on mobile */
+  body{overflow:auto;height:auto;min-height:100vh;flex-direction:column}
+
+  /* Sidebar: hidden off-screen on mobile, toggled by hamburger */
   .sidebar{
-    position:fixed;top:0;left:0;height:100vh;z-index:50;
+    position:fixed;top:0;left:0;height:100vh;z-index:100;
     transform:translateX(-100%);transition:transform .25s ease;
+    width:260px!important;
   }
   .sidebar.mobile-open{transform:translateX(0)}
-  .main{width:100%}
-  .quick-grid{grid-template-columns:1fr 1fr}
-  .apps-grid{grid-template-columns:repeat(2,1fr)}
-  .lib-grid{grid-template-columns:repeat(2,1fr)}
+  .sidebar-overlay{display:block!important}
+
+  /* Main: full width, add bottom padding for nav */
+  .main{width:100%;height:auto;min-height:100vh;overflow-y:auto;padding-bottom:64px}
+  .page{overflow-y:visible}
+
+  /* Top bar: compact */
+  .topbar{padding:8px 12px}
+  .tb-model{font-size:14px}
+
+  /* Write page: reduce padding */
+  .write-wrap{padding:12px;gap:12px}
+
+  /* Mode tabs: slightly smaller */
+  .mode-tab{font-size:12px;padding:7px 4px}
+
+  /* Platform pills: wrap properly */
+  #aiPills,#socialPills{flex-wrap:wrap!important;gap:6px}
+  .platform-pill{padding:5px 11px;font-size:11px}
+
+  /* Input footer: wrap on very small screens */
+  .input-footer{flex-wrap:wrap;gap:8px;padding:8px 12px}
+  .input-actions{order:2;width:100%}
+  .input-right{order:1;width:100%;justify-content:flex-end}
+  .enhance-btn{flex:1;justify-content:center;font-size:13px;padding:9px 16px}
+
+  /* Prompt textarea */
+  .prompt-textarea{font-size:15px;min-height:90px}
+
+  /* Scroller: full width no overflow */
+  .scroller-section{max-width:100%;overflow:hidden}
+  .scroller-wrap{width:100%;overflow:hidden}
+
+  /* Quick grid: 2 cols on mobile */
+  .quick-grid{grid-template-columns:1fr 1fr;gap:8px;max-width:100%}
+  .qcard{padding:12px}
+  .qcard-title{font-size:12px}
+
+  /* Home input bar */
+  #homeInputWrap{padding:8px 10px}
+  #homeInput{font-size:13px}
+
+  /* Apps grid */
+  .apps-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .app-tile-vis{height:100px}
+
+  /* Library grid */
+  .lib-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .lib-card-thumb{height:120px}
+
+  /* Inspire Me grid */
+  .insp-grid{columns:2!important;gap:8px}
+
+  /* Bottom navigation bar for mobile */
+  .mobile-bottom-nav{display:flex!important}
+
+  /* Score compare: stack on mobile */
+  .score-compare{padding:10px 12px;gap:8px}
+  .score-num{font-size:22px}
+
+  /* Action buttons: stack */
+  .action-wrap{flex-direction:column;padding:10px 12px;gap:6px}
+  .copy-btn,.open-btn,.save-btn{width:100%;text-align:center;justify-content:center}
+
+  /* Modals: full width */
+  .modal{max-width:100%;margin:0;border-radius:16px 16px 0 0;position:fixed;bottom:0;left:0;right:0}
+  .overlay{align-items:flex-end;padding:0}
+
+  /* Profile: reduce padding */
+  .profile-wrap{padding:20px 16px}
+
+  /* Apps wrap */
+  .apps-wrap{padding:16px}
+
+  /* Library wrap */
+  .library-wrap{padding:16px}
+
+  /* Inspire wrap */
+  .insp-wrap{padding:16px}
 }
 
 /* Scrollbars */
@@ -734,6 +814,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
 <!-- ── MAIN ── -->
 <main class="main">
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="mobile-bottom-nav" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;background:#1a1a22;border-top:1px solid rgba(255,255,255,0.08);padding:8px 0 12px">
+    <div onclick="goPage('home',document.getElementById('nav-home'))" id="mbn-home" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1">
+      <span style="font-size:20px">⌂</span><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Home</span>
+    </div>
+    <div onclick="goPage('write',document.getElementById('nav-write'))" id="mbn-write" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1">
+      <span style="font-size:20px">✦</span><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Write</span>
+    </div>
+    <div onclick="goPage('inspire',document.getElementById('nav-inspire'));initInspire()" id="mbn-inspire" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1">
+      <span style="font-size:20px">✨</span><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Inspire</span>
+    </div>
+    <div onclick="goPage('library',document.getElementById('nav-library'))" id="mbn-library" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1">
+      <span style="font-size:20px">📚</span><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Library</span>
+    </div>
+    <div onclick="goPage('apps',document.getElementById('nav-apps'))" id="mbn-apps" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1">
+      <span style="font-size:20px">⚡</span><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Apps</span>
+    </div>
+  </nav>
+
+  <!-- SIDEBAR OVERLAY for mobile -->
+  <div onclick="document.getElementById('sidebar').classList.remove('mobile-open');this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99" id="sidebarOverlay"></div>
 
   <!-- DISCLAIMER -->
   <div class="disclaimer" id="disclaimerBanner">
@@ -1125,26 +1227,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
     </div>
   </div>
 
-</main>
 
-<!-- ══ INSPIRE ME PAGE ══ -->
-<div class="page" id="page-inspire">
-  <div class="insp-wrap">
-    <div class="insp-h1">✨ Inspire Me</div>
-    <div class="insp-sub">Click any image — get the perfect AI prompt to recreate it instantly</div>
-    <div class="insp-cats" id="inspCats">
-      <button class="insp-cat active" onclick="filterInspire('all',this)">All</button>
-      <button class="insp-cat" onclick="filterInspire('cinematic',this)">🎬 Cinematic</button>
-      <button class="insp-cat" onclick="filterInspire('portrait',this)">🧑 Portrait</button>
-      <button class="insp-cat" onclick="filterInspire('nature',this)">🌿 Nature</button>
-      <button class="insp-cat" onclick="filterInspire('architecture',this)">🏙️ Architecture</button>
-      <button class="insp-cat" onclick="filterInspire('abstract',this)">🎨 Abstract</button>
-      <button class="insp-cat" onclick="filterInspire('fantasy',this)">🔮 Fantasy</button>
-      <button class="insp-cat" onclick="filterInspire('3d',this)">💎 3D Art</button>
+
+  <!-- ══ INSPIRE ME PAGE ══ -->
+  <div class="page" id="page-inspire">
+    <div class="insp-wrap">
+      <div class="insp-h1">✨ Inspire Me</div>
+      <div class="insp-sub">Click any image — get the perfect AI prompt to recreate it instantly</div>
+      <div class="insp-cats" id="inspCats">
+        <button class="insp-cat active" onclick="filterInspire('all',this)">All</button>
+        <button class="insp-cat" onclick="filterInspire('cinematic',this)">🎬 Cinematic</button>
+        <button class="insp-cat" onclick="filterInspire('portrait',this)">🧑 Portrait</button>
+        <button class="insp-cat" onclick="filterInspire('nature',this)">🌿 Nature</button>
+        <button class="insp-cat" onclick="filterInspire('architecture',this)">🏙️ Architecture</button>
+        <button class="insp-cat" onclick="filterInspire('abstract',this)">🎨 Abstract</button>
+        <button class="insp-cat" onclick="filterInspire('fantasy',this)">🔮 Fantasy</button>
+        <button class="insp-cat" onclick="filterInspire('3d',this)">💎 3D Art</button>
+      </div>
+      <div class="insp-grid" id="inspGrid"></div>
     </div>
-    <div class="insp-grid" id="inspGrid"></div>
   </div>
-</div>
+
+</main>
 
 <!-- ══ OVERLAYS ══ -->
 <!-- Lang nudge -->
@@ -2446,7 +2550,7 @@ function toggleVoice(){
   recognition.start();
 }
 
-// ── FIX 2: Custom platform — removed "document.document" typo ──
+// ── Custom platform modal ──
 function openModal(){
   var m=document.getElementById('customPlatModal');
   if(m){m.classList.add('open');m.style.display='flex';}
@@ -2749,15 +2853,22 @@ function saveUsername() {
 
 function toggleSidebar() {
   var sb = document.getElementById('sidebar');
-  sb.classList.toggle('collapsed');
-  var icon = document.getElementById('sbCollapseIcon');
-  var text = document.getElementById('sbCollapseText');
-  if (sb.classList.contains('collapsed')) {
-    if (icon) icon.textContent = '▶';
-    if (text) text.textContent = '';
+  var isMobile = window.innerWidth <= 768;
+  if(isMobile) {
+    sb.classList.toggle('mobile-open');
+    var overlay = document.getElementById('sidebarOverlay');
+    if(overlay) overlay.style.display = sb.classList.contains('mobile-open') ? 'block' : 'none';
   } else {
-    if (icon) icon.textContent = '◀';
-    if (text) text.textContent = 'Collapse';
+    sb.classList.toggle('collapsed');
+    var icon = document.getElementById('sbCollapseIcon');
+    var text = document.getElementById('sbCollapseText');
+    if (sb.classList.contains('collapsed')) {
+      if (icon) icon.textContent = '▶';
+      if (text) text.textContent = '';
+    } else {
+      if (icon) icon.textContent = '◀';
+      if (text) text.textContent = 'Collapse';
+    }
   }
 }
 
@@ -3083,38 +3194,22 @@ function loadInspire(cat){
   list.forEach(function(card, i){
     var div = document.createElement('div');
     div.className = 'insp-card';
-    // Use Unsplash API with access key - reliable and not deprecated
-    var imgUrl = 'https://api.unsplash.com/photos/random?query=' + encodeURIComponent(card.q) + '&orientation=portrait&client_id=aAkOb2u1k37I_8r5j75VxVdnYAoz4MpyzrPeuPAjHy0&sig=' + i;
+
     var shimId = 'ish' + i + cat.replace(/[^a-z]/g,'');
 
-    // shimmer placeholder
+    // Shimmer placeholder
     var shim = document.createElement('div');
     shim.className = 'insp-shimmer';
     shim.id = shimId;
     shim.style.height = card.h + 'px';
     shim.textContent = 'Loading...';
 
-    // image
+    // Image element
     var img = document.createElement('img');
     img.className = 'insp-img';
     img.style.height = card.h + 'px';
     img.style.display = 'none';
     img.alt = card.tag;
-    // Fetch image URL from Unsplash API
-    fetch(unsplashUrl)
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        if(data && data.urls && data.urls.regular) {
-          img.src = data.urls.regular;
-        } else {
-          var s = document.getElementById(shimId);
-          if(s){ s.style.color='rgba(255,255,255,0.25)'; s.textContent = card.tag; }
-        }
-      })
-      .catch(function(){
-        var s = document.getElementById(shimId);
-        if(s){ s.style.color='rgba(255,255,255,0.25)'; s.textContent = '📷 ' + card.tag; }
-      });
     img.onload = function(){
       this.style.display = 'block';
       var s = document.getElementById(shimId);
@@ -3122,33 +3217,53 @@ function loadInspire(cat){
     };
     img.onerror = function(){
       var s = document.getElementById(shimId);
-      if(s){ s.style.color = 'rgba(255,255,255,0.25)'; s.textContent = card.tag; }
+      if(s){ s.style.color='rgba(255,255,255,0.3)'; s.textContent = '📷 ' + card.tag; }
     };
 
-    // badge
+    // Fetch from Unsplash API — define URL here inside the loop
+    var apiUrl = 'https://api.unsplash.com/photos/random?query=' + encodeURIComponent(card.q) + '&orientation=portrait&client_id=aAkOb2u1k37I_8r5j75VxVdnYAoz4MpyzrPeuPAjHy0';
+
+    (function(imgEl, shimEl, shimIdVal){
+      fetch(apiUrl)
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if(data && data.urls && data.urls.regular){
+            imgEl.src = data.urls.regular;
+          } else {
+            shimEl.style.color = 'rgba(255,255,255,0.25)';
+            shimEl.textContent = '📷 ' + card.tag;
+          }
+        })
+        .catch(function(){
+          shimEl.style.color = 'rgba(255,255,255,0.25)';
+          shimEl.textContent = '📷 ' + card.tag;
+        });
+    })(img, shim, shimId);
+
+    // Badge
     var badge = document.createElement('div');
     badge.className = 'insp-badge ' + (card.tier==='pro' ? 'ib-pro' : 'ib-free');
     badge.textContent = card.tier==='pro' ? '⚡ Pro' : '✓ Free';
 
-    // overlay
+    // Overlay
     var ov = document.createElement('div');
     ov.className = 'insp-ov';
 
-    var tag = document.createElement('div');
-    tag.className = 'insp-tag';
-    tag.textContent = card.tag;
+    var tagEl = document.createElement('div');
+    tagEl.className = 'insp-tag';
+    tagEl.textContent = card.tag;
 
-    var title = document.createElement('div');
-    title.className = 'insp-title';
-    title.textContent = card.q.charAt(0).toUpperCase() + card.q.slice(1);
+    var titleEl = document.createElement('div');
+    titleEl.className = 'insp-title';
+    titleEl.textContent = card.q.charAt(0).toUpperCase() + card.q.slice(1);
 
     var btn = document.createElement('button');
     btn.className = 'insp-btn';
     btn.textContent = '✦ Get prompt';
     btn.onclick = (function(idx, c){ return function(e){ e.stopPropagation(); useInspirePrompt(idx, c); }; })(i, cat);
 
-    ov.appendChild(tag);
-    ov.appendChild(title);
+    ov.appendChild(tagEl);
+    ov.appendChild(titleEl);
     ov.appendChild(btn);
 
     div.appendChild(shim);
