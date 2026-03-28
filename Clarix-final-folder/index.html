@@ -239,7 +239,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .custom-pill{border-style:dashed}
 
 /* Input card */
-.input-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.input-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:visible}
 .input-top{padding:14px 14px 0}
 .input-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .input-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint)}
@@ -253,6 +253,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .input-footer{
   padding:10px 14px;border-top:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:nowrap;gap:8px;border-radius:0 0 var(--r) var(--r);
+  background:var(--surface);
 }
 .input-actions{display:flex;align-items:center;gap:8px}
 .input-right{display:flex;align-items:center;gap:6px}
@@ -285,6 +287,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
   border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;
   font-weight:600;cursor:pointer;transition:all .15s;
   display:flex;align-items:center;gap:6px;
+  flex-shrink:0;white-space:nowrap;
 }
 .enhance-btn:hover{background:var(--ac2);transform:translateY(-1px)}
 .enhance-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
@@ -629,14 +632,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
   #aiPills,#socialPills{flex-wrap:wrap!important;gap:6px}
   .platform-pill{padding:5px 11px;font-size:11px}
 
-  /* Input footer: keep in one row, never wrap */
-  .input-footer{flex-wrap:nowrap;gap:6px;padding:8px 10px;align-items:center}
-  .input-actions{flex:1;min-width:0;overflow:hidden}
-  .input-right{flex-shrink:0;display:flex;align-items:center;gap:6px}
-  .enhance-btn{white-space:nowrap;font-size:12px;padding:8px 12px;flex-shrink:0}
-  .mic-btn{flex-shrink:0;width:32px;height:32px}
-  .clear-btn{font-size:10px;padding:3px 7px}
-  .detect-badge{font-size:9px;max-width:80px;overflow:hidden;white-space:nowrap}
+  /* Input footer: ALWAYS one row, enhance never outside */
+  .input-card{overflow:visible!important}
+  .input-footer{flex-wrap:nowrap!important;gap:6px!important;padding:8px 10px!important;align-items:center!important;width:100%}
+  .input-actions{flex:1;min-width:0;overflow:hidden;max-width:50%}
+  .input-right{flex-shrink:0!important;display:flex!important;align-items:center!important;gap:6px!important}
+  .enhance-btn{white-space:nowrap!important;font-size:12px!important;padding:8px 12px!important;flex-shrink:0!important;min-width:auto!important}
+  .mic-btn{flex-shrink:0!important;width:34px!important;height:34px!important}
+  .clear-btn{font-size:10px;padding:3px 7px;white-space:nowrap}
+  .detect-badge{font-size:9px;max-width:70px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
   /* Prompt textarea */
   .prompt-textarea{font-size:15px;min-height:90px}
@@ -2594,13 +2598,19 @@ function addPlatformPill(name, type){
   type = type || 'ai';
   var wrap = document.getElementById(type === 'social' ? 'socialPills' : 'aiPills');
   if(!wrap) return;
-  var addBtn = wrap.querySelector('.custom-pill');
-  if(!addBtn) return;
   var pill = document.createElement('div');
   pill.className = 'platform-pill';
   pill.textContent = '✦ ' + name;
   pill.onclick = function(){ selectPlatform(pill, name, type); };
-  addBtn.parentNode.insertBefore(pill, addBtn);
+  wrap.appendChild(pill);
+  // Also add to apps grid if visible
+  var appsWrap = document.getElementById(type === 'social' ? 'socialAppsGrid' : 'aiAppsGrid');
+  if(appsWrap) {
+    var tile = document.createElement('div');
+    tile.className = 'app-tile';
+    tile.innerHTML = '<div class="app-tile-vis" style="background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:28px">✦</div><div class="app-tile-body"><div class="app-tile-name">' + name + '</div><div class="app-tile-maker">Custom</div><button class="app-tile-btn" onclick="goPage('write',document.getElementById('nav-write'))">Select →</button></div>';
+    appsWrap.appendChild(tile);
+  }
 }
 
 // ── Helpers ───────────────────────────────────────────
@@ -3254,7 +3264,20 @@ function loadInspire(cat){
     };
 
     // Fetch from Unsplash API — define URL here inside the loop
-    var apiUrl = 'https://api.unsplash.com/photos/random?query=' + encodeURIComponent(card.q) + '&orientation=portrait&client_id=aAkOb2u1k37I_8r5j75VxVdnYAoz4MpyzrPeuPAjHy0';
+    // Use fixed photo IDs per card so images don't change on reload
+    var FIXED_PHOTO_IDS = [
+      'photo-1534528741775-53994a69daeb','photo-1477959858617-67f85cf4f1df',
+      'photo-1506905925346-21bda4d32df4','photo-1451187580459-43490279c0fa',
+      'photo-1493246507139-91e8fad9978e','photo-1614730321146-b6fa6a46bcb4',
+      'photo-1578632292335-df3abbb0d586','photo-1545569341-9eb8b30979d9',
+      'photo-1558618666-fcd25c85cd64','photo-1501854140801-50d01698950b',
+      'photo-1523712999610-f77fbcfc3843','photo-1446776877081-d282a0f896e2',
+      'photo-1518770660439-4636190af475','photo-1507003211169-0a1dd7228f2d',
+      'photo-1486325212027-8081e485255e','photo-1538481199705-c710c4e965fc',
+      'photo-1559827260-dc66d52bef19','photo-1517336714731-489689fd1ca8',
+    ];
+    var photoId = FIXED_PHOTO_IDS[i % FIXED_PHOTO_IDS.length];
+    var apiUrl = 'https://api.unsplash.com/photos/' + photoId.replace('photo-','') + '?client_id=aAkOb2u1k37I_8r5j75VxVdnYAoz4MpyzrPeuPAjHy0';
 
     (function(imgEl, shimEl, shimIdVal){
       fetch(apiUrl)
