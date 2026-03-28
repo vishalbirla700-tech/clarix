@@ -1171,7 +1171,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 <!-- Custom platform modal -->
 <div class="overlay" id="customPlatModal">
   <div class="modal">
-    <div class="modal-title">➕ Add your platform</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <div class="modal-title" style="margin-bottom:0">➕ Add your platform</div>
+      <button onclick="closeModal()" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:#f5f5f5;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#999;flex-shrink:0">✕</button>
+    </div>
     <div class="modal-sub">Add any AI or social media platform not in the list</div>
     <input id="customPlatName" placeholder="e.g. Notion AI, VK, WeChat, Baidu..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px">
     <div style="margin-bottom:14px">
@@ -3080,7 +3083,8 @@ function loadInspire(cat){
   list.forEach(function(card, i){
     var div = document.createElement('div');
     div.className = 'insp-card';
-    var imgUrl = 'https://source.unsplash.com/400x' + card.h + '/?' + encodeURIComponent(card.q) + '&t=' + (Date.now()+i);
+    // Use Unsplash API with access key - reliable and not deprecated
+    var imgUrl = 'https://api.unsplash.com/photos/random?query=' + encodeURIComponent(card.q) + '&orientation=portrait&client_id=aAkOb2u1k37I_8r5j75VxVdnYAoz4MpyzrPeuPAjHy0&sig=' + i;
     var shimId = 'ish' + i + cat.replace(/[^a-z]/g,'');
 
     // shimmer placeholder
@@ -3095,8 +3099,22 @@ function loadInspire(cat){
     img.className = 'insp-img';
     img.style.height = card.h + 'px';
     img.style.display = 'none';
-    img.src = imgUrl;
     img.alt = card.tag;
+    // Fetch image URL from Unsplash API
+    fetch(unsplashUrl)
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(data && data.urls && data.urls.regular) {
+          img.src = data.urls.regular;
+        } else {
+          var s = document.getElementById(shimId);
+          if(s){ s.style.color='rgba(255,255,255,0.25)'; s.textContent = card.tag; }
+        }
+      })
+      .catch(function(){
+        var s = document.getElementById(shimId);
+        if(s){ s.style.color='rgba(255,255,255,0.25)'; s.textContent = '📷 ' + card.tag; }
+      });
     img.onload = function(){
       this.style.display = 'block';
       var s = document.getElementById(shimId);
