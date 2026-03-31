@@ -1,5 +1,5 @@
 [build]
-  publish = "Clarix-final-folder"
+  publish = "."
   functions = "Clarix-final-folder/netlify/functions"
 
 [functions]
