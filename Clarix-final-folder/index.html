@@ -1126,6 +1126,10 @@ Rules:
 function handleEnhanceClick() {
   const input = document.getElementById('promptInput').value.trim();
   if (!input) { showToast('Please type something first 🙏', true); return; }
+  // Close any open lang nudge and force process
+  const nudge = document.getElementById('langNudge');
+  if (nudge) nudge.classList.remove('open');
+  langNudgeShown = true; // prevent nudge from blocking
   processPrompt(input);
 }
 
@@ -1403,10 +1407,6 @@ function onInput(el){
   document.getElementById('clearBtn').style.display=len>0?'block':'none';
   clearTimeout(debounceTimer);
   if(len<3){document.getElementById('liveResult').classList.remove('visible');return;}
-  const savedLang=localStorage.getItem('clarix-lang');
-  const isTypingNonEnglish=/[a-z]/.test(el.value)&&/(nahi|nai|hai|hain|kar|karo|mujhe|chutti|bukar|thik|bahut|bohot|kya|chahiye|likho|bhejo)/i.test(el.value);
-  const langExplicitlyChosen=localStorage.getItem('clarix-lang-chosen')==='1';
-  if((!savedLang||(!langExplicitlyChosen&&isTypingNonEnglish))&&!langNudgeShown&&len>=5){showLangNudge(el.value);return;}
   // No auto-enhance on type — user clicks Enhance button
 }
 
