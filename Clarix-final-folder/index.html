@@ -1297,6 +1297,7 @@ function renderAIResult(ai, input, nonLatin) {
 
   document.getElementById('liveResult').classList.add('visible');
   showToast('✦ Enhanced with Claude AI!');
+  setTimeout(()=>{document.getElementById('liveResult').scrollIntoView({behavior:'smooth',block:'start'});},100);
 }
 
 // ── APPEND SUGGESTION (AI-aware) ─────────────────────
@@ -1398,6 +1399,7 @@ function processPromptLocal(input) {
   if(stats.scores.length>100) stats.scores=stats.scores.slice(-100);
   localStorage.setItem('clarix-stats',JSON.stringify(stats));
   document.getElementById('liveResult').classList.add('visible');
+  setTimeout(()=>{document.getElementById('liveResult').scrollIntoView({behavior:'smooth',block:'start'});},100);
 }
 
 // ── INPUT HANDLER ────────────────────────────────────
