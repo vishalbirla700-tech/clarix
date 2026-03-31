@@ -1,9 +1,5 @@
-[build]
-  publish = "."
-  functions = "Clarix-final-folder/netlify/functions"
-
 [functions]
-  directory = "Clarix-final-folder/netlify/functions"
+  directory = "netlify/functions"
 
 [[headers]]
   for = "/*"
