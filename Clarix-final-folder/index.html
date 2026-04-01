@@ -1133,6 +1133,16 @@ function handleEnhanceClick() {
   const nudge = document.getElementById('langNudge');
   if (nudge) nudge.classList.remove('open');
   langNudgeShown = true; // prevent nudge from blocking
+  // Pre-show result area and scroll to it immediately
+  const lr = document.getElementById('liveResult');
+  if (lr) {
+    lr.classList.add('visible');
+    setTimeout(()=>{
+      const page=document.getElementById('page-write');
+      if(page&&page.scrollHeight>page.clientHeight){page.scrollTop=lr.offsetTop-20;}
+      else{window.scrollTo({top:lr.getBoundingClientRect().top+window.scrollY-20,behavior:'smooth'});}
+    },100);
+  }
   processPrompt(input);
 }
 
@@ -1305,7 +1315,7 @@ function renderAIResult(ai, input, nonLatin) {
     const page=document.getElementById('page-write');
     if(page&&page.scrollHeight>page.clientHeight){page.scrollTop=el.offsetTop-20;}
     else{window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-20,behavior:'smooth'});}
-  },200);
+  },500);
 }
 
 // ── APPEND SUGGESTION (AI-aware) ─────────────────────
