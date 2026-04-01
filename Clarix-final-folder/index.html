@@ -424,11 +424,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
 <main class="main">
   <nav class="mobile-bottom-nav" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;background:#1a1a22;border-top:1px solid rgba(255,255,255,0.08);padding:6px 0 10px">
-    <div onclick="goPage('home',document.getElementById('nav-home'))" id="mbn-home" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Home</span></div>
-    <div onclick="goPage('write',document.getElementById('nav-write'))" id="mbn-write" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Write</span></div>
-    <div onclick="goPage('inspire',document.getElementById('nav-inspire'));initInspire()" id="mbn-inspire" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Inspire</span></div>
-    <div onclick="goPage('library',document.getElementById('nav-library'))" id="mbn-library" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Library</span></div>
-    <div onclick="goPage('apps',document.getElementById('nav-apps'))" id="mbn-apps" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="6" height="6" rx="1"/><rect x="16" y="3" width="6" height="6" rx="1"/><rect x="2" y="15" width="6" height="6" rx="1"/><rect x="16" y="15" width="6" height="6" rx="1"/></svg><span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:500">Apps</span></div>
+    <div onclick="goPage('home',document.getElementById('nav-home'))" id="mbn-home" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Home</span>
+    </div>
+    <div onclick="goPage('write',document.getElementById('nav-write'))" id="mbn-write" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Write</span>
+    </div>
+    <div onclick="goPage('inspire',document.getElementById('nav-inspire'));initInspire()" id="mbn-inspire" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Inspire</span>
+    </div>
+    <div onclick="goPage('library',document.getElementById('nav-library'))" id="mbn-library" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Library</span>
+    </div>
+    <div onclick="goPage('apps',document.getElementById('nav-apps'))" id="mbn-apps" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="6" height="6" rx="1.5"/><rect x="16" y="3" width="6" height="6" rx="1.5"/><rect x="2" y="15" width="6" height="6" rx="1.5"/><rect x="16" y="15" width="6" height="6" rx="1.5"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Apps</span>
+    </div>
   </nav>
 
   <div onclick="document.getElementById('sidebar').classList.remove('mobile-open');this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99" id="sidebarOverlay"></div>
@@ -1731,7 +1746,7 @@ function setGreeting(){
 function promptUsername(){var existing=localStorage.getItem('clarix-username');if(existing)return;document.getElementById('nameModal').style.display='flex';setTimeout(function(){document.getElementById('nameInput').focus();},200);}
 function saveUsername(){var name=document.getElementById('nameInput').value.trim();if(name)localStorage.setItem('clarix-username',name);document.getElementById('nameModal').style.display='none';setGreeting();}
 function showLangNudge(pendingText){if(langNudgeShown)return;pendingInputAfterLang=pendingText;document.getElementById('langNudge').classList.add('open');}
-function nudgeSelectLang(name,code,flag){document.getElementById('langNudge').classList.remove('open');langNudgeShown=true;selectLang(name,code,flag);localStorage.setItem('clarix-lang-chosen','1');if(pendingInputAfterLang){setTimeout(function(){var inp=document.getElementById('promptInput');if(inp&&!inp.value)inp.value=pendingInputAfterLang;pendingInputAfterLang='';},300);}}
+function nudgeSelectLang(name,code,flag){document.getElementById('langNudge').classList.remove('open');langNudgeShown=true;selectLang(name,code,flag);localStorage.setItem('clarix-lang-chosen','1');if(pendingInputAfterLang){setTimeout(function(){var inp=document.getElementById('promptInput');if(inp&&!inp.value)inp.value=pendingInputAfterLang;pendingInputAfterLang='';processPrompt(inp.value);},300);}else{var inp=document.getElementById('promptInput');if(inp&&inp.value.trim().length>2){setTimeout(function(){processPrompt(inp.value.trim());},300);}}}
 function nudgeSkip(){document.getElementById('langNudge').classList.remove('open');langNudgeShown=true;selectedLang='English';selectedLangCode='en-GB';document.getElementById('langBadge').textContent='🇬🇧 English';if(pendingInputAfterLang){setTimeout(function(){pendingInputAfterLang='';},200);}}
 function toggleHelpMenu(){var m=document.getElementById('helpMenu');m.style.display=m.style.display!=='none'&&m.style.display!==''?'none':'block';}
 function closeHelpMenu(){var m=document.getElementById('helpMenu');if(m)m.style.display='none';}
@@ -1909,7 +1924,11 @@ function loadInspire(cat){
     img.onerror=function(){var s=document.getElementById(shimId);if(s){s.style.color='rgba(255,255,255,0.25)';s.textContent='📷 '+card.tag;}};
     var photoId=FIXED_PHOTO_IDS[i%FIXED_PHOTO_IDS.length];
     var apiUrl='https://api.unsplash.com/photos/'+photoId.replace('photo-','')+'?client_id=aAkOb2u1k37I_8r5j75VxVdnYAoz4MpyzrPeuPAjHy0';
-    (function(imgEl,shimEl){fetch(apiUrl).then(function(r){return r.json();}).then(function(data){if(data&&data.urls&&data.urls.regular){imgEl.src=data.urls.regular;}else{shimEl.style.color='rgba(255,255,255,0.25)';shimEl.textContent='📷 '+card.tag;}}).catch(function(){shimEl.style.color='rgba(255,255,255,0.25)';shimEl.textContent='📷 '+card.tag;});})(img,shim);
+    (function(imgEl,shimEl,pid){
+      var directUrl='https://images.unsplash.com/'+pid+'?w=400&q=80&auto=format&fit=crop';
+      imgEl.src=directUrl;
+      imgEl.onerror=function(){shimEl.style.color='rgba(255,255,255,0.25)';shimEl.textContent='📷 '+card.tag;shimEl.style.display='flex';};
+    })(img,shim,photoId);
     var badge=document.createElement('div');badge.className='insp-badge '+(card.tier==='pro'?'ib-pro':'ib-free');badge.textContent=card.tier==='pro'?'⚡ Pro':'✓ Free';
     var ov=document.createElement('div');ov.className='insp-ov';
     var tagEl=document.createElement('div');tagEl.className='insp-tag';tagEl.textContent=card.tag;
