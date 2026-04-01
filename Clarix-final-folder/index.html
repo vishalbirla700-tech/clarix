@@ -717,139 +717,149 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
   <!-- INSPIRE ME PAGE — AI Cinematic Prompt Builder -->
   <div class="page" id="page-inspire" style="background:#07070f;overflow-y:auto">
-    <div style="max-width:900px;margin:0 auto;padding:20px 16px 40px">
+    <div style="max-width:960px;margin:0 auto;padding:20px 16px 40px">
 
       <!-- Header -->
-      <div style="text-align:center;padding:24px 0 20px">
-        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,112,67,0.1);border:1px solid rgba(255,112,67,0.3);border-radius:50px;padding:6px 16px;margin-bottom:14px">
-          <span style="font-size:12px;color:#ff7043;font-weight:700;letter-spacing:0.08em">✦ AI PROMPT BUILDER</span>
+      <div style="text-align:center;padding:24px 0 16px">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,112,67,0.1);border:1px solid rgba(255,112,67,0.3);border-radius:50px;padding:6px 16px;margin-bottom:12px">
+          <span style="font-size:11px;color:#ff7043;font-weight:700;letter-spacing:0.1em">✦ AI PROMPT BUILDER</span>
         </div>
-        <h1 style="font-family:'Syne',sans-serif;font-size:clamp(24px,5vw,36px);font-weight:800;background:linear-gradient(135deg,#fff 0%,#ff7043 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px;margin-bottom:8px">InspireMe</h1>
-        <p style="font-size:13px;color:rgba(255,255,255,0.4);max-width:420px;margin:0 auto;line-height:1.6">Build cinematic AI prompts for image & video generation. Upload, select presets, enhance with AI.</p>
+        <h1 style="font-family:'Syne',sans-serif;font-size:clamp(26px,5vw,38px);font-weight:800;background:linear-gradient(135deg,#ffffff 0%,#ff7043 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px;margin-bottom:8px">InspireMe</h1>
+        <p style="font-size:13px;color:rgba(255,255,255,0.4);max-width:440px;margin:0 auto 16px;line-height:1.6">Click any image to load its prompt. Build, enhance with Claude AI, and export.</p>
       </div>
 
-      <!-- MODULE 1: Scene Presets -->
-      <div style="margin-bottom:20px">
+      <!-- Category Tabs -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:20px" id="inspCatTabs">
+        <button class="insp-cat-btn active" onclick="filterInspGallery('all',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,112,67,0.5);background:rgba(255,112,67,0.12);color:#ff7043;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">All</button>
+        <button class="insp-cat-btn" onclick="filterInspGallery('cinematic',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🎬 Cinematic</button>
+        <button class="insp-cat-btn" onclick="filterInspGallery('fashion',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">👗 Fashion</button>
+        <button class="insp-cat-btn" onclick="filterInspGallery('3d',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">💎 3D Art</button>
+        <button class="insp-cat-btn" onclick="filterInspGallery('video',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🎥 Video</button>
+        <button class="insp-cat-btn" onclick="filterInspGallery('blog',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">📝 Blog</button>
+        <button class="insp-cat-btn" onclick="filterInspGallery('nature',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🌿 Nature</button>
+        <button class="insp-cat-btn" onclick="filterInspGallery('abstract',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🎨 Abstract</button>
+      </div>
+
+      <!-- Premium Image Gallery -->
+      <div id="inspGallery" style="columns:3;gap:12px;column-fill:balance;margin-bottom:28px"></div>
+
+      <!-- BUILDER SECTION -->
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:24px;margin-bottom:16px">
+
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,112,67,0.7);margin-bottom:16px">✦ Prompt Builder</div>
+
+        <!-- Scene Presets -->
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">① Scene Presets</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px" id="inspPresets">
-          <div class="insp-preset-card" onclick="selectPreset(this,'dolphin')" style="border-radius:14px;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:all .2s;background:#0d1a2e;position:relative">
-            <div style="height:80px;background:linear-gradient(135deg,#0077b6,#00b4d8);display:flex;align-items:center;justify-content:center;font-size:32px">🐬</div>
-            <div style="padding:8px;text-align:center"><div style="font-size:12px;font-weight:600;color:#fff">Dolphin</div><div style="font-size:10px;color:rgba(255,255,255,0.4)">Ocean cinematic</div></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px">
+          <div onclick="selectPreset(this,'dolphin')" class="insp-preset-card" style="border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:all .2s;background:#0d1a2e">
+            <div style="height:64px;background:linear-gradient(135deg,#0077b6,#00b4d8);display:flex;align-items:center;justify-content:center;font-size:26px">🐬</div>
+            <div style="padding:7px;text-align:center"><div style="font-size:11px;font-weight:600;color:#fff">Dolphin</div><div style="font-size:9px;color:rgba(255,255,255,0.4)">Ocean cinematic</div></div>
           </div>
-          <div class="insp-preset-card" onclick="selectPreset(this,'perfume')" style="border-radius:14px;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:all .2s;background:#1a0a1e;position:relative">
-            <div style="height:80px;background:linear-gradient(135deg,#7b2d8b,#e040fb);display:flex;align-items:center;justify-content:center;font-size:32px">🌸</div>
-            <div style="padding:8px;text-align:center"><div style="font-size:12px;font-weight:600;color:#fff">Perfume</div><div style="font-size:10px;color:rgba(255,255,255,0.4)">Luxury editorial</div></div>
+          <div onclick="selectPreset(this,'perfume')" class="insp-preset-card" style="border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:all .2s;background:#1a0a1e">
+            <div style="height:64px;background:linear-gradient(135deg,#7b2d8b,#e040fb);display:flex;align-items:center;justify-content:center;font-size:26px">🌸</div>
+            <div style="padding:7px;text-align:center"><div style="font-size:11px;font-weight:600;color:#fff">Perfume</div><div style="font-size:9px;color:rgba(255,255,255,0.4)">Luxury editorial</div></div>
           </div>
-          <div class="insp-preset-card" onclick="selectPreset(this,'cyberpunk')" style="border-radius:14px;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:all .2s;background:#0a0a1e;position:relative">
-            <div style="height:80px;background:linear-gradient(135deg,#00f5ff,#7b00ff);display:flex;align-items:center;justify-content:center;font-size:32px">🤖</div>
-            <div style="padding:8px;text-align:center"><div style="font-size:12px;font-weight:600;color:#fff">Cyberpunk</div><div style="font-size:10px;color:rgba(255,255,255,0.4)">Neon futuristic</div></div>
+          <div onclick="selectPreset(this,'cyberpunk')" class="insp-preset-card" style="border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:all .2s;background:#0a0a1e">
+            <div style="height:64px;background:linear-gradient(135deg,#00f5ff,#7b00ff);display:flex;align-items:center;justify-content:center;font-size:26px">🤖</div>
+            <div style="padding:7px;text-align:center"><div style="font-size:11px;font-weight:600;color:#fff">Cyberpunk</div><div style="font-size:9px;color:rgba(255,255,255,0.4)">Neon futuristic</div></div>
           </div>
-          <div class="insp-preset-card" onclick="selectPreset(this,'dragon')" style="border-radius:14px;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:all .2s;background:#1a0a00;position:relative">
-            <div style="height:80px;background:linear-gradient(135deg,#ff6b00,#dc143c);display:flex;align-items:center;justify-content:center;font-size:32px">🐉</div>
-            <div style="padding:8px;text-align:center"><div style="font-size:12px;font-weight:600;color:#fff">Dragon</div><div style="font-size:10px;color:rgba(255,255,255,0.4)">Epic fantasy</div></div>
+          <div onclick="selectPreset(this,'dragon')" class="insp-preset-card" style="border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,0.08);transition:all .2s;background:#1a0a00">
+            <div style="height:64px;background:linear-gradient(135deg,#ff6b00,#dc143c);display:flex;align-items:center;justify-content:center;font-size:26px">🐉</div>
+            <div style="padding:7px;text-align:center"><div style="font-size:11px;font-weight:600;color:#fff">Dragon</div><div style="font-size:9px;color:rgba(255,255,255,0.4)">Epic fantasy</div></div>
           </div>
         </div>
-      </div>
 
-      <!-- MODULE 2: Image Upload -->
-      <div style="margin-bottom:20px">
+        <!-- Image Upload -->
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">② Image Input</div>
-        <div id="inspDropzone" onclick="document.getElementById('inspFileInput').click()" ondragover="event.preventDefault();this.style.borderColor='#ff7043'" ondragleave="this.style.borderColor='rgba(255,255,255,0.1)'" ondrop="handleInspDrop(event)" style="border:2px dashed rgba(255,255,255,0.1);border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.02);position:relative">
+        <div id="inspDropzone" onclick="document.getElementById('inspFileInput').click()" ondragover="event.preventDefault();this.style.borderColor='#ff7043'" ondragleave="this.style.borderColor='rgba(255,255,255,0.1)'" ondrop="handleInspDrop(event)" style="border:2px dashed rgba(255,255,255,0.1);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.02);position:relative;margin-bottom:20px">
           <input type="file" id="inspFileInput" accept="image/*" style="display:none" onchange="handleInspFile(this.files[0])">
-          <div id="inspDropContent">
-            <div style="font-size:32px;margin-bottom:8px">🖼️</div>
-            <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:4px">Upload / Drag & Drop / Paste image</div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.3)">JPG, PNG, WEBP supported • Ctrl+V to paste</div>
-          </div>
-          <img id="inspPreviewImg" style="display:none;max-height:180px;border-radius:10px;margin:0 auto" alt="preview">
-          <button id="inspRemoveImg" onclick="event.stopPropagation();removeInspImage()" style="display:none;position:absolute;top:10px;right:10px;background:rgba(220,53,69,0.8);color:#fff;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:16px">✕</button>
+          <div id="inspDropContent"><div style="font-size:24px;margin-bottom:6px">🖼️</div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.5)">Upload / Drag & Drop / Ctrl+V paste</div></div>
+          <img id="inspPreviewImg" style="display:none;max-height:160px;border-radius:8px;margin:0 auto" alt="preview">
+          <button id="inspRemoveImg" onclick="event.stopPropagation();removeInspImage()" style="display:none;position:absolute;top:8px;right:8px;background:rgba(220,53,69,0.8);color:#fff;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:14px">✕</button>
         </div>
-      </div>
 
-      <!-- MODULE 3: Prompt Builder -->
-      <div style="margin-bottom:20px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">③ Prompt Builder</div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden">
-          <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:12px;color:rgba(255,255,255,0.5)">Your prompt</span>
+        <!-- Prompt Textarea -->
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">③ Your Scene Description</div>
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden;margin-bottom:16px">
+          <textarea id="inspPromptInput" placeholder="Describe your scene... e.g. A dolphin leaping at golden hour over crystal clear ocean" maxlength="500" oninput="document.getElementById('inspCharCount').textContent=this.value.length+' / 500'" style="width:100%;background:transparent;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;padding:14px;resize:none;min-height:80px;outline:none"></textarea>
+          <div style="padding:6px 14px;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center">
             <span id="inspCharCount" style="font-size:11px;color:rgba(255,255,255,0.3)">0 / 500</span>
-          </div>
-          <textarea id="inspPromptInput" placeholder="Describe your scene... e.g. 'A dolphin leaping at sunset over golden ocean waves'" maxlength="500" oninput="document.getElementById('inspCharCount').textContent=this.value.length+' / 500'" style="width:100%;background:transparent;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;padding:14px;resize:none;min-height:90px;outline:none"></textarea>
-        </div>
-      </div>
-
-      <!-- MODULE 4: Enhancement Chips -->
-      <div style="margin-bottom:20px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">④ Creative Enhancements</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px" id="inspChips">
-          <div class="insp-chip" onclick="toggleInspChip(this,'cinematic lighting')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🎬 Cinematic lighting</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'8K ultra detailed')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">💎 8K ultra detailed</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'golden hour lighting')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🌅 Golden hour</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'photorealistic')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">📷 Photorealistic</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'dramatic shadows')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🌑 Dramatic shadows</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'wide angle lens')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🔭 Wide angle</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'bokeh background')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">✨ Bokeh</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'volumetric fog')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🌫️ Volumetric fog</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'epic scale')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">⚡ Epic scale</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'color graded')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🎨 Color graded</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'macro photography')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🔬 Macro</div>
-          <div class="insp-chip" onclick="toggleInspChip(this,'award winning photography')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🏆 Award winning</div>
-        </div>
-      </div>
-
-      <!-- MODULE 5: Smart Prompt Controls -->
-      <div style="margin-bottom:20px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">⑤ Smart Controls</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px">
-          <button onclick="applyInspStyle('cinematic')" style="padding:8px 16px;border-radius:50px;border:1.5px solid rgba(255,112,67,0.4);background:rgba(255,112,67,0.08);color:#ff7043;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">🎬 Cinematic</button>
-          <button onclick="applyInspStyle('realistic')" style="padding:8px 16px;border-radius:50px;border:1.5px solid rgba(0,200,150,0.4);background:rgba(0,200,150,0.08);color:#00c896;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">📷 Realistic</button>
-          <button onclick="applyInspStyle('beautiful')" style="padding:8px 16px;border-radius:50px;border:1.5px solid rgba(230,130,255,0.4);background:rgba(230,130,255,0.08);color:#e682ff;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">🌸 Beautiful</button>
-          <button onclick="applyInspStyle('epic')" style="padding:8px 16px;border-radius:50px;border:1.5px solid rgba(255,200,0,0.4);background:rgba(255,200,0,0.08);color:#ffc800;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">⚡ Epic</button>
-          <button onclick="rewriteInspPrompt()" style="padding:8px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">🔄 AI Rewrite</button>
-        </div>
-      </div>
-
-      <!-- MODULE 3+4 Combined: Final Prompt Output -->
-      <div style="margin-bottom:16px;background:rgba(255,255,255,0.03);border:1.5px solid rgba(255,112,67,0.2);border-radius:14px;overflow:hidden">
-        <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;background:rgba(255,112,67,0.05)">
-          <span style="font-size:12px;font-weight:700;color:#ff7043;text-transform:uppercase;letter-spacing:0.06em">✦ Final Prompt</span>
-          <div style="display:flex;gap:6px">
-            <button onclick="undoInspPrompt()" title="Undo" style="padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">↩ Undo</button>
-            <button onclick="clearInspPrompt()" style="padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">✕ Clear</button>
+            <button onclick="rewriteInspPrompt()" style="padding:4px 12px;border-radius:20px;border:1px solid rgba(255,112,67,0.3);background:transparent;color:#ff7043;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🔄 AI Rewrite</button>
           </div>
         </div>
-        <div id="inspFinalPrompt" style="padding:16px;font-size:13px;line-height:1.7;color:rgba(255,255,255,0.85);min-height:80px;font-family:'DM Sans',sans-serif">Your enhanced prompt will appear here...</div>
-      </div>
 
-      <!-- Main Action Button -->
-      <button onclick="buildInspPrompt()" style="width:100%;padding:16px;border-radius:14px;border:none;background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:16px;box-shadow:0 8px 24px rgba(255,112,67,0.3);transition:all .2s;letter-spacing:0.02em">✦ Build & Enhance with AI</button>
-
-      <!-- MODULE 7: Generate Direction -->
-      <div style="margin-bottom:16px;display:none" id="inspDirectionSection">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">⑦ Creative Direction</div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px">
-          <div id="inspDirection" style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.7)"></div>
-          <button onclick="generateInspDirection()" style="margin-top:12px;padding:8px 20px;border-radius:50px;border:1.5px solid rgba(255,112,67,0.4);background:transparent;color:#ff7043;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">✦ Regenerate Direction</button>
+        <!-- Enhancement Chips -->
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">④ Enhancements</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px" id="inspChips">
+          <div class="insp-chip" onclick="toggleInspChip(this,'cinematic lighting')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🎬 Cinematic lighting</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'8K ultra detailed')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">💎 8K ultra detailed</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'golden hour lighting')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🌅 Golden hour</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'photorealistic')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">📷 Photorealistic</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'dramatic shadows')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🌑 Dramatic shadows</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'wide angle lens')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🔭 Wide angle</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'bokeh background')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">✨ Bokeh</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'volumetric fog')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🌫️ Volumetric fog</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'epic scale')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">⚡ Epic scale</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'color graded')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🎨 Color graded</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'award winning photography')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🏆 Award winning</div>
+          <div class="insp-chip" onclick="toggleInspChip(this,'macro photography')" style="padding:6px 13px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif">🔬 Macro</div>
         </div>
-      </div>
 
-      <!-- MODULE 6: Prompt History -->
-      <div style="margin-bottom:16px;display:none" id="inspHistorySection">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">⑥ Prompt History</div>
-        <div id="inspHistoryList" style="display:flex;flex-direction:column;gap:8px"></div>
-      </div>
-
-      <!-- MODULE 8: Export System -->
-      <div id="inspExportSection" style="display:none;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;margin-bottom:16px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:12px">⑧ Export</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px">
-          <button onclick="copyInspPrompt()" style="flex:1;min-width:120px;padding:10px;border-radius:10px;border:none;background:#ff7043;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">⎘ Copy Prompt</button>
-          <button onclick="exportInspTXT()" style="flex:1;min-width:120px;padding:10px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">📄 Export TXT</button>
-          <button onclick="exportInspHTML()" style="flex:1;min-width:120px;padding:10px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🌐 Export HTML</button>
-          <button onclick="sendToWrite()" style="flex:1;min-width:120px;padding:10px;border-radius:10px;border:1.5px solid rgba(255,112,67,0.4);background:rgba(255,112,67,0.08);color:#ff7043;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">→ Send to Write</button>
+        <!-- Smart Controls -->
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px">⑤ Style Controls</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px">
+          <button onclick="applyInspStyle('cinematic')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,112,67,0.4);background:rgba(255,112,67,0.08);color:#ff7043;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🎬 Cinematic</button>
+          <button onclick="applyInspStyle('realistic')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(0,200,150,0.4);background:rgba(0,200,150,0.08);color:#00c896;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">📷 Realistic</button>
+          <button onclick="applyInspStyle('beautiful')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(230,130,255,0.4);background:rgba(230,130,255,0.08);color:#e682ff;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🌸 Beautiful</button>
+          <button onclick="applyInspStyle('epic')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,200,0,0.4);background:rgba(255,200,0,0.08);color:#ffc800;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">⚡ Epic</button>
+          <button onclick="applyInspStyle('fashion')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,105,180,0.4);background:rgba(255,105,180,0.08);color:#ff69b4;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">👗 Fashion</button>
+          <button onclick="applyInspStyle('3d')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(100,200,255,0.4);background:rgba(100,200,255,0.08);color:#64c8ff;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">💎 3D Art</button>
+          <button onclick="applyInspStyle('video')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(255,165,0,0.4);background:rgba(255,165,0,0.08);color:#ffa500;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🎥 Video</button>
+          <button onclick="applyInspStyle('blog')" style="padding:7px 14px;border-radius:50px;border:1.5px solid rgba(150,255,150,0.4);background:rgba(150,255,150,0.08);color:#96ff96;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">📝 Blog</button>
         </div>
-      </div>
 
+        <!-- Final Prompt -->
+        <div style="background:rgba(255,112,67,0.05);border:1.5px solid rgba(255,112,67,0.2);border-radius:12px;overflow:hidden;margin-bottom:16px">
+          <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:11px;font-weight:700;color:#ff7043;text-transform:uppercase;letter-spacing:0.06em">✦ Final Prompt</span>
+            <div style="display:flex;gap:6px">
+              <button onclick="undoInspPrompt()" style="padding:3px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.4);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif">↩ Undo</button>
+              <button onclick="clearInspPrompt()" style="padding:3px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.4);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif">✕ Clear</button>
+            </div>
+          </div>
+          <div id="inspFinalPrompt" style="padding:14px;font-size:13px;line-height:1.7;color:rgba(255,255,255,0.8);min-height:70px;font-family:'DM Sans',sans-serif">Your AI-enhanced prompt will appear here...</div>
+        </div>
+
+        <!-- Build Button -->
+        <button onclick="buildInspPrompt()" style="width:100%;padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:12px;box-shadow:0 8px 24px rgba(255,112,67,0.3);letter-spacing:0.02em">✦ Build & Enhance with Claude AI</button>
+
+        <!-- Creative Direction -->
+        <div style="display:none;margin-bottom:12px" id="inspDirectionSection">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:8px">⑦ Creative Direction</div>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px">
+            <div id="inspDirection" style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.6)"></div>
+            <button onclick="generateInspDirection()" style="margin-top:10px;padding:6px 16px;border-radius:50px;border:1.5px solid rgba(255,112,67,0.3);background:transparent;color:#ff7043;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">↺ Regenerate</button>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div style="display:none;margin-bottom:12px" id="inspHistorySection">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:8px">⑥ History</div>
+          <div id="inspHistoryList"></div>
+        </div>
+
+        <!-- Export -->
+        <div id="inspExportSection" style="display:none">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:8px">⑧ Export</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button onclick="copyInspPrompt()" style="padding:10px;border-radius:10px;border:none;background:#ff7043;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">⎘ Copy Prompt</button>
+            <button onclick="sendToWrite()" style="padding:10px;border-radius:10px;border:1.5px solid rgba(255,112,67,0.4);background:rgba(255,112,67,0.08);color:#ff7043;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">→ Send to Write</button>
+            <button onclick="exportInspTXT()" style="padding:10px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">📄 Export TXT</button>
+            <button onclick="exportInspHTML()" style="padding:10px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🌐 Export HTML</button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </main>
@@ -1688,13 +1698,47 @@ function copySocialResult(){
   navigator.clipboard.writeText(currentSocialResult).then(()=>showToast('Caption copied! Open '+selectedSocialPlatform+' ✓'));
 }
 function openPlatform(){
-  const url=PLATFORM_URLS[selectedPlatform];
-  if(url){window.open(url,'_blank');showToast('Opening '+selectedPlatform+'... paste there ✓');}
+  var url=PLATFORM_URLS[selectedPlatform];
+  if(!url){showToast('URL not found for '+selectedPlatform,true);return;}
+  showCopyOpenPopup(selectedPlatform, url, currentResult);
+}
+
+function showCopyOpenPopup(platName, url, prompt) {
+  if(!prompt){showToast('No prompt to copy',true);return;}
+  document.getElementById('popupPlatName').textContent = platName;
+  document.getElementById('popupPlatName2').textContent = platName;
+  document.getElementById('popupPlatName3').textContent = platName;
+  document.getElementById('popupPromptText').textContent = prompt;
+  document.getElementById('copyOpenOverlay').style.display = 'flex';
+  window._popupPlatUrl = url;
+}
+
+function closeCopyOpenPopup() {
+  document.getElementById('copyOpenOverlay').style.display = 'none';
+}
+
+function selectPopupText() {
+  var el = document.getElementById('popupPromptText');
+  var range = document.createRange();
+  range.selectNodeContents(el);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  navigator.clipboard.writeText(el.textContent).then(function(){ showToast('✦ Copied!'); });
+}
+
+function copyAndOpenPlatform() {
+  var text = document.getElementById('popupPromptText').textContent;
+  navigator.clipboard.writeText(text).then(function(){
+    showToast('✦ Copied! Opening...');
+    setTimeout(function(){ window.open(window._popupPlatUrl,'_blank'); closeCopyOpenPopup(); }, 400);
+  });
 }
 function openBothPlatform(which){
-  const name=which==='ai'?selectedAIPlatform:selectedSocialPlatform;
-  const url=PLATFORM_URLS[name];
-  if(url){window.open(url,'_blank');showToast('Opening '+name+'...');}
+  var name=which==='ai'?selectedAIPlatform:selectedSocialPlatform;
+  var url=PLATFORM_URLS[name];
+  var prompt=which==='ai'?currentResult:currentSocialResult;
+  if(url) showCopyOpenPopup(name, url, prompt||currentResult);
 }
 function showOutputTab(tab,btn){
   document.querySelectorAll('.output-tab').forEach(b=>b.classList.remove('active'));
@@ -2006,47 +2050,111 @@ function filterLibCards(query){
 }
 
 // ══════════════════════════════════════════════════════
-// ── INSPIRE ME — 10 MODULE SYSTEM ─────────────────────
+// ── INSPIRE ME — FULL SYSTEM ──────────────────────────
 // ══════════════════════════════════════════════════════
+
+// ── Premium curated image gallery data ──────────────
+var INSP_GALLERY = [
+  // CINEMATIC
+  {cat:'cinematic', h:260, img:'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=85&auto=format&fit=crop', title:'Neon City Night', prompt:'Cinematic aerial shot of a futuristic neon city at night, rain-soaked streets reflecting colorful lights, blade runner aesthetic, 8K, anamorphic lens, film grain, ultra detailed'},
+  {cat:'cinematic', h:220, img:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&q=85&auto=format&fit=crop', title:'Mountain Epic', prompt:'Epic cinematic mountain landscape at golden hour, dramatic storm clouds, volumetric god rays, Ansel Adams inspired, ultra wide angle, 8K, National Geographic quality'},
+  {cat:'cinematic', h:280, img:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=85&auto=format&fit=crop', title:'Portrait Drama', prompt:'Cinematic close-up portrait, dramatic side lighting, film noir aesthetic, shallow depth of field, 85mm f/1.2, moody atmosphere, award winning photography'},
+  {cat:'cinematic', h:240, img:'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=85&auto=format&fit=crop', title:'Space Epic', prompt:'Cinematic deep space scene, nebula explosion, cosmic scale, photorealistic, NASA level detail, star clusters, volumetric light, 8K ultra HD'},
+  {cat:'cinematic', h:200, img:'https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=500&q=85&auto=format&fit=crop', title:'Ocean Sunset', prompt:'Cinematic ocean sunset, golden hour, long exposure waves, dramatic clouds, teal and orange color grade, ultra wide, award winning photography'},
+  // FASHION
+  {cat:'fashion', h:300, img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&q=85&auto=format&fit=crop', title:'High Fashion', prompt:'High fashion editorial portrait, Vogue magazine cover style, luxury designer outfit, dramatic studio lighting, flawless skin, intense gaze, Hasselblad medium format, 8K'},
+  {cat:'fashion', h:250, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=85&auto=format&fit=crop', title:'Luxury Beauty', prompt:'Luxury beauty editorial, dramatic makeup, bokeh background, professional studio lighting, fashion magazine quality, ultra sharp, 8K, award winning photography'},
+  {cat:'fashion', h:270, img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=85&auto=format&fit=crop', title:'Street Fashion', prompt:'Urban street fashion editorial, candid style, natural light, NYC backdrop, designer streetwear, editorial photography, film grain, authentic moment'},
+  {cat:'fashion', h:230, img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=85&auto=format&fit=crop', title:'Runway Glam', prompt:'Luxury runway fashion photography, dramatic lighting, designer couture gown, flowing fabric motion, marble background, editorial quality, 8K ultra detailed'},
+  // 3D
+  {cat:'3d', h:240, img:'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=500&q=85&auto=format&fit=crop', title:'Glass Morph', prompt:'Hyperrealistic 3D glassmorphism render, floating transparent spheres, caustic light effects, pastel gradient environment, Blender Cycles, 8K, octane render quality'},
+  {cat:'3d', h:260, img:'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&q=85&auto=format&fit=crop', title:'Chrome Art', prompt:'Hyperrealistic 3D chrome liquid sculpture, perfect reflections, studio HDRI lighting, abstract organic form, Blender render, 8K, CGI movie quality'},
+  {cat:'3d', h:220, img:'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=85&auto=format&fit=crop', title:'Neon 3D', prompt:'Futuristic 3D neon geometric structure, dark environment, glowing edges, cyberpunk aesthetic, Blender Cycles render, 8K, Unreal Engine 5 quality'},
+  {cat:'3d', h:280, img:'https://images.unsplash.com/photo-1634193295627-1cdddf751ebf?w=500&q=85&auto=format&fit=crop', title:'Abstract 3D', prompt:'Abstract 3D art, flowing organic shapes, iridescent material, studio lighting, Blender render, 8K ultra detail, CGI award winning'},
+  // VIDEO
+  {cat:'video', h:230, img:'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&q=85&auto=format&fit=crop', title:'Drone Shot', prompt:'Cinematic drone aerial footage prompt for RunwayML: sweeping aerial view over mountains at golden hour, smooth dolly movement, 4K HDR, cinematic color grade, suitable for travel documentary'},
+  {cat:'video', h:260, img:'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=85&auto=format&fit=crop', title:'Film Scene', prompt:'Cinematic film scene for Pika/Sora: two characters in dramatic confrontation, rain-soaked alley, neon reflections, slow motion, 24fps film look, movie quality lighting'},
+  {cat:'video', h:240, img:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=500&q=85&auto=format&fit=crop', title:'Product Reel', prompt:'Premium product showcase reel for social media: luxury item rotating on dark background, particle effects, cinematic lighting, smooth 360 rotation, 4K, brand campaign quality'},
+  {cat:'video', h:210, img:'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&q=85&auto=format&fit=crop', title:'Social Reel', prompt:'Viral Instagram reel concept: fast-paced montage of urban lifestyle, trending audio sync, color graded moody tones, jump cuts, 9:16 vertical format, 4K'},
+  // BLOG
+  {cat:'blog', h:220, img:'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=500&q=85&auto=format&fit=crop', title:'Blog Hero', prompt:'Write a comprehensive SEO-optimized blog article about [TOPIC]. Include: compelling headline, engaging introduction, 5-7 detailed sections with subheadings, expert insights, practical tips, real-world examples, and a strong conclusion with CTA. Target 1500-2000 words.'},
+  {cat:'blog', h:250, img:'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=500&q=85&auto=format&fit=crop', title:'Tech Article', prompt:'Write a professional technology blog post about [TECH TOPIC]. Include: industry context, technical explanation in simple terms, benefits, challenges, expert quotes, data statistics, and actionable takeaways. SEO optimized, 1200 words.'},
+  {cat:'blog', h:230, img:'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=500&q=85&auto=format&fit=crop', title:'Social Media Post', prompt:'Write 5 highly engaging LinkedIn posts about [TOPIC]. Each post: strong hook first line, personal story or insight, practical value, relevant hashtags, question to drive comments. Professional yet conversational tone.'},
+  // NATURE
+  {cat:'nature', h:250, img:'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=500&q=85&auto=format&fit=crop', title:'Rainforest', prompt:'Breathtaking aerial view of Amazon rainforest at sunrise, morning mist rising from canopy, golden light filtering through trees, drone photography, National Geographic quality, 8K'},
+  {cat:'nature', h:220, img:'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=500&q=85&auto=format&fit=crop', title:'Wildlife', prompt:'Ultra realistic wildlife photography, majestic animal in natural habitat, perfect golden hour lighting, bokeh background, National Geographic style, Canon R5 quality, 8K'},
+  {cat:'nature', h:270, img:'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?w=500&q=85&auto=format&fit=crop', title:'Milky Way', prompt:'Stunning Milky Way over dramatic landscape, long exposure astrophotography, star trails, crystal clear night sky, remote wilderness, 8K, award winning astrophotography'},
+  // ABSTRACT
+  {cat:'abstract', h:240, img:'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=500&q=85&auto=format&fit=crop', title:'Paint Explosion', prompt:'High speed paint explosion macro photography, vibrant color collision, dynamic composition, black background, studio strobe lighting, 8K ultra detailed, award winning'},
+  {cat:'abstract', h:260, img:'https://images.unsplash.com/photo-1549490349-8643362247b5?w=500&q=85&auto=format&fit=crop', title:'Fluid Art', prompt:'Abstract fluid art, acrylic pour technique, swirling iridescent colors, macro close-up, high detail, perfect composition, museum quality artwork, 8K'}
+];
 
 var _inspSelectedPreset = null;
 var _inspActiveChips = [];
 var _inspPromptHistory = [];
 var _inspCurrentPrompt = '';
-var _inspHasImage = false;
+var _inspCurrentFilter = 'all';
 
 var PRESET_DATA = {
-  dolphin: {
-    base: 'A majestic dolphin leaping gracefully over crystal-clear turquoise ocean waves at golden hour',
-    chips: ['cinematic lighting','8K ultra detailed','golden hour lighting'],
-    style: 'Ocean cinematic, National Geographic style photography'
-  },
-  perfume: {
-    base: 'Luxury perfume bottle surrounded by delicate rose petals and soft ethereal light, editorial fashion photography',
-    chips: ['bokeh background','8K ultra detailed','color graded'],
-    style: 'High-end luxury editorial, Vogue magazine aesthetic'
-  },
-  cyberpunk: {
-    base: 'Futuristic cyberpunk city at night, neon lights reflecting on wet streets, advanced technology everywhere',
-    chips: ['cinematic lighting','volumetric fog','dramatic shadows'],
-    style: 'Blade Runner aesthetic, cyberpunk neon noir'
-  },
-  dragon: {
-    base: 'An epic fire-breathing dragon soaring through stormy clouds above ancient mountains at dusk',
-    chips: ['epic scale','dramatic shadows','cinematic lighting'],
-    style: 'Epic fantasy, Game of Thrones cinematic style'
-  }
+  dolphin: { base: 'A majestic dolphin leaping gracefully over crystal-clear turquoise ocean waves at golden hour', chips: ['cinematic lighting','8K ultra detailed','golden hour lighting'] },
+  perfume: { base: 'Luxury perfume bottle surrounded by delicate rose petals and soft ethereal light, editorial fashion photography', chips: ['bokeh background','8K ultra detailed','color graded'] },
+  cyberpunk: { base: 'Futuristic cyberpunk city at night, neon lights reflecting on wet streets, advanced technology', chips: ['cinematic lighting','volumetric fog','dramatic shadows'] },
+  dragon: { base: 'An epic fire-breathing dragon soaring through stormy clouds above ancient mountains at dusk', chips: ['epic scale','dramatic shadows','cinematic lighting'] }
 };
 
 var STYLE_ADDITIONS = {
   cinematic: ', cinematic composition, film grain, anamorphic lens, movie still, 35mm film',
-  realistic: ', hyperrealistic, photographic quality, natural lighting, shot on Canon R5, RAW format',
-  beautiful: ', breathtakingly beautiful, harmonious colors, aesthetic perfection, visually stunning',
-  epic: ', epic scale, jaw-dropping, monumental, larger than life, legendary, breathtaking'
+  realistic: ', hyperrealistic, photographic quality, natural lighting, shot on Canon R5',
+  beautiful: ', breathtakingly beautiful, harmonious colors, aesthetic perfection',
+  epic: ', epic scale, jaw-dropping, monumental, larger than life, legendary',
+  fashion: ', high fashion editorial, Vogue magazine quality, luxury aesthetic, professional studio lighting',
+  '3d': ', hyperrealistic 3D render, Blender Cycles, octane render, 8K, CGI movie quality',
+  video: ', suitable for RunwayML/Pika video generation, smooth camera movement, cinematic 4K',
+  blog: ', well-structured article, SEO optimized, engaging tone, expert insights, actionable content'
 };
 
+function renderInspGallery(filter) {
+  var grid = document.getElementById('inspGallery');
+  if (!grid) return;
+  var list = filter === 'all' ? INSP_GALLERY : INSP_GALLERY.filter(function(c){ return c.cat === filter; });
+  grid.innerHTML = list.map(function(card, i) {
+    return '<div onclick="useInspCard(' + INSP_GALLERY.indexOf(card) + ')" style="break-inside:avoid;margin-bottom:12px;border-radius:16px;overflow:hidden;cursor:pointer;position:relative;border:1px solid rgba(255,255,255,0.07);transition:all .3s;background:#131320;display:inline-block;width:100%" onmouseover="this.querySelector(\'.insp-ov2\').style.opacity=\'1\';this.style.transform=\'translateY(-4px)\';this.style.borderColor=\'rgba(255,112,67,0.4)\'" onmouseout="this.querySelector(\'.insp-ov2\').style.opacity=\'0\';this.style.transform=\'none\';this.style.borderColor=\'rgba(255,255,255,0.07)\'">'
+      + '<img src="' + card.img + '" style="width:100%;height:' + card.h + 'px;object-fit:cover;display:block" loading="lazy" onerror="this.parentElement.style.display=\'none\'">'
+      + '<div class="insp-ov2" style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,0.92) 0%,transparent 60%);opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:14px">'
+      + '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#ff7043;margin-bottom:3px">' + card.cat.toUpperCase() + '</div>'
+      + '<div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:10px">' + card.title + '</div>'
+      + '<div style="display:inline-flex;align-items:center;gap:5px;padding:7px 16px;border-radius:50px;background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;font-size:11px;font-weight:700;width:fit-content;box-shadow:0 4px 14px rgba(255,112,67,0.5)">✦ Use Prompt</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function filterInspGallery(cat, btn) {
+  _inspCurrentFilter = cat;
+  document.querySelectorAll('.insp-cat-btn').forEach(function(b) {
+    b.style.background = 'transparent';
+    b.style.borderColor = 'rgba(255,255,255,0.1)';
+    b.style.color = 'rgba(255,255,255,0.5)';
+  });
+  if (btn) {
+    btn.style.background = 'rgba(255,112,67,0.12)';
+    btn.style.borderColor = 'rgba(255,112,67,0.5)';
+    btn.style.color = '#ff7043';
+  }
+  renderInspGallery(cat);
+}
+
+function useInspCard(idx) {
+  var card = INSP_GALLERY[idx];
+  if (!card) return;
+  document.getElementById('inspPromptInput').value = card.prompt;
+  document.getElementById('inspCharCount').textContent = card.prompt.length + ' / 500';
+  showToast('✦ "' + card.title + '" prompt loaded!');
+  var builder = document.getElementById('inspGallery').nextElementSibling;
+  if (builder) builder.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function selectPreset(el, key) {
-  document.querySelectorAll('.insp-preset-card').forEach(c => {
+  document.querySelectorAll('.insp-preset-card').forEach(function(c) {
     c.style.border = '2px solid rgba(255,255,255,0.08)';
     c.style.transform = 'scale(1)';
   });
@@ -2056,11 +2164,11 @@ function selectPreset(el, key) {
   var p = PRESET_DATA[key];
   document.getElementById('inspPromptInput').value = p.base;
   document.getElementById('inspCharCount').textContent = p.base.length + ' / 500';
-  // Auto-select chips
-  _inspActiveChips = [...p.chips];
-  document.querySelectorAll('.insp-chip').forEach(c => {
-    var chipText = c.getAttribute('onclick').match(/'([^']+)'/)[1];
-    if(p.chips.includes(chipText)){
+  _inspActiveChips = p.chips.slice();
+  document.querySelectorAll('.insp-chip').forEach(function(c) {
+    var m = c.getAttribute('onclick').match(/'([^']+)'/);
+    if (!m) return;
+    if (p.chips.indexOf(m[1]) !== -1) {
       c.style.background = 'rgba(255,112,67,0.15)';
       c.style.borderColor = '#ff7043';
       c.style.color = '#ff7043';
@@ -2070,18 +2178,18 @@ function selectPreset(el, key) {
       c.style.color = 'rgba(255,255,255,0.5)';
     }
   });
-  showToast('✦ '+key.charAt(0).toUpperCase()+key.slice(1)+' preset loaded!');
+  showToast('✦ ' + key.charAt(0).toUpperCase() + key.slice(1) + ' preset loaded!');
 }
 
 function toggleInspChip(el, chip) {
   var idx = _inspActiveChips.indexOf(chip);
-  if(idx === -1){
+  if (idx === -1) {
     _inspActiveChips.push(chip);
     el.style.background = 'rgba(255,112,67,0.15)';
     el.style.borderColor = '#ff7043';
     el.style.color = '#ff7043';
   } else {
-    _inspActiveChips.splice(idx,1);
+    _inspActiveChips.splice(idx, 1);
     el.style.background = 'transparent';
     el.style.borderColor = 'rgba(255,255,255,0.12)';
     el.style.color = 'rgba(255,255,255,0.5)';
@@ -2091,26 +2199,26 @@ function toggleInspChip(el, chip) {
 function applyInspStyle(style) {
   var inp = document.getElementById('inspPromptInput');
   var current = inp.value.trim();
-  if(!current){showToast('Please enter a prompt first 🙏',true);return;}
-  var addition = STYLE_ADDITIONS[style] || '';
-  if(!current.includes(addition.trim().slice(2))){
-    inp.value = current + addition;
+  if (!current) { showToast('Enter a scene description first', true); return; }
+  var add = STYLE_ADDITIONS[style] || '';
+  var key = add.trim().slice(2, 20);
+  if (current.indexOf(key) === -1) {
+    inp.value = current + add;
     document.getElementById('inspCharCount').textContent = inp.value.length + ' / 500';
-    showToast('✦ '+style.charAt(0).toUpperCase()+style.slice(1)+' style applied!');
+    showToast('✦ ' + style + ' style applied!');
   }
 }
 
 function handleInspFile(file) {
-  if(!file) return;
+  if (!file) return;
   var reader = new FileReader();
-  reader.onload = function(e){
+  reader.onload = function(e) {
     var img = document.getElementById('inspPreviewImg');
     img.src = e.target.result;
     img.style.display = 'block';
     document.getElementById('inspDropContent').style.display = 'none';
     document.getElementById('inspRemoveImg').style.display = 'block';
-    _inspHasImage = true;
-    showToast('✦ Image uploaded — build your prompt!');
+    showToast('✦ Image uploaded!');
   };
   reader.readAsDataURL(file);
 }
@@ -2119,7 +2227,7 @@ function handleInspDrop(e) {
   e.preventDefault();
   document.getElementById('inspDropzone').style.borderColor = 'rgba(255,255,255,0.1)';
   var file = e.dataTransfer.files[0];
-  if(file && file.type.startsWith('image/')) handleInspFile(file);
+  if (file && file.type.startsWith('image/')) handleInspFile(file);
 }
 
 function removeInspImage() {
@@ -2127,135 +2235,99 @@ function removeInspImage() {
   document.getElementById('inspPreviewImg').src = '';
   document.getElementById('inspDropContent').style.display = 'block';
   document.getElementById('inspRemoveImg').style.display = 'none';
-  _inspHasImage = false;
 }
 
-// Paste image support
-document.addEventListener('paste', function(e){
-  if(document.getElementById('page-inspire').classList.contains('active')){
-    var items = e.clipboardData && e.clipboardData.items;
-    if(!items) return;
-    for(var i=0;i<items.length;i++){
-      if(items[i].type.indexOf('image')!==-1){
-        handleInspFile(items[i].getAsFile());
-        break;
-      }
-    }
+document.addEventListener('paste', function(e) {
+  if (!document.getElementById('page-inspire').classList.contains('active')) return;
+  var items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf('image') !== -1) { handleInspFile(items[i].getAsFile()); break; }
   }
 });
 
 async function buildInspPrompt() {
   var base = document.getElementById('inspPromptInput').value.trim();
-  if(!base){showToast('Please enter a scene description first 🙏',true);return;}
-
-  // Save to history
-  if(_inspCurrentPrompt) {
-    _inspPromptHistory.unshift(_inspCurrentPrompt);
-    if(_inspPromptHistory.length > 10) _inspPromptHistory.pop();
-    renderInspHistory();
-  }
-
-  // Build prompt with chips
+  if (!base) { showToast('Enter a scene description first', true); return; }
+  if (_inspCurrentPrompt) { _inspPromptHistory.unshift(_inspCurrentPrompt); if (_inspPromptHistory.length > 10) _inspPromptHistory.pop(); }
   var chips = _inspActiveChips.length > 0 ? ', ' + _inspActiveChips.join(', ') : '';
   var localPrompt = base + chips + ', masterpiece quality, professional';
-
-  // Show loading
   var fp = document.getElementById('inspFinalPrompt');
-  fp.innerHTML = '<span style="color:rgba(255,112,67,0.7);animation:pulse 1s infinite">✦ AI enhancing your prompt...</span>';
+  fp.innerHTML = '<span style="color:rgba(255,112,67,0.7)">✦ Claude AI enhancing...</span>';
   document.getElementById('inspExportSection').style.display = 'none';
   document.getElementById('inspDirectionSection').style.display = 'none';
-
   try {
     var res = await fetch('/.netlify/functions/claude-proxy', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 600,
-        system: 'You are an expert AI image generation prompt engineer. Take the user input and enhance it into a perfect, detailed prompt for Midjourney, DALL-E, or Stable Diffusion. Return ONLY the enhanced prompt text — no explanation, no preamble, no quotes. Make it vivid, specific, technically excellent.',
-        messages: [{role:'user', content:'Enhance this into a perfect image generation prompt: '+base+(chips?'. Include these styles: '+_inspActiveChips.join(', '):'')+'. Make it cinematic, detailed and professional.'}]
+        model: 'claude-haiku-4-5-20251001', max_tokens: 600,
+        system: 'You are an expert AI image/video/content prompt engineer. Enhance the user input into a perfect detailed prompt for AI generation tools (Midjourney, DALL-E, RunwayML, etc). Return ONLY the enhanced prompt — no explanation, no preamble.',
+        messages: [{role: 'user', content: 'Enhance: ' + base + (chips ? '. Include styles: ' + _inspActiveChips.join(', ') : '') + '. Make it professional and detailed.'}]
       })
     });
     var data = await res.json();
     var enhanced = data.content && data.content[0] && data.content[0].text;
-    if(enhanced){
+    if (enhanced) {
       _inspCurrentPrompt = enhanced.trim();
       fp.textContent = _inspCurrentPrompt;
-      showToast('✦ Prompt enhanced with Claude AI!');
+      showToast('✦ Enhanced with Claude AI!');
       generateInspDirection();
-    } else {
-      _inspCurrentPrompt = localPrompt;
-      fp.textContent = _inspCurrentPrompt;
-    }
+    } else { throw new Error('no content'); }
   } catch(e) {
     _inspCurrentPrompt = localPrompt;
     fp.textContent = _inspCurrentPrompt;
-    showToast('Using local engine (API offline)');
+    showToast('Enhanced locally (API offline)');
   }
-
   document.getElementById('inspExportSection').style.display = 'block';
   document.getElementById('inspHistorySection').style.display = _inspPromptHistory.length ? 'block' : 'none';
+  renderInspHistory();
 }
 
 async function generateInspDirection() {
-  var prompt = _inspCurrentPrompt || document.getElementById('inspFinalPrompt').textContent;
-  if(!prompt || prompt === 'Your enhanced prompt will appear here...') return;
-
+  var prompt = _inspCurrentPrompt;
+  if (!prompt || prompt === 'Your AI-enhanced prompt will appear here...') return;
   var dir = document.getElementById('inspDirection');
   var sec = document.getElementById('inspDirectionSection');
   sec.style.display = 'block';
-  dir.innerHTML = '<span style="color:rgba(255,112,67,0.6)">✦ Generating creative direction...</span>';
-
+  dir.innerHTML = '<span style="color:rgba(255,112,67,0.5)">Generating creative direction...</span>';
   try {
     var res = await fetch('/.netlify/functions/claude-proxy', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 400,
-        system: 'You are a creative director for films and AI art. Given an image generation prompt, write a brief creative direction note (3-4 sentences) covering: mood/atmosphere, color palette, camera technique, and artistic inspiration. Be specific and evocative.',
-        messages: [{role:'user', content:'Write creative direction for this prompt: '+prompt}]
+        model: 'claude-haiku-4-5-20251001', max_tokens: 300,
+        system: 'You are a creative director. Given a prompt, write 3 sentences covering: mood/atmosphere, color palette, and camera/composition technique. Be specific and inspiring.',
+        messages: [{role: 'user', content: 'Creative direction for: ' + prompt}]
       })
     });
     var data = await res.json();
     var text = data.content && data.content[0] && data.content[0].text;
-    if(text) dir.innerHTML = '<span style="color:rgba(255,255,255,0.7)">'+text.trim()+'</span>';
-  } catch(e) {
-    dir.innerHTML = '<span style="color:rgba(255,255,255,0.5)">Creative direction unavailable offline.</span>';
-  }
+    if (text) dir.textContent = text.trim();
+  } catch(e) { dir.textContent = 'Creative direction unavailable offline.'; }
 }
 
 async function rewriteInspPrompt() {
   var current = document.getElementById('inspPromptInput').value.trim();
-  if(!current){showToast('Enter a prompt to rewrite 🙏',true);return;}
-  if(_inspCurrentPrompt) _inspPromptHistory.unshift(_inspCurrentPrompt);
-  document.getElementById('inspPromptInput').value = 'Rewriting...';
+  if (!current) { showToast('Enter a prompt first', true); return; }
+  var inp = document.getElementById('inspPromptInput');
+  inp.value = 'Rewriting with AI...';
   try {
     var res = await fetch('/.netlify/functions/claude-proxy', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 200,
-        system: 'Rewrite the given image prompt in a fresh, creative way while keeping the core subject. Return ONLY the rewritten prompt, nothing else.',
-        messages: [{role:'user', content:current}]
+        model: 'claude-haiku-4-5-20251001', max_tokens: 200,
+        system: 'Rewrite this prompt creatively keeping the same subject. Return ONLY the rewritten prompt.',
+        messages: [{role: 'user', content: current}]
       })
     });
     var data = await res.json();
     var text = data.content && data.content[0] && data.content[0].text;
-    if(text){
-      document.getElementById('inspPromptInput').value = text.trim();
-      document.getElementById('inspCharCount').textContent = text.trim().length + ' / 500';
-      showToast('✦ Prompt rewritten!');
-    }
-  } catch(e) {
-    document.getElementById('inspPromptInput').value = current;
-    showToast('Rewrite unavailable offline',true);
-  }
+    if (text) { inp.value = text.trim(); document.getElementById('inspCharCount').textContent = text.trim().length + ' / 500'; showToast('✦ Rewritten!'); }
+    else { inp.value = current; }
+  } catch(e) { inp.value = current; showToast('Rewrite unavailable', true); }
 }
 
 function undoInspPrompt() {
-  if(_inspPromptHistory.length === 0){showToast('Nothing to undo',true);return;}
+  if (!_inspPromptHistory.length) { showToast('Nothing to undo', true); return; }
   _inspCurrentPrompt = _inspPromptHistory.shift();
   document.getElementById('inspFinalPrompt').textContent = _inspCurrentPrompt;
   renderInspHistory();
@@ -2263,9 +2335,9 @@ function undoInspPrompt() {
 }
 
 function clearInspPrompt() {
-  if(_inspCurrentPrompt) _inspPromptHistory.unshift(_inspCurrentPrompt);
+  if (_inspCurrentPrompt) _inspPromptHistory.unshift(_inspCurrentPrompt);
   _inspCurrentPrompt = '';
-  document.getElementById('inspFinalPrompt').textContent = 'Your enhanced prompt will appear here...';
+  document.getElementById('inspFinalPrompt').textContent = 'Your AI-enhanced prompt will appear here...';
   document.getElementById('inspExportSection').style.display = 'none';
   document.getElementById('inspDirectionSection').style.display = 'none';
   renderInspHistory();
@@ -2274,62 +2346,75 @@ function clearInspPrompt() {
 function renderInspHistory() {
   var list = document.getElementById('inspHistoryList');
   var sec = document.getElementById('inspHistorySection');
-  if(!_inspPromptHistory.length){sec.style.display='none';return;}
-  sec.style.display = 'block';
-  list.innerHTML = _inspPromptHistory.map(function(p,i){
-    var short=p.substring(0,80)+(p.length>80?'...':'');
-    return '<div onclick="restoreInspHistory('+i+')" style="padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;cursor:pointer;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:4px"><b style="color:rgba(255,112,67,0.6);font-size:10px">v'+(i+1)+'</b> '+short+'</div>';
-  }).join('');
+  if (!_inspPromptHistory.length) { if (sec) sec.style.display = 'none'; return; }
+  if (sec) sec.style.display = 'block';
+  var html = '';
+  for (var i = 0; i < _inspPromptHistory.length; i++) {
+    var short = _inspPromptHistory[i].substring(0, 70) + (_inspPromptHistory[i].length > 70 ? '...' : '');
+    html += '<div onclick="restoreInspHistory(' + i + ')" style="padding:9px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;cursor:pointer;font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:6px"><b style="color:rgba(255,112,67,0.7)">v' + (i+1) + '</b> ' + short + '</div>';
+  }
+  if (list) list.innerHTML = html;
 }
 
 function restoreInspHistory(idx) {
-  if(_inspCurrentPrompt) _inspPromptHistory.unshift(_inspCurrentPrompt);
-  _inspCurrentPrompt = _inspPromptHistory.splice(idx+1,1)[0];
+  if (_inspCurrentPrompt) _inspPromptHistory.unshift(_inspCurrentPrompt);
+  _inspCurrentPrompt = _inspPromptHistory.splice(idx + 1, 1)[0];
   document.getElementById('inspFinalPrompt').textContent = _inspCurrentPrompt;
   renderInspHistory();
   showToast('✦ Version restored!');
 }
 
 function copyInspPrompt() {
-  var p = _inspCurrentPrompt || document.getElementById('inspFinalPrompt').textContent;
-  if(!p || p==='Your enhanced prompt will appear here...'){showToast('Build a prompt first 🙏',true);return;}
-  navigator.clipboard.writeText(p).then(()=>showToast('✦ Prompt copied!'));
+  var p = _inspCurrentPrompt;
+  if (!p) { showToast('Build a prompt first', true); return; }
+  navigator.clipboard.writeText(p).then(function() { showToast('✦ Prompt copied!'); });
 }
 
 function exportInspTXT() {
   var p = _inspCurrentPrompt;
-  if(!p){showToast('Build a prompt first 🙏',true);return;}
-  var blob = new Blob([p], {type:'text/plain'});
+  if (!p) { showToast('Build a prompt first', true); return; }
+  var blob = new Blob([p], {type: 'text/plain'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'clarix-prompt-'+Date.now()+'.txt';
+  a.download = 'clarix-prompt-' + Date.now() + '.txt';
   a.click();
   showToast('✦ TXT exported!');
 }
 
 function exportInspHTML() {
   var p = _inspCurrentPrompt;
-  var dir = document.getElementById('inspDirection').textContent || '';
-  if(!p){showToast('Build a prompt first 🙏',true);return;}
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Clarix Prompt Card</title><style>body{font-family:sans-serif;background:#07070f;color:#fff;padding:40px;max-width:700px;margin:0 auto}.card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(255,112,67,0.3);border-radius:20px;padding:32px}.logo{color:#ff7043;font-weight:800;font-size:20px;margin-bottom:20px}.prompt{font-size:15px;line-height:1.8;color:rgba(255,255,255,0.9);margin-bottom:20px;padding:16px;background:rgba(255,112,67,0.05);border-radius:12px;border-left:3px solid #ff7043}.direction{font-size:13px;line-height:1.6;color:rgba(255,255,255,0.5)}.footer{margin-top:20px;font-size:11px;color:rgba(255,255,255,0.3)}</style></head><body><div class="card"><div class="logo">✦ Clarix InspireMe</div><div class="prompt">'+p+'</div>'+(dir?'<div class="direction">🎬 '+dir+'</div>':'')+'<div class="footer">Generated by Clarix AI · clarix-by-vishal.netlify.app</div></div></body></html>';
-  var blob = new Blob([html], {type:'text/html'});
+  var dirEl = document.getElementById('inspDirection');
+  var dir = dirEl ? dirEl.textContent : '';
+  if (!p) { showToast('Build a prompt first', true); return; }
+  var h = [];
+  h.push('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Clarix Prompt Card</title>');
+  h.push('<style>body{font-family:sans-serif;background:#07070f;color:#fff;padding:40px;max-width:700px;margin:0 auto}.card{background:#1a1a2e;border-radius:20px;padding:32px}.logo{color:#ff7043;font-weight:800;font-size:20px;margin-bottom:20px}.prompt{font-size:15px;line-height:1.8;margin-bottom:20px;padding:16px;background:rgba(255,112,67,0.05);border-radius:12px;border-left:3px solid #ff7043}.dir{font-size:13px;line-height:1.6;color:rgba(255,255,255,0.5)}.foot{margin-top:20px;font-size:11px;color:rgba(255,255,255,0.3)}</style></head>');
+  h.push('<body><div class="card"><div class="logo">Clarix InspireMe</div>');
+  h.push('<div class="prompt">' + p + '</div>');
+  if (dir) { h.push('<div class="dir">' + dir + '</div>'); }
+  h.push('<div class="foot">Generated by Clarix AI</div></div></body></html>');
+  var blob = new Blob([h.join('')], {type: 'text/html'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'clarix-prompt-card-'+Date.now()+'.html';
+  a.download = 'clarix-card-' + Date.now() + '.html';
   a.click();
-  showToast('✦ HTML card exported!');
+  showToast('HTML card exported!');
 }
 
 function sendToWrite() {
   var p = _inspCurrentPrompt;
-  if(!p){showToast('Build a prompt first 🙏',true);return;}
+  if (!p) { showToast('Build a prompt first', true); return; }
   loadTemplate(p);
   showToast('✦ Sent to Write page!');
 }
 
-function initInspire(){} // no-op, page is self-contained now
-function filterInspire(){} // no-op
+function initInspire() {
+  if (!document.getElementById('inspGallery').innerHTML) {
+    renderInspGallery('all');
+  }
+}
 
+function filterInspire() {}
 // ── INIT ─────────────────────────────────────────────
 customPlatforms.forEach(function(entry){var parts=entry.split('|');addPlatformPill(parts[0],parts[1]||'ai');});
 renderLangOptions();
