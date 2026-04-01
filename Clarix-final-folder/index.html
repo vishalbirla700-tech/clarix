@@ -887,7 +887,10 @@ function selectLang(name,code,flag){
   document.getElementById('promptInput').placeholder=PLACEHOLDERS[name]||PLACEHOLDERS['default'];
   if(recognition) recognition.lang=code;
   const existing=document.getElementById('promptInput').value.trim();
-  if(existing.length>2){showToast('Language changed — tap Enhance to update ✓');}
+  if(existing.length>2){
+    showToast('Language changed — re-enhancing... ✓');
+    setTimeout(()=>processPrompt(existing),400);
+  }
 }
 
 // ── CONTENT MODERATION ───────────────────────────────
@@ -1297,7 +1300,12 @@ function renderAIResult(ai, input, nonLatin) {
 
   document.getElementById('liveResult').classList.add('visible');
   showToast('✦ Enhanced with Claude AI!');
-  setTimeout(()=>{document.getElementById('liveResult').scrollIntoView({behavior:'smooth',block:'start'});},100);
+  setTimeout(()=>{
+    const el=document.getElementById('liveResult');
+    const page=document.getElementById('page-write');
+    if(page&&page.scrollHeight>page.clientHeight){page.scrollTop=el.offsetTop-20;}
+    else{window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-20,behavior:'smooth'});}
+  },200);
 }
 
 // ── APPEND SUGGESTION (AI-aware) ─────────────────────
@@ -1399,7 +1407,12 @@ function processPromptLocal(input) {
   if(stats.scores.length>100) stats.scores=stats.scores.slice(-100);
   localStorage.setItem('clarix-stats',JSON.stringify(stats));
   document.getElementById('liveResult').classList.add('visible');
-  setTimeout(()=>{document.getElementById('liveResult').scrollIntoView({behavior:'smooth',block:'start'});},100);
+  setTimeout(()=>{
+    const el=document.getElementById('liveResult');
+    const page=document.getElementById('page-write');
+    if(page&&page.scrollHeight>page.clientHeight){page.scrollTop=el.offsetTop-20;}
+    else{window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-20,behavior:'smooth'});}
+  },200);
 }
 
 // ── INPUT HANDLER ────────────────────────────────────
@@ -1669,7 +1682,7 @@ function updateProfile(){
 function showToast(msg,isErr){
   const t=document.getElementById('toast');t.textContent=msg;
   t.className='toast'+(isErr?' err':'');t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
+  setTimeout(()=>t.classList.remove('show'),5000);
 }
 function goPage(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
