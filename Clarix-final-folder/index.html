@@ -3518,7 +3518,7 @@ var _origGoPage = null;
     if (name === 'home') {
       setTimeout(function() {
         _homeAnimated = false;
-        initHomePage();
+        initHomeLanding();
       }, 50);
     }
   };
@@ -3579,7 +3579,7 @@ window.addEventListener('load',function(){
   initDropdowns();
   // Init landing page animations
   setTimeout(initHomeLanding, 200);
-  setTimeout(function(){ initHomePage(); }, 150);
+  setTimeout(function(){ initHomeLanding(); }, 150);
 });
 
 function initHomeLanding() {
