@@ -460,6 +460,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
       <div class="tb-model">Clarix <span class="tb-badge">Beta</span><span class="ai-powered-badge">✦ AI Powered</span></div>
     </div>
     <div class="tb-right">
+        <div id="usageBadge" onclick="showUpgradeModal()" style="display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;background:#fff8e1;border:1px solid #ffc107;cursor:pointer" title="Daily usage"><span style="font-size:11px;font-weight:700;color:#f57c00" id="usageText">10/10</span><span style="font-size:10px;color:#888">free</span></div>
       <div class="lang-wrap">
         <div class="tb-btn" id="langBadge" onclick="openLangDrop()" style="min-width:100px">🇬🇧 English</div>
         <div class="lang-drop" id="langDrop">
@@ -650,6 +651,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
             <button class="copy-btn" onclick="copySocialResult()" style="background:var(--green)">⎘ Copy caption</button>
           </div>
           <button class="copy-btn" id="copyBtn" onclick="copyResult()">⎘ Copy enhanced prompt</button>
+          <button onclick="triggerFullOutput()" id="expertBtn" style="flex:1;min-width:140px;padding:10px;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#1a0a00,#2a1500);border:1.5px solid rgba(255,112,67,0.5);color:#ff7043;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s" onmouseover="this.style.background='rgba(255,112,67,0.1)'" onmouseout="this.style.background='linear-gradient(135deg,#1a0a00,#2a1500)'">✦ Expert Breakdown</button>
           <div id="bothOpenWrap" class="both-open-wrap" style="display:none;width:100%">
             <button class="open-btn" onclick="openBothPlatform('ai')">Open <span id="bothAIName">ChatGPT</span> →</button>
             <button class="open-btn" onclick="openBothPlatform('social')">Open <span id="bothSocialName">Instagram</span> →</button>
@@ -1388,22 +1390,26 @@ Rules:
 
 // ── HANDLE ENHANCE BUTTON CLICK ──────────────────────
 function handleEnhanceClick() {
-  const input = document.getElementById('promptInput').value.trim();
+  var input = document.getElementById('promptInput').value.trim();
   if (!input) { showToast('Please type something first 🙏', true); return; }
-  // Close any open lang nudge and force process
-  const nudge = document.getElementById('langNudge');
+  // Check usage limit
+  if (!canEnhance()) { showUpgradeModal(); return; }
+  // Close any open lang nudge
+  var nudge = document.getElementById('langNudge');
   if (nudge) nudge.classList.remove('open');
-  langNudgeShown = true; // prevent nudge from blocking
-  // Pre-show result area and scroll to it immediately
-  const lr = document.getElementById('liveResult');
+  langNudgeShown = true;
+  // Pre-show result area and scroll
+  var lr = document.getElementById('liveResult');
   if (lr) {
     lr.classList.add('visible');
-    setTimeout(()=>{
-      const page=document.getElementById('page-write');
-      if(page&&page.scrollHeight>page.clientHeight){page.scrollTop=lr.offsetTop-20;}
-      else{window.scrollTo({top:lr.getBoundingClientRect().top+window.scrollY-20,behavior:'smooth'});}
-    },100);
+    setTimeout(function(){
+      var page = document.getElementById('page-write');
+      if (page && page.scrollHeight > page.clientHeight) { page.scrollTop = lr.offsetTop - 20; }
+      else { window.scrollTo({top: lr.getBoundingClientRect().top + window.scrollY - 20, behavior:'smooth'}); }
+    }, 100);
   }
+  // Record usage
+  recordUsage();
   processPrompt(input);
 }
 
@@ -2489,6 +2495,256 @@ function handleInspFile(file) {}
 function handleInspDrop(e) { e.preventDefault(); }
 function removeInspImage() {}
 
+
+// ══════════════════════════════════════════════════════
+// ── USAGE TIER SYSTEM ─────────────────────────────────
+// ══════════════════════════════════════════════════════
+
+var FREE_LIMIT = 10;
+var _usageData = null;
+
+function getUsageData() {
+  if (_usageData) return _usageData;
+  var today = new Date().toDateString();
+  var raw = localStorage.getItem('clarix-usage');
+  var data = raw ? JSON.parse(raw) : null;
+  if (!data || data.date !== today) {
+    data = { date: today, count: 0, isPro: false, trialActive: false };
+  }
+  // Check if pro trial was activated
+  var proData = localStorage.getItem('clarix-pro');
+  if (proData) {
+    var pd = JSON.parse(proData);
+    if (pd.expiry && new Date(pd.expiry) > new Date()) {
+      data.isPro = true;
+    }
+  }
+  _usageData = data;
+  return data;
+}
+
+function saveUsageData() {
+  localStorage.setItem('clarix-usage', JSON.stringify(_usageData));
+}
+
+function updateUsageBadge() {
+  var d = getUsageData();
+  var badge = document.getElementById('usageBadge');
+  var text = document.getElementById('usageText');
+  if (!badge || !text) return;
+  if (d.isPro) {
+    text.textContent = '∞ Pro';
+    text.style.color = '#ff7043';
+    badge.style.background = 'rgba(255,112,67,0.1)';
+    badge.style.borderColor = 'rgba(255,112,67,0.4)';
+    badge.nextElementSibling && (badge.nextElementSibling.style.display = 'none');
+  } else {
+    var remaining = Math.max(0, FREE_LIMIT - d.count);
+    text.textContent = remaining + '/' + FREE_LIMIT;
+    text.style.color = remaining <= 2 ? '#e53935' : '#f57c00';
+    badge.style.background = remaining <= 2 ? '#fce4e4' : '#fff8e1';
+    badge.style.borderColor = remaining <= 2 ? '#ef9a9a' : '#ffc107';
+  }
+}
+
+function canEnhance() {
+  var d = getUsageData();
+  if (d.isPro) return true;
+  return d.count < FREE_LIMIT;
+}
+
+function recordUsage() {
+  var d = getUsageData();
+  if (!d.isPro) {
+    d.count++;
+    saveUsageData();
+  }
+  updateUsageBadge();
+}
+
+function showUpgradeModal() {
+  document.getElementById('upgradeModal').style.display = 'flex';
+}
+
+function activateProTrial() {
+  var expiry = new Date();
+  expiry.setDate(expiry.getDate() + 7);
+  localStorage.setItem('clarix-pro', JSON.stringify({ expiry: expiry.toISOString() }));
+  _usageData = null;
+  var d = getUsageData();
+  d.isPro = true;
+  saveUsageData();
+  document.getElementById('upgradeModal').style.display = 'none';
+  updateUsageBadge();
+  showToast('✦ Pro Trial activated — 7 days unlimited!');
+}
+
+// ══════════════════════════════════════════════════════
+// ── FULL EXPERT OUTPUT PANEL ──────────────────────────
+// ══════════════════════════════════════════════════════
+
+var _fullOutputData = null;
+
+async function generateFullOutput(originalInput, enhancedPrompt, platform) {
+  // Show panel in loading state
+  document.getElementById('fullOutputPanel').style.display = 'block';
+  document.getElementById('fullOutputLoading').style.display = 'block';
+  document.getElementById('fullOutputContent').style.display = 'none';
+  window.scrollTo(0, 0);
+
+  var systemPrompt = 'You are an expert AI prompt engineer and creative director. Given a prompt, generate a full professional breakdown. Respond ONLY with valid JSON, no markdown, no explanation:\n{\n  "main_prompt": "the polished, ready-to-use prompt",\n  "settings": {\n    "style": "e.g. Cinematic / Photorealistic",\n    "lighting": "e.g. Golden hour",\n    "camera": "e.g. Wide angle, tracking shot",\n    "quality": "e.g. 8K, HDR",\n    "duration": "e.g. 10 seconds (if video)",\n    "platform_tip": "e.g. Best for RunwayML Gen-3"\n  },\n  "pro_prompt": "advanced technical version with more detail for power users",\n  "where_to_use": [\n    {"platform": "RunwayML", "match": "Best match", "reason": "one sentence why"},\n    {"platform": "Midjourney", "match": "Great", "reason": "one sentence why"},\n    {"platform": "ChatGPT", "match": "Good", "reason": "one sentence why"}\n  ]\n}';
+
+  try {
+    var res = await fetch('/.netlify/functions/claude-proxy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{
+          role: 'user',
+          content: 'Original input: "' + originalInput + '"\nEnhanced prompt: "' + enhancedPrompt + '"\nPlatform: ' + platform + '\n\nGenerate the full expert breakdown.'
+        }]
+      })
+    });
+    var data = await res.json();
+    var text = data.content && data.content[0] && data.content[0].text;
+    if (!text) throw new Error('no content');
+    var clean = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    var parsed = JSON.parse(clean);
+    renderFullOutput(parsed, platform);
+  } catch(e) {
+    // Fallback local version
+    renderFullOutput({
+      main_prompt: enhancedPrompt,
+      settings: {
+        style: 'Cinematic / Professional',
+        lighting: 'Natural / Studio',
+        camera: 'Standard',
+        quality: '8K Ultra HD',
+        platform_tip: 'Works with ' + platform
+      },
+      pro_prompt: enhancedPrompt + ', ultra detailed, award winning, professional grade, masterpiece quality',
+      where_to_use: [
+        { platform: platform, match: 'Best match', reason: 'Optimized specifically for ' + platform },
+        { platform: 'ChatGPT', match: 'Great', reason: 'Use for further refinement and variations' },
+        { platform: 'Midjourney', match: 'Good', reason: 'Works well for image generation tasks' }
+      ]
+    }, platform);
+  }
+}
+
+function renderFullOutput(data, platform) {
+  _fullOutputData = data;
+
+  // Main prompt
+  var mainEl = document.getElementById('foMainPrompt');
+  if (mainEl) mainEl.textContent = data.main_prompt || '';
+
+  // Settings
+  var settingsEl = document.getElementById('foSettings');
+  if (settingsEl && data.settings) {
+    var s = data.settings;
+    var lines = [];
+    if (s.style) lines.push('🎨 Style: ' + s.style);
+    if (s.lighting) lines.push('💡 Lighting: ' + s.lighting);
+    if (s.camera) lines.push('📷 Camera: ' + s.camera);
+    if (s.quality) lines.push('💎 Quality: ' + s.quality);
+    if (s.duration) lines.push('⏱ Duration: ' + s.duration);
+    if (s.platform_tip) lines.push('⚡ Tip: ' + s.platform_tip);
+    settingsEl.innerHTML = lines.map(function(l) {
+      return '<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05)">' + l + '</div>';
+    }).join('');
+  }
+
+  // Pro prompt
+  var proEl = document.getElementById('foProPrompt');
+  if (proEl) proEl.textContent = data.pro_prompt || '';
+
+  // Where to use
+  var whereEl = document.getElementById('foWhere');
+  if (whereEl && data.where_to_use) {
+    var colors = { 'Best match': '#ff7043', 'Great': '#00897b', 'Good': '#1976d2', 'Works': '#7b1fa2' };
+    whereEl.innerHTML = data.where_to_use.map(function(w) {
+      var col = colors[w.match] || '#666';
+      return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;flex:1;min-width:160px">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">'
+        + '<span style="font-size:13px;font-weight:700;color:#fff">' + w.platform + '</span>'
+        + '<span style="font-size:10px;font-weight:700;color:' + col + ';padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.05)">' + w.match + '</span>'
+        + '</div>'
+        + '<div style="font-size:11px;color:rgba(255,255,255,0.45);line-height:1.4">' + (w.reason || '') + '</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  document.getElementById('fullOutputLoading').style.display = 'none';
+  document.getElementById('fullOutputContent').style.display = 'block';
+}
+
+function closeFullOutput() {
+  document.getElementById('fullOutputPanel').style.display = 'none';
+}
+
+function copySection(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(function() { showToast('✦ Copied!'); });
+}
+
+function copyFullOutput() {
+  if (!_fullOutputData) return;
+  var d = _fullOutputData;
+  var text = 'MAIN PROMPT:\n' + (d.main_prompt || '') + '\n\nSETTINGS:\n';
+  if (d.settings) {
+    Object.keys(d.settings).forEach(function(k) { text += k + ': ' + d.settings[k] + '\n'; });
+  }
+  text += '\nPRO UPGRADE PROMPT:\n' + (d.pro_prompt || '') + '\n\nWHERE TO USE:\n';
+  if (d.where_to_use) {
+    d.where_to_use.forEach(function(w) { text += w.platform + ' — ' + w.match + ': ' + w.reason + '\n'; });
+  }
+  navigator.clipboard.writeText(text).then(function() { showToast('✦ Full output copied!'); });
+}
+
+function useMainPrompt() {
+  if (_fullOutputData && _fullOutputData.main_prompt) {
+    currentResult = _fullOutputData.main_prompt;
+    closeFullOutput();
+    showToast('✦ Main prompt set — ready to use!');
+  }
+}
+
+function openPlatformFromOutput() {
+  var url = PLATFORM_URLS[selectedPlatform] || 'https://chat.openai.com';
+  var prompt = _fullOutputData ? _fullOutputData.main_prompt : currentResult;
+  if (prompt) showCopyOpenPopup(selectedPlatform, url, prompt);
+  else window.open(url, '_blank');
+}
+
+function exportFullOutputTXT() {
+  if (!_fullOutputData) return;
+  var d = _fullOutputData;
+  var text = 'Generated by Clarix AI\n' + new Date().toLocaleDateString() + '\n\n';
+  text += '=== MAIN PROMPT ===\n' + (d.main_prompt || '') + '\n\n';
+  text += '=== SETTINGS ===\n';
+  if (d.settings) Object.keys(d.settings).forEach(function(k) { text += k + ': ' + d.settings[k] + '\n'; });
+  text += '\n=== PRO UPGRADE PROMPT ===\n' + (d.pro_prompt || '') + '\n\n';
+  text += '=== WHERE TO USE ===\n';
+  if (d.where_to_use) d.where_to_use.forEach(function(w) { text += w.platform + ' — ' + w.match + ': ' + w.reason + '\n'; });
+  var blob = new Blob([text], { type: 'text/plain' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'clarix-expert-' + Date.now() + '.txt';
+  a.click();
+  showToast('✦ Exported!');
+}
+
+function triggerFullOutput() {
+  if (!currentResult) { showToast('Enhance a prompt first 🙏', true); return; }
+  var input = document.getElementById('promptInput').value.trim();
+  generateFullOutput(input, currentResult, selectedPlatform);
+}
+
 // ── INIT ─────────────────────────────────────────────
 customPlatforms.forEach(function(entry){var parts=entry.split('|');addPlatformPill(parts[0],parts[1]||'ai');});
 renderLangOptions();
@@ -2508,6 +2764,7 @@ window.addEventListener('load',function(){
   updateHomeStats();
   setTimeout(function(){renderLibCards();},100);
   if(!localStorage.getItem('clarix-lang-chosen')){setTimeout(function(){showLangNudge();},2000);}
+  updateUsageBadge();
 });
 </script>
 
@@ -2523,6 +2780,84 @@ window.addEventListener('load',function(){
     <div style="display:flex;gap:8px">
       <button onclick="copyAndOpenPlatform()" style="flex:2;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Copy &amp; Open <span class="popup-plat-name">ChatGPT</span></button>
       <button onclick="closeCopyOpenPopup()" style="flex:1;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upgrade Modal -->
+<div id="upgradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:700;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)">
+  <div style="background:#1a1a22;border:1px solid rgba(255,112,67,0.3);border-radius:24px;padding:32px;width:100%;max-width:420px;text-align:center">
+    <div style="font-size:40px;margin-bottom:12px">✦</div>
+    <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:8px">Upgrade to Pro</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:24px;line-height:1.6">You've used your free enhancements for today.<br>Upgrade for unlimited access.</div>
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="text-align:left"><div style="font-size:14px;font-weight:700;color:#fff">Free</div><div style="font-size:11px;color:rgba(255,255,255,0.4)">Current plan</div></div>
+        <div style="font-size:18px;font-weight:800;color:#fff">₹0</div>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);text-align:left">✓ 10 enhancements/day<br>✓ Basic output<br>✗ Full expert breakdown<br>✗ Unlimited usage</div>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(255,112,67,0.15),rgba(255,154,118,0.1));border:1.5px solid rgba(255,112,67,0.4);border-radius:16px;padding:20px;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="text-align:left"><div style="font-size:14px;font-weight:700;color:#ff7043">Pro</div><div style="font-size:11px;color:rgba(255,112,67,0.7)">Most popular</div></div>
+        <div style="text-align:right"><div style="font-size:22px;font-weight:800;color:#ff7043">₹199<span style="font-size:12px;color:rgba(255,255,255,0.4)">/mo</span></div></div>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.7);text-align:left">✓ Unlimited enhancements<br>✓ Full expert output breakdown<br>✓ Pro upgrade prompts<br>✓ All platforms + export<br>✓ Priority AI processing</div>
+    </div>
+    <button onclick="activateProTrial()" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:10px;box-shadow:0 6px 20px rgba(255,112,67,0.4)">✦ Start 7-day Free Trial</button>
+    <button onclick="document.getElementById('upgradeModal').style.display='none'" style="width:100%;padding:11px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.4);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">Maybe later</button>
+  </div>
+</div>
+
+<!-- Full Output Panel -->
+<div id="fullOutputPanel" style="display:none;position:fixed;inset:0;background:#0d0d14;z-index:500;overflow-y:auto">
+  <div style="max-width:800px;margin:0 auto;padding:24px 16px 60px">
+    <!-- Top bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <button onclick="closeFullOutput()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:50px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">← Back</button>
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#ff7043">✦ Expert Output</div>
+      <button onclick="copyFullOutput()" style="padding:8px 16px;border-radius:50px;border:none;background:#ff7043;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">⎘ Copy All</button>
+    </div>
+    <!-- Loading state -->
+    <div id="fullOutputLoading" style="text-align:center;padding:60px 20px">
+      <div style="font-size:40px;margin-bottom:16px">✦</div>
+      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">Claude is generating your expert output...</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.4)">This takes 5-10 seconds</div>
+    </div>
+    <!-- Content (hidden while loading) -->
+    <div id="fullOutputContent" style="display:none">
+      <!-- Main Prompt -->
+      <div style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#ff7043">📝 Enhanced Prompt</div>
+          <button onclick="copySection('foMainPrompt')" style="padding:4px 12px;border-radius:20px;border:1px solid rgba(255,112,67,0.3);background:transparent;color:#ff7043;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">⎘ Copy</button>
+        </div>
+        <div id="foMainPrompt" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,112,67,0.2);border-radius:14px;padding:18px;font-size:14px;line-height:1.8;color:rgba(255,255,255,0.9);font-family:'DM Sans',sans-serif"></div>
+      </div>
+      <!-- Settings -->
+      <div style="margin-bottom:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.5);margin-bottom:10px">⚙️ Recommended Settings</div>
+        <div id="foSettings" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;font-size:13px;line-height:1.9;color:rgba(255,255,255,0.75);font-family:'DM Sans',sans-serif"></div>
+      </div>
+      <!-- Pro Upgrade Prompt -->
+      <div style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#ffc107">🔥 Pro Upgrade Prompt</div>
+          <button onclick="copySection('foProPrompt')" style="padding:4px 12px;border-radius:20px;border:1px solid rgba(255,193,7,0.3);background:transparent;color:#ffc107;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">⎘ Copy</button>
+        </div>
+        <div id="foProPrompt" style="background:rgba(255,193,7,0.04);border:1.5px solid rgba(255,193,7,0.2);border-radius:14px;padding:18px;font-size:13px;line-height:1.8;color:rgba(255,255,255,0.85);font-family:'DM Sans',sans-serif"></div>
+      </div>
+      <!-- Where to Use -->
+      <div style="margin-bottom:20px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.5);margin-bottom:10px">⚡ Where to Use</div>
+        <div id="foWhere" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      </div>
+      <!-- Action buttons -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08)">
+        <button onclick="useMainPrompt()" style="flex:2;min-width:160px;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">✦ Use This Prompt</button>
+        <button onclick="openPlatformFromOutput()" style="flex:1;min-width:120px;padding:14px;border-radius:12px;border:1.5px solid rgba(255,112,67,0.4);background:rgba(255,112,67,0.08);color:#ff7043;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Open AI →</button>
+        <button onclick="exportFullOutputTXT()" style="flex:1;min-width:100px;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.5);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">📄 Export</button>
+      </div>
     </div>
   </div>
 </div>
