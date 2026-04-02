@@ -348,7 +348,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .page::-webkit-scrollbar{width:6px}
 .page::-webkit-scrollbar-track{background:transparent}
 .page::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
-.lang-drop{display:none;position:absolute;top:36px;left:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);width:240px;z-index:200;overflow:hidden;max-height:300px;}
+.lang-drop{display:none;position:fixed;top:auto;left:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);width:240px;z-index:200;overflow:hidden;max-height:300px;}
 .lang-drop.open{display:block}
 .lang-search-wrap{padding:10px;border-bottom:1px solid var(--border)}
 .lang-search-inp{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;}
@@ -423,26 +423,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 </aside>
 
 <main class="main">
-  <nav class="mobile-bottom-nav" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;background:#1a1a22;border-top:1px solid rgba(255,255,255,0.08);padding:6px 0 10px">
-    <div onclick="goPage('home',document.getElementById('nav-home'))" id="mbn-home" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Home</span>
+  <nav class="mobile-bottom-nav" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;background:#1a1a22;border-top:1px solid rgba(255,255,255,0.1);padding:6px 0 12px">
+    <div onclick="goPage('home',document.getElementById('nav-home'))" id="mbn-home" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.01em">Home</span>
     </div>
-    <div onclick="goPage('write',document.getElementById('nav-write'))" id="mbn-write" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Write</span>
+    <div onclick="goPage('write',document.getElementById('nav-write'))" id="mbn-write" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.01em">Write</span>
     </div>
-    <div onclick="goPage('inspire',document.getElementById('nav-inspire'));initInspire()" id="mbn-inspire" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Inspire</span>
+    <div onclick="goPage('inspire',document.getElementById('nav-inspire'));initInspire()" id="mbn-inspire" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.01em">Inspire</span>
     </div>
-    <div onclick="goPage('library',document.getElementById('nav-library'))" id="mbn-library" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Library</span>
+    <div onclick="goPage('library',document.getElementById('nav-library'))" id="mbn-library" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.01em">Library</span>
     </div>
-    <div onclick="goPage('apps',document.getElementById('nav-apps'))" id="mbn-apps" style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;padding:2px 4px">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="6" height="6" rx="1.5"/><rect x="16" y="3" width="6" height="6" rx="1.5"/><rect x="2" y="15" width="6" height="6" rx="1.5"/><rect x="16" y="15" width="6" height="6" rx="1.5"/></svg>
-      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.02em">Apps</span>
+    <div onclick="goPage('apps',document.getElementById('nav-apps'))" id="mbn-apps" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:2px 4px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="6" height="6" rx="1.5"/><rect x="16" y="3" width="6" height="6" rx="1.5"/><rect x="2" y="15" width="6" height="6" rx="1.5"/><rect x="16" y="15" width="6" height="6" rx="1.5"/></svg>
+      <span style="font-size:10px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.01em">Apps</span>
     </div>
   </nav>
 
@@ -509,8 +509,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
         <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border2);border-radius:50px;padding:10px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:border-color .2s" id="homeInputWrap">
           <span style="font-size:16px;color:var(--hint)">✦</span>
           <input id="homeInput" placeholder="Type rough. Get perfect... Hinglish ok 🙏" style="flex:1;border:none;outline:none;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:transparent" onkeydown="if(event.key==='Enter'&&this.value.trim()){var v=this.value;this.value='';loadTemplate(v);}" oninput="document.getElementById('homeInputWrap').style.borderColor=this.value?'var(--ac)':'var(--border2)'">
-          <button onclick="toggleVoice()" id="homeMicBtn" style="width:34px;height:34px;border:1px solid #e0e0e0;border-radius:50%;background:#f5f5f5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s" title="Voice input"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="6" height="9" rx="3" stroke="#999" stroke-width="1.5" fill="none"/><path d="M2 8a6 6 0 0012 0" stroke="#999" stroke-width="1.5" stroke-linecap="round" fill="none"/><line x1="8" y1="14" x2="8" y2="15.5" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-          <button onclick="if(document.getElementById('homeInput').value.trim()){loadTemplate(document.getElementById('homeInput').value)}" style="background:var(--ac);color:#fff;border:none;padding:7px 20px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;box-shadow:0 4px 12px rgba(255,112,67,0.3)">Enhance →</button>
+          <button onclick="toggleHomeVoice()" id="homeMicBtn" style="width:34px;height:34px;border:1px solid #e0e0e0;border-radius:50%;background:#f5f5f5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s" title="Voice input"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="6" height="9" rx="3" stroke="#999" stroke-width="1.5" fill="none"/><path d="M2 8a6 6 0 0012 0" stroke="#999" stroke-width="1.5" stroke-linecap="round" fill="none"/><line x1="8" y1="14" x2="8" y2="15.5" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <button onclick="handleHomeEnhance()" style="background:var(--ac);color:#fff;border:none;padding:7px 20px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;box-shadow:0 4px 12px rgba(255,112,67,0.3)">✦ Enhance →</button>
         </div>
       </div>
       <div class="scroller-section">
@@ -543,42 +543,48 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
         <div class="mode-tab" id="mode-social" onclick="setMode('social')">📱 Social media</div>
         <div class="mode-tab" id="mode-both" onclick="setMode('both')">⚡ Both</div>
       </div>
-      <div class="plat-section">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div class="plat-label" id="platformLabel" style="margin-bottom:0">Select AI platform</div>
-          <button onclick="openModal()" style="display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;border:1.5px dashed var(--ac);background:var(--ac-bg);color:var(--ac);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">➕ Add platform</button>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <!-- AI Platform dropdown -->
+          <div id="aiDropWrap" style="flex:1;min-width:160px">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint);margin-bottom:6px">AI Platform</div>
+            <select id="aiPlatformSelect" onchange="onAIDropChange(this.value)" style="width:100%;padding:9px 12px;border:1.5px solid var(--border2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);cursor:pointer;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--ac)'" onblur="this.style.borderColor='var(--border2)'">
+              <option value="ChatGPT">🤖 ChatGPT</option>
+              <option value="Claude">🧠 Claude</option>
+              <option value="Gemini">✨ Gemini</option>
+              <option value="Grok">⚡ Grok</option>
+              <option value="DeepSeek">🔍 DeepSeek</option>
+              <option value="Perplexity">📡 Perplexity</option>
+              <option value="Copilot">🪟 Copilot</option>
+              <option value="Meta AI">🦙 Meta AI</option>
+              <option value="Mistral">⭐ Mistral</option>
+              <option value="Krutrim">🇮🇳 Krutrim</option>
+              <option value="Qwen">🌐 Qwen</option>
+              <option value="Midjourney">🎨 Midjourney</option>
+            </select>
+          </div>
+          <!-- Social Platform dropdown (hidden in AI mode) -->
+          <div id="socialDropWrap" style="flex:1;min-width:160px;display:none">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--hint);margin-bottom:6px">Social Platform</div>
+            <select id="socialPlatformSelect" onchange="onSocialDropChange(this.value)" style="width:100%;padding:9px 12px;border:1.5px solid var(--border2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);cursor:pointer;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--ac)'" onblur="this.style.borderColor='var(--border2)'">
+              <option value="Instagram">📸 Instagram</option>
+              <option value="WhatsApp">💬 WhatsApp</option>
+              <option value="LinkedIn">💼 LinkedIn</option>
+              <option value="Twitter/X">🐦 Twitter/X</option>
+              <option value="Facebook">📘 Facebook</option>
+              <option value="YouTube">▶️ YouTube</option>
+              <option value="Snapchat">👻 Snapchat</option>
+              <option value="Threads">🧵 Threads</option>
+              <option value="Pinterest">📌 Pinterest</option>
+              <option value="Reddit">🤖 Reddit</option>
+              <option value="Telegram">✈️ Telegram</option>
+              <option value="ShareChat">🇮🇳 ShareChat</option>
+            </select>
+          </div>
         </div>
-        <div id="aiPills" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px">
-          <div class="platform-pill active" onclick="selectPlatform(this,'ChatGPT','ai')">🤖 ChatGPT</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Claude','ai')">🧠 Claude</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Gemini','ai')">✨ Gemini</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Grok','ai')">⚡ Grok</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'DeepSeek','ai')">🔍 DeepSeek</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Perplexity','ai')">📡 Perplexity</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Copilot','ai')">🪟 Copilot</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Meta AI','ai')">🦙 Meta AI</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Pi','ai')">🌀 Pi</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Poe','ai')">🎯 Poe</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Mistral','ai')">⭐ Mistral</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Krutrim','ai')">🇮🇳 Krutrim</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Qwen','ai')">🌐 Qwen</div>
-        </div>
-        <div id="socialPills" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px">
-          <div class="platform-pill" onclick="selectPlatform(this,'Instagram','social')">📸 Instagram</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'WhatsApp','social')">💬 WhatsApp</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Twitter/X','social')">🐦 Twitter/X</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Facebook','social')">📘 Facebook</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'LinkedIn','social')">💼 LinkedIn</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'YouTube','social')">▶️ YouTube</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Snapchat','social')">👻 Snapchat</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Threads','social')">🧵 Threads</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Pinterest','social')">📌 Pinterest</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Reddit','social')">🤖 Reddit</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Telegram','social')">✈️ Telegram</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'ShareChat','social')">🇮🇳 ShareChat</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Moj','social')">🎬 Moj</div>
-          <div class="platform-pill" onclick="selectPlatform(this,'Josh','social')">🎭 Josh</div>
-        </div>
+        <!-- Hidden pill containers (kept for JS compatibility) -->
+        <div id="aiPills" style="display:none"></div>
+        <div id="socialPills" style="display:none"></div>
       </div>
       <div class="input-card">
         <div class="input-top">
@@ -913,7 +919,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
       <div style="max-width:960px;margin:0 auto;padding:20px 16px 40px">
         <!-- Top bar -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-          <button onclick="closeInspEditor()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:50px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">← Back to Gallery</button>
+          <button onclick="closeInspEditor()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:50px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">← Gallery</button>
           <div style="font-size:11px;color:rgba(255,255,255,0.3)">✦ InspireMe Editor</div>
         </div>
         <!-- Two column layout -->
@@ -982,6 +988,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
         <button class="insp-cat-btn" onclick="filterInspGallery('video',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🎥 Video</button>
         <button class="insp-cat-btn" onclick="filterInspGallery('blog',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">📝 Blog</button>
         <button class="insp-cat-btn" onclick="filterInspGallery('nature',this)" style="padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🌿 Nature</button>
+      </div>
+      <!-- Drag & Drop Upload Zone -->
+      <div id="inspGalleryDrop" ondragover="event.preventDefault();this.style.borderColor='#ff7043';this.style.background='rgba(255,112,67,0.05)'" ondragleave="this.style.borderColor='rgba(255,255,255,0.1)';this.style.background='transparent'" ondrop="handleGalleryDrop(event)" style="border:2px dashed rgba(255,255,255,0.12);border-radius:14px;padding:18px;text-align:center;margin-bottom:20px;cursor:pointer;transition:all .2s;background:transparent" onclick="document.getElementById('galleryFileInput').click()">
+        <input type="file" id="galleryFileInput" accept="image/*" style="display:none" onchange="handleGalleryFile(this.files[0])">
+        <div style="font-size:22px;margin-bottom:6px">🖼️</div>
+        <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:3px">Upload your own image</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3)">Drag & drop, click to upload, or Ctrl+V paste — Claude will analyze it and generate a prompt</div>
       </div>
       <!-- Gallery grid -->
       <div id="inspGallery" style="columns:3;gap:10px;column-fill:balance"></div>
@@ -1145,7 +1158,22 @@ function renderLangOptions(filter=''){
   dd.innerHTML=list.map(l=>`<div class="lang-opt ${l.name===selectedLang?'active':''}" onclick="selectLang('${l.name}','${l.code}','${l.flag}')">${l.flag} ${l.name}</div>`).join('');
 }
 function filterLangs(v){renderLangOptions(v)}
-function openLangDrop(){renderLangOptions(document.getElementById('langSearch').value);document.getElementById('langDrop').classList.add('open')}
+function openLangDrop(){
+  renderLangOptions(document.getElementById('langSearch').value||'');
+  var drop = document.getElementById('langDrop');
+  var btn = document.getElementById('langBadge');
+  if (btn && drop) {
+    var rect = btn.getBoundingClientRect();
+    var dropW = 240;
+    var left = rect.left;
+    // Keep within screen bounds
+    if (left + dropW > window.innerWidth - 8) { left = window.innerWidth - dropW - 8; }
+    if (left < 8) { left = 8; }
+    drop.style.top = (rect.bottom + 4) + 'px';
+    drop.style.left = left + 'px';
+  }
+  drop.classList.add('open');
+}
 function closeLangDrop(){document.getElementById('langDrop').classList.remove('open')}
 function selectLang(name,code,flag){
   selectedLang=name; selectedLangCode=code;
@@ -1758,35 +1786,48 @@ function copyDual(which){
 // ── MODE SELECTOR ────────────────────────────────────
 function setMode(mode){
   currentMode=mode;
-  ['ai','social','both'].forEach(m=>document.getElementById('mode-'+m).classList.toggle('active',m===mode));
-  const aiPills=document.getElementById('aiPills');
-  const socPills=document.getElementById('socialPills');
-  const lbl=document.getElementById('platformLabel');
+  ['ai','social','both'].forEach(function(m){document.getElementById('mode-'+m).classList.toggle('active',m===mode);});
   document.getElementById('liveResult').classList.remove('visible');
-  ['aiOutput','socialOutput','dualOutput'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('visible');});
+  ['aiOutput','socialOutput','dualOutput'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('visible');});
+
+  var aiWrap = document.getElementById('aiDropWrap');
+  var socWrap = document.getElementById('socialDropWrap');
 
   if(mode==='ai'){
-    aiPills.style.display='flex';aiPills.style.flexWrap='wrap';
-    socPills.style.display='none';
-    lbl.textContent='Select AI platform';
-    selectPlatformByName('ChatGPT','ai');
+    if(aiWrap) aiWrap.style.display='block';
+    if(socWrap) socWrap.style.display='none';
+    selectedPlatform = document.getElementById('aiPlatformSelect').value || 'ChatGPT';
+    selectedPlatformType = 'ai';
+    selectedAIPlatform = selectedPlatform;
   } else if(mode==='social'){
-    aiPills.style.display='none';
-    socPills.style.display='flex';socPills.style.flexWrap='wrap';
-    lbl.textContent='Select social platform';
-    selectPlatformByName('Instagram','social');
+    if(aiWrap) aiWrap.style.display='none';
+    if(socWrap) socWrap.style.display='block';
+    selectedPlatform = document.getElementById('socialPlatformSelect').value || 'Instagram';
+    selectedPlatformType = 'social';
+    selectedSocialPlatform = selectedPlatform;
   } else {
-    aiPills.style.display='flex';
-    socPills.style.display='flex';socPills.style.flexWrap='wrap';
-    lbl.textContent='Select AI + Social platform';
-    var aiActive=document.querySelector('#aiPills .platform-pill.active');
-    if(!aiActive) selectPlatformByName('ChatGPT','ai');
-    bothAIChosen=true;
-    var socActive=document.querySelector('#socialPills .platform-pill.active');
-    if(!socActive){var firstSoc=document.querySelector('#socialPills .platform-pill:not(.custom-pill)');if(firstSoc)firstSoc.classList.add('active');}
-    selectedSocialPlatform='Instagram';bothSocialChosen=true;
+    if(aiWrap) aiWrap.style.display='block';
+    if(socWrap) socWrap.style.display='block';
+    selectedAIPlatform = document.getElementById('aiPlatformSelect').value || 'ChatGPT';
+    selectedSocialPlatform = document.getElementById('socialPlatformSelect').value || 'Instagram';
+    selectedPlatform = selectedAIPlatform;
+    bothAIChosen=true; bothSocialChosen=true;
     document.getElementById('liveTag').textContent=selectedAIPlatform+' + '+selectedSocialPlatform;
   }
+}
+
+function onAIDropChange(val){
+  selectedPlatform=val; selectedAIPlatform=val; selectedPlatformType='ai';
+  var tag=document.getElementById('liveTag');
+  if(tag) tag.textContent=currentMode==='both'?val+' + '+selectedSocialPlatform:val;
+  var ob=document.getElementById('openBtnName');if(ob)ob.textContent=val;
+}
+
+function onSocialDropChange(val){
+  selectedSocialPlatform=val;
+  if(currentMode==='social'){selectedPlatform=val;selectedPlatformType='social';}
+  var tag=document.getElementById('liveTag');
+  if(tag) tag.textContent=currentMode==='both'?selectedAIPlatform+' + '+val:val;
 }
 
 function selectPlatformByName(name,type){
@@ -2024,8 +2065,17 @@ function goPage(name,el){
   ['home','write','inspire','library','apps'].forEach(function(n){
     var el2=document.getElementById('mbn-'+n);if(!el2)return;
     var svg=el2.querySelector('svg');var lbl=el2.querySelector('span');
-    if(n===name){if(svg)svg.setAttribute('stroke','#ff7043');if(lbl)lbl.style.color='#ff7043';}
-    else{if(svg)svg.setAttribute('stroke','rgba(255,255,255,0.4)');if(lbl)lbl.style.color='rgba(255,255,255,0.4)';}
+    if(n===name){
+      if(svg){svg.setAttribute('stroke','#ff7043');svg.style.filter='drop-shadow(0 0 4px rgba(255,112,67,0.5))';}
+      if(lbl){lbl.style.color='#ff7043';lbl.style.fontWeight='800';}
+      el2.style.borderTop='2px solid #ff7043';
+      el2.style.marginTop='-2px';
+    } else {
+      if(svg){svg.setAttribute('stroke','rgba(255,255,255,0.4)');svg.style.filter='none';}
+      if(lbl){lbl.style.color='rgba(255,255,255,0.4)';lbl.style.fontWeight='700';}
+      el2.style.borderTop='none';
+      el2.style.marginTop='0';
+    }
   });
   window.scrollTo(0,0);
 }
@@ -2703,21 +2753,7 @@ function closeFullOutput() {
 function copySection(id) {
   var el = document.getElementById(id);
   if (!el) return;
-  var text = el.textContent;
-  try {
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(function() { showToast('✦ Copied!'); });
-    } else {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
-      document.body.appendChild(ta);
-      ta.focus(); ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      showToast('✦ Copied!');
-    }
-  } catch(e) { showToast('Select the text manually to copy', true); }
+  forceCopy(el.textContent, '✦ Copied!');
 }
 
 function copyFullOutput() {
@@ -2731,23 +2767,28 @@ function copyFullOutput() {
   if (d.where_to_use) {
     d.where_to_use.forEach(function(w) { text += w.platform + ' - ' + w.match + ': ' + w.reason + '\n'; });
   }
-  // Use fallback copy method for panels/overlays
-  try {
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(function() { showToast('✦ Full output copied!'); });
-    } else {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      showToast('✦ Full output copied!');
-    }
-  } catch(e) { showToast('Copy failed — try selecting text manually', true); }
+  forceCopy(text, '✦ Full output copied!');
+}
+
+function forceCopy(text, msg) {
+  // Always use textarea method — most reliable across all browsers and contexts
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:2em;height:2em;padding:0;border:none;outline:none;box-shadow:none;background:transparent;opacity:0;z-index:9999';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  ta.setSelectionRange(0, 99999);
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  if (ok) {
+    showToast(msg || '✦ Copied!');
+  } else {
+    // Final fallback: clipboard API
+    navigator.clipboard && navigator.clipboard.writeText(text).then(function(){ showToast(msg || '✦ Copied!'); });
+  }
 }
 
 function useMainPrompt() {
@@ -2760,9 +2801,15 @@ function useMainPrompt() {
 
 function openPlatformFromOutput() {
   var url = PLATFORM_URLS[selectedPlatform] || 'https://chat.openai.com';
-  var prompt = _fullOutputData ? _fullOutputData.main_prompt : currentResult;
-  if (prompt) showCopyOpenPopup(selectedPlatform, url, prompt);
-  else window.open(url, '_blank');
+  // Always use expert output main_prompt, not the basic enhanced result
+  var prompt = (_fullOutputData && _fullOutputData.main_prompt) ? _fullOutputData.main_prompt : currentResult;
+  if (prompt) {
+    // Store in clipboard first, then show popup
+    forceCopy(prompt, '✦ Expert prompt copied — opening ' + selectedPlatform + '!');
+    setTimeout(function(){ window.open(url, '_blank'); }, 600);
+  } else {
+    window.open(url, '_blank');
+  }
 }
 
 function exportFullOutputTXT() {
@@ -2789,6 +2836,206 @@ function triggerFullOutput() {
   generateFullOutput(input, currentResult, selectedPlatform);
 }
 
+
+// ══════════════════════════════════════════════════════
+// ── VISION + HOME VOICE + BACK BUTTON FIXES ───────────
+// ══════════════════════════════════════════════════════
+
+// ── Claude Vision: analyze uploaded image ─────────────
+async function analyzeImageWithClaude(base64Data, mediaType) {
+  try {
+    var res = await fetch('/.netlify/functions/claude-proxy', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 400,
+        system: 'You are an expert AI image prompt engineer. Analyze the uploaded image and generate a detailed AI image generation prompt that would recreate this image. Include: subject, style, lighting, mood, color palette, camera angle, quality modifiers. Return ONLY the prompt text, no explanation.',
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: mediaType,
+                data: base64Data
+              }
+            },
+            {
+              type: 'text',
+              text: 'Generate a detailed AI image generation prompt for this image.'
+            }
+          ]
+        }]
+      })
+    });
+    var data = await res.json();
+    return data.content && data.content[0] && data.content[0].text;
+  } catch(e) {
+    return null;
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var result = e.target.result;
+      var base64 = result.split(',')[1];
+      resolve({ base64: base64, mediaType: file.type || 'image/jpeg' });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── Gallery drag & drop + upload ──────────────────────
+function handleGalleryDrop(e) {
+  e.preventDefault();
+  var drop = document.getElementById('inspGalleryDrop');
+  if (drop) { drop.style.borderColor = 'rgba(255,255,255,0.12)'; drop.style.background = 'transparent'; }
+  var file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) handleGalleryFile(file);
+}
+
+async function handleGalleryFile(file) {
+  if (!file) return;
+  showToast('✦ Analyzing image with Claude Vision...');
+  // Show preview in editor
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var imgEl = document.getElementById('inspEditorImg');
+    if (imgEl) imgEl.src = e.target.result;
+    document.getElementById('inspEditorImgTitle').textContent = file.name.replace(/\.[^.]+$/, '');
+    document.getElementById('inspEditorImgCat').textContent = 'Uploaded image';
+    document.getElementById('inspEditorPanel').style.display = 'block';
+    document.getElementById('inspGalleryPage').style.display = 'none';
+    window.scrollTo(0, 0);
+    // Set loading state in prompt textarea
+    var ta = document.getElementById('inspEditorPrompt');
+    if (ta) { ta.value = 'Claude Vision is analyzing your image...'; ta.style.opacity = '0.5'; }
+  };
+  reader.readAsDataURL(file);
+
+  // Send to Claude Vision
+  try {
+    var b64data = await fileToBase64(file);
+    var prompt = await analyzeImageWithClaude(b64data.base64, b64data.mediaType);
+    var ta = document.getElementById('inspEditorPrompt');
+    if (ta) {
+      ta.style.opacity = '1';
+      if (prompt) {
+        ta.value = prompt.trim();
+        document.getElementById('inspEditorCharCount').textContent = ta.value.length + ' chars';
+        showToast('✦ Claude analyzed your image — prompt ready!');
+        // Auto-trigger enhance
+        setTimeout(function() { buildEditorPrompt(); }, 300);
+      } else {
+        ta.value = 'Describe what you want to do with this image...';
+        showToast('Claude Vision unavailable — describe manually', true);
+      }
+    }
+  } catch(e) {
+    var ta = document.getElementById('inspEditorPrompt');
+    if (ta) { ta.style.opacity = '1'; ta.value = 'Describe what you want to do with this image...'; }
+  }
+}
+
+// Paste image on gallery page
+document.addEventListener('paste', function(e) {
+  if (!document.getElementById('page-inspire').classList.contains('active')) return;
+  var items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf('image') !== -1) {
+      handleGalleryFile(items[i].getAsFile());
+      break;
+    }
+  }
+});
+
+// ── Home page voice + enhance ────────────────────────
+function toggleHomeVoice() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('Voice not supported — try Chrome', true); return;
+  }
+  var inp = document.getElementById('homeInput');
+  var btn = document.getElementById('homeMicBtn');
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = new SR();
+  rec.lang = selectedLangCode || 'en-IN';
+  rec.onstart = function() {
+    btn.style.background = '#fce4e4';
+    btn.style.borderColor = '#e53935';
+    showToast('🎤 Listening...');
+  };
+  rec.onresult = function(e) {
+    var text = e.results[0][0].transcript;
+    inp.value = text;
+    btn.style.background = '#f5f5f5';
+    btn.style.borderColor = '#e0e0e0';
+    showToast('✓ Heard: "' + text.substring(0, 40) + '"');
+  };
+  rec.onend = function() {
+    btn.style.background = '#f5f5f5';
+    btn.style.borderColor = '#e0e0e0';
+  };
+  rec.onerror = function() {
+    btn.style.background = '#f5f5f5';
+    btn.style.borderColor = '#e0e0e0';
+    showToast('Could not hear — try again', true);
+  };
+  rec.start();
+}
+
+function handleHomeEnhance() {
+  var val = document.getElementById('homeInput').value.trim();
+  if (!val) { showToast('Type something first 🙏', true); return; }
+  if (!canEnhance()) { showUpgradeModal(); return; }
+  loadTemplate(val);
+}
+
+// ── Browser back button interceptor ──────────────────
+window.addEventListener('load', function() {
+  history.pushState({ clarix: true }, '', window.location.href);
+});
+
+window.addEventListener('popstate', function(e) {
+  // When browser back is pressed, go to home page instead of leaving
+  if (e.state && e.state.clarix) {
+    history.pushState({ clarix: true }, '', window.location.href);
+  }
+  // Close any open panel first
+  var panel = document.getElementById('inspEditorPanel');
+  if (panel && panel.style.display !== 'none') {
+    closeInspEditor();
+    return;
+  }
+  var fullOut = document.getElementById('fullOutputPanel');
+  if (fullOut && fullOut.style.display !== 'none') {
+    closeFullOutput();
+    return;
+  }
+  // Go to home page
+  goPage('home', document.getElementById('nav-home'));
+});
+
+// ── Dropdown init on page load ────────────────────────
+function initDropdowns() {
+  var aiSel = document.getElementById('aiPlatformSelect');
+  var socSel = document.getElementById('socialPlatformSelect');
+  if (aiSel) {
+    aiSel.value = selectedAIPlatform || 'ChatGPT';
+    selectedPlatform = aiSel.value;
+    selectedAIPlatform = aiSel.value;
+  }
+  if (socSel) {
+    socSel.value = selectedSocialPlatform || 'Instagram';
+    selectedSocialPlatform = socSel.value;
+  }
+}
+
 // ── INIT ─────────────────────────────────────────────
 customPlatforms.forEach(function(entry){var parts=entry.split('|');addPlatformPill(parts[0],parts[1]||'ai');});
 renderLangOptions();
@@ -2809,6 +3056,7 @@ window.addEventListener('load',function(){
   setTimeout(function(){renderLibCards();},100);
   if(!localStorage.getItem('clarix-lang-chosen')){setTimeout(function(){showLangNudge();},2000);}
   updateUsageBadge();
+  initDropdowns();
 });
 </script>
 
