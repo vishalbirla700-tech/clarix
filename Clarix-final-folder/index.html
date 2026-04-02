@@ -812,11 +812,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
             <div style="font-size:11px;color:var(--hint)">India, photorealistic, Lumen</div>
           </div>
         </div>
-        <!-- Embedded Spline 3D scene -->
-        <div style="border-radius:14px;overflow:hidden;height:300px;background:#0a0a14;margin-bottom:8px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.08)">
-          <iframe src="https://my.spline.design/worldslatest-3ef090b0a60e78f00ed2bab3a50f1e56/" frameborder="0" width="100%" height="100%" style="display:block"></iframe>
+        <!-- 3D Tools Links -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:14px">🔗 Open these 3D tools with your prompt:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <a href="https://spline.design" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:500;transition:all .15s" onmouseover="this.style.borderColor='#ff7043'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">💎 Spline.design</a>
+            <a href="https://www.meshy.ai" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:500;transition:all .15s" onmouseover="this.style.borderColor='#ff7043'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">🤖 Meshy AI</a>
+            <a href="https://lumalabs.ai" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:500;transition:all .15s" onmouseover="this.style.borderColor='#ff7043'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">✨ Luma AI</a>
+            <a href="https://www.blender.org" target="_blank" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:500;transition:all .15s" onmouseover="this.style.borderColor='#ff7043'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">🔶 Blender</a>
+          </div>
         </div>
-        <div style="font-size:11px;color:var(--hint);text-align:center;margin-bottom:4px">💎 Live interactive 3D — click and drag to explore</div>
+        <div style="font-size:11px;color:var(--hint);text-align:center;margin-bottom:4px">💡 Copy your prompt above → paste in any of these tools</div>
       </div>
 
       <!-- AI Tools Hub -->
@@ -1563,8 +1569,11 @@ function renderAIResult(ai, input, nonLatin) {
   }
 
   // Dual language output
-  const isNonEngInput = nonLatin || (selectedLang && selectedLang !== 'English' && selectedLang !== 'Hinglish');
-  if (isNonEngInput) {
+  // Always show dual output when a non-English language is selected
+  var langBase = selectedLang ? selectedLang.split(' — ')[0] : 'English';
+  if (langBase && langBase !== 'English' && langBase !== 'Hinglish') {
+    showDualOutput(variations[0]);
+  } else if (nonLatin) {
     showDualOutput(variations[0]);
   } else {
     document.getElementById('dualOutput').classList.remove('visible');
@@ -1576,7 +1585,12 @@ function renderAIResult(ai, input, nonLatin) {
   localStorage.setItem('clarix-stats', JSON.stringify(stats));
 
   document.getElementById('liveResult').classList.add('visible');
-  showToast('✦ Enhanced with Claude AI!');
+  // Show language-specific toast
+  if(selectedLang && selectedLang !== 'English' && selectedLang !== 'Hinglish') {
+    showToast('✦ Enhanced in English — scroll down for ' + selectedLang.split(' — ')[0] + ' translation!');
+  } else {
+    showToast('✦ Enhanced with Claude AI!');
+  }
   setTimeout(()=>{
     const el=document.getElementById('liveResult');
     const page=document.getElementById('page-write');
@@ -2689,7 +2703,21 @@ function closeFullOutput() {
 function copySection(id) {
   var el = document.getElementById(id);
   if (!el) return;
-  navigator.clipboard.writeText(el.textContent).then(function() { showToast('✦ Copied!'); });
+  var text = el.textContent;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function() { showToast('✦ Copied!'); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('✦ Copied!');
+    }
+  } catch(e) { showToast('Select the text manually to copy', true); }
 }
 
 function copyFullOutput() {
@@ -2701,9 +2729,25 @@ function copyFullOutput() {
   }
   text += '\nPRO UPGRADE PROMPT:\n' + (d.pro_prompt || '') + '\n\nWHERE TO USE:\n';
   if (d.where_to_use) {
-    d.where_to_use.forEach(function(w) { text += w.platform + ' — ' + w.match + ': ' + w.reason + '\n'; });
+    d.where_to_use.forEach(function(w) { text += w.platform + ' - ' + w.match + ': ' + w.reason + '\n'; });
   }
-  navigator.clipboard.writeText(text).then(function() { showToast('✦ Full output copied!'); });
+  // Use fallback copy method for panels/overlays
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function() { showToast('✦ Full output copied!'); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('✦ Full output copied!');
+    }
+  } catch(e) { showToast('Copy failed — try selecting text manually', true); }
 }
 
 function useMainPrompt() {
