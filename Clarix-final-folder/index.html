@@ -6,6 +6,8 @@
 <title>Clarix™ — India's First Prompt Engine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <!-- Google Analytics GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-D7KKQCFSLB"></script>
 <script>
@@ -345,6 +347,34 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
   .apps-wrap{padding:16px}
   .library-wrap{padding:16px}
 }
+
+/* ── LANDING PAGE ANIMATIONS ── */
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+@keyframes pulse-btn{0%,100%{box-shadow:0 8px 32px rgba(255,112,67,0.4)}50%{box-shadow:0 8px 48px rgba(255,112,67,0.7)}}
+@keyframes floatY{0%,100%{transform:translateY(0px)}50%{transform:translateY(-12px)}}
+@keyframes floatX{0%,100%{transform:translateX(0px)}50%{transform:translateX(8px)}}
+@keyframes orbPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:0.7}}
+@keyframes scrollBounce{0%,100%{transform:translateY(0) rotate(45deg)}50%{transform:translateY(6px) rotate(45deg)}}
+#scrollArrow{animation:scrollBounce 1.5s ease-in-out infinite}
+.float-card{animation:floatY 4s ease-in-out infinite}
+#fc1{animation-delay:0s;animation-duration:5s}
+#fc2{animation-delay:1s;animation-duration:4.5s}
+#fc3{animation-delay:2s;animation-duration:5.5s}
+#fc4{animation-delay:0.5s;animation-duration:4s}
+#fc5{animation-delay:1.5s;animation-duration:6s}
+#orb1{animation:orbPulse 6s ease-in-out infinite}
+#orb2{animation:orbPulse 8s ease-in-out infinite;animation-delay:2s}
+#orb3{animation:orbPulse 5s ease-in-out infinite;animation-delay:1s}
+.reveal-up{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal-up.visible{opacity:1;transform:translateY(0)}
+@media(max-width:768px){
+  .float-card{display:none}
+  #what-section [style*="grid-template-columns:1fr auto 1fr"]{display:flex!important;flex-direction:column!important;gap:16px!important}
+  [style*="grid-template-columns:1fr auto 1fr auto 1fr"]{display:flex!important;flex-direction:column!important}
+  [style*="grid-template-columns:1fr 1fr"]{display:flex!important;flex-direction:column!important}
+  [style*="font-size:24px;color:rgba(255,112,67,0.4)"]{display:none!important}
+}
 .page::-webkit-scrollbar{width:6px}
 .page::-webkit-scrollbar-track{background:transparent}
 .page::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
@@ -481,62 +511,436 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
     </div>
   </div>
 
-  <!-- HOME PAGE -->
-  <div class="page active" id="page-home">
-    <div class="home-wrap">
-      <div class="home-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg></div>
-      <div class="home-greeting" id="homeGreeting">Good morning!</div>
-      <p class="home-sub">India's first AI prompt engine. Type rough in any language — get a perfect prompt for ChatGPT, Claude, Instagram, WhatsApp and 20+ platforms.</p>
-      <div class="quick-grid">
-        <div class="qcard" onclick="loadTemplate('help me write mail to boss for leave tomorrow bcoz fever')">
-          <div class="qcard-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#fff3f0"/><path d="M6 9a1 1 0 011-1h14a1 1 0 011 1v10a1 1 0 01-1 1H7a1 1 0 01-1-1V9z" stroke="#ff7043" stroke-width="1.5" fill="none"/><path d="M6 10l8 6 8-6" stroke="#ff7043" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-          <div class="qcard-title">Write a sick leave email</div><div class="qcard-desc">Formal, polite, ready to send</div>
-        </div>
-        <div class="qcard" onclick="loadTemplate('Write a good linkedin post about my achievement that will get good engagement')">
-          <div class="qcard-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#e6f1fb"/><rect x="7" y="7" width="5" height="5" rx="1" fill="#0077b5"/><rect x="7" y="14" width="5" height="7" rx="1" fill="#0077b5"/><rect x="14" y="10" width="7" height="11" rx="1" fill="#0077b5" opacity="0.7"/></svg></div>
-          <div class="qcard-title">LinkedIn achievement post</div><div class="qcard-desc">Professional, engaging, viral</div>
-        </div>
-        <div class="qcard" onclick="loadTemplate('Help me debug this code and explain what is wrong step by step')">
-          <div class="qcard-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#e8f5f3"/><path d="M11 10l-4 4 4 4" stroke="#00897b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 10l4 4-4 4" stroke="#00897b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 8l-2 12" stroke="#00897b" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-          <div class="qcard-title">Debug my code</div><div class="qcard-desc">Find errors, explain fixes</div>
-        </div>
-        <div class="qcard" onclick="loadTemplate('Write a whatsapp message to my friend asking to meet this weekend in a casual funny way')">
-          <div class="qcard-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#dcfce7"/><path d="M14 6a8 8 0 100 16 8 8 0 000-16z" stroke="#25d366" stroke-width="1.5" fill="none"/><path d="M10 14s1 2 4 2 4-2 4-2" stroke="#25d366" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="12" r="1" fill="#25d366"/><circle cx="17" cy="12" r="1" fill="#25d366"/></svg></div>
-          <div class="qcard-title">WhatsApp to a friend</div><div class="qcard-desc">Casual, fun, natural</div>
-        </div>
-      </div>
-      <div style="width:100%;max-width:560px;margin-bottom:20px">
-        <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border2);border-radius:50px;padding:10px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:border-color .2s" id="homeInputWrap">
-          <span style="font-size:16px;color:var(--hint)">✦</span>
-          <input id="homeInput" placeholder="Type rough. Get perfect... Hinglish ok 🙏" style="flex:1;border:none;outline:none;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:transparent" onkeydown="if(event.key==='Enter'&&this.value.trim()){var v=this.value;this.value='';loadTemplate(v);}" oninput="document.getElementById('homeInputWrap').style.borderColor=this.value?'var(--ac)':'var(--border2)'">
-          <button onclick="toggleHomeVoice()" id="homeMicBtn" style="width:34px;height:34px;border:1px solid #e0e0e0;border-radius:50%;background:#f5f5f5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s" title="Voice input"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="6" height="9" rx="3" stroke="#999" stroke-width="1.5" fill="none"/><path d="M2 8a6 6 0 0012 0" stroke="#999" stroke-width="1.5" stroke-linecap="round" fill="none"/><line x1="8" y1="14" x2="8" y2="15.5" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-          <button onclick="handleHomeEnhance()" style="background:var(--ac);color:#fff;border:none;padding:7px 20px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;box-shadow:0 4px 12px rgba(255,112,67,0.3)">✦ Enhance →</button>
-        </div>
-      </div>
-      <div class="scroller-section">
-        <div class="scroller-label">Works with every platform</div>
-        <div class="scroller-wrap" style="margin-bottom:8px">
-          <div class="scroller-track go-left" id="platTrack">
-            <span class="plat-pill">🤖 ChatGPT</span><span class="plat-pill">🧠 Claude</span><span class="plat-pill">✨ Gemini</span><span class="plat-pill">⚡ Grok</span><span class="plat-pill">🔍 DeepSeek</span><span class="plat-pill">📡 Perplexity</span><span class="plat-pill">📸 Instagram</span><span class="plat-pill">💼 LinkedIn</span><span class="plat-pill">💬 WhatsApp</span><span class="plat-pill">🐦 Twitter/X</span><span class="plat-pill">▶️ YouTube</span><span class="plat-pill">📘 Facebook</span>
-            <span class="plat-pill">🤖 ChatGPT</span><span class="plat-pill">🧠 Claude</span><span class="plat-pill">✨ Gemini</span><span class="plat-pill">⚡ Grok</span><span class="plat-pill">🔍 DeepSeek</span><span class="plat-pill">📡 Perplexity</span><span class="plat-pill">📸 Instagram</span><span class="plat-pill">💼 LinkedIn</span><span class="plat-pill">💬 WhatsApp</span><span class="plat-pill">🐦 Twitter/X</span><span class="plat-pill">▶️ YouTube</span><span class="plat-pill">📘 Facebook</span>
+  <!-- HOME PAGE — Premium Landing -->
+
+  <!-- HOME PAGE — Premium Landing -->
+  <div class="page active" id="page-home" style="overflow-y:auto;background:#000;padding:0">
+
+    <!-- ── GSAP + Three particles loaded from CDN ── -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+      .hero-wrap{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:#000;padding:20px}
+      #hero-canvas{position:absolute;inset:0;z-index:0;pointer-events:none}
+      .hero-content{position:relative;z-index:2;text-align:center;max-width:800px;padding:0 20px}
+      .hero-logo{display:inline-flex;align-items:center;gap:10px;margin-bottom:24px;opacity:0;transform:translateY(30px)}
+      .hero-logo-icon{width:52px;height:52px;background:linear-gradient(135deg,#ff7043,#ff9a76);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 40px rgba(255,112,67,0.5),0 0 80px rgba(255,112,67,0.2);animation:logoPulse 3s ease-in-out infinite}
+      @keyframes logoPulse{0%,100%{box-shadow:0 0 40px rgba(255,112,67,0.5),0 0 80px rgba(255,112,67,0.2)}50%{box-shadow:0 0 60px rgba(255,112,67,0.8),0 0 120px rgba(255,112,67,0.4)}}
+      .hero-logo-text{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,#ff7043,#ff9a76);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.5px}
+      .hero-logo-tm{font-size:10px;color:#ff7043;font-weight:700;margin-top:-12px;-webkit-text-fill-color:#ff7043}
+      .hero-headline{font-family:'Syne',sans-serif;font-size:clamp(36px,8vw,84px);font-weight:900;line-height:1;letter-spacing:-3px;margin-bottom:20px;opacity:0;transform:translateY(40px)}
+      .hero-headline .word1{background:linear-gradient(135deg,#ffffff 0%,rgba(255,255,255,0.8) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+      .hero-headline .word2{background:linear-gradient(135deg,#ff7043,#ff9a76);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+      .hero-sub{font-size:clamp(15px,2.5vw,20px);color:rgba(255,255,255,0.55);line-height:1.6;max-width:520px;margin:0 auto 36px;opacity:0;transform:translateY(30px)}
+      .hero-sub span{color:#ff7043;font-weight:600}
+      .hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(20px)}
+      .cta-primary{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;border-radius:50px;background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;border:none;cursor:pointer;box-shadow:0 8px 32px rgba(255,112,67,0.4);transition:all .3s;letter-spacing:0.02em}
+      .cta-primary:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 16px 48px rgba(255,112,67,0.6)}
+      .cta-secondary{display:inline-flex;align-items:center;gap:8px;padding:16px 32px;border-radius:50px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;border:1px solid rgba(255,255,255,0.15);cursor:pointer;transition:all .3s;backdrop-filter:blur(10px)}
+      .cta-secondary:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3);transform:translateY(-2px)}
+      .floating-cards{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+      .float-card{position:absolute;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(10px);border-radius:14px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.6);white-space:nowrap;animation:floatDrift linear infinite}
+      .float-card .fc-label{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#ff7043;font-weight:700;margin-bottom:4px}
+      .float-card .fc-text{color:rgba(255,255,255,0.85);font-size:12px}
+      @keyframes floatDrift{0%{transform:translateY(100vh) translateX(0) rotate(-2deg);opacity:0}5%{opacity:1}90%{opacity:1}100%{transform:translateY(-200px) translateX(20px) rotate(2deg);opacity:0}}
+      .scroll-indicator{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0;animation:fadeInUp 1s 2.5s forwards}
+      .scroll-dot{width:6px;height:6px;background:#ff7043;border-radius:50%;animation:scrollBounce 1.5s ease-in-out infinite}
+      @keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+      @keyframes fadeInUp{to{opacity:0.6}}
+      .scroll-indicator span{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase}
+
+      /* SECTIONS */
+      .lp-section{padding:100px 20px;max-width:1100px;margin:0 auto}
+      .lp-section-full{padding:100px 20px;background:#000}
+      .section-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:50px;background:rgba(255,112,67,0.1);border:1px solid rgba(255,112,67,0.3);font-size:11px;font-weight:700;color:#ff7043;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px}
+      .section-title{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,52px);font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px}
+      .section-sub{font-size:16px;color:rgba(255,255,255,0.5);line-height:1.7;max-width:540px}
+
+      /* TRANSFORM DEMO */
+      .transform-demo{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;margin-top:60px}
+      .demo-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;font-family:'DM Sans',sans-serif}
+      .demo-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px}
+      .demo-label.bad{color:#ef5350}
+      .demo-label.good{color:#66bb6a}
+      .demo-text-bad{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.6;font-style:italic}
+      .demo-text-good{font-size:14px;color:rgba(255,255,255,0.9);line-height:1.7}
+      .demo-arrow{display:flex;flex-direction:column;align-items:center;gap:8px}
+      .demo-arrow-icon{width:48px;height:48px;background:linear-gradient(135deg,#ff7043,#ff9a76);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 30px rgba(255,112,67,0.4);animation:arrowPulse 2s ease-in-out infinite}
+      @keyframes arrowPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+      .demo-arrow span{font-size:10px;color:#ff7043;font-weight:700;letter-spacing:0.08em}
+
+      /* FEATURE CARDS */
+      .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;margin-top:60px}
+      .feat-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:32px 28px;transition:all .4s;cursor:default;position:relative;overflow:hidden}
+      .feat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,112,67,0.08),transparent);opacity:0;transition:opacity .4s}
+      .feat-card:hover{border-color:rgba(255,112,67,0.3);transform:translateY(-6px);box-shadow:0 24px 60px rgba(255,112,67,0.1)}
+      .feat-card:hover::before{opacity:1}
+      .feat-icon{font-size:36px;margin-bottom:16px;display:block}
+      .feat-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:10px}
+      .feat-desc{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6}
+      .feat-tag{display:inline-flex;margin-top:16px;padding:4px 12px;border-radius:20px;background:rgba(255,112,67,0.1);border:1px solid rgba(255,112,67,0.2);font-size:10px;font-weight:700;color:#ff7043;letter-spacing:0.06em}
+
+      /* PLATFORMS SCROLLER */
+      .plat-scroller-wrap{overflow:hidden;position:relative;margin-top:50px;-webkit-mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent);mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent)}
+      .plat-scroller-track{display:flex;gap:12px;animation:scrollLeft 30s linear infinite}
+      .plat-scroller-track:hover{animation-play-state:paused}
+      .plat-pill-lp{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:50px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:13px;font-weight:500;color:rgba(255,255,255,0.7);white-space:nowrap;flex-shrink:0;transition:all .2s}
+      .plat-pill-lp:hover{background:rgba(255,112,67,0.1);border-color:rgba(255,112,67,0.3);color:#ff7043}
+      @keyframes scrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+      /* HOW IT WORKS */
+      .steps-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:60px;position:relative}
+      .steps-wrap::before{content:'';position:absolute;top:44px;left:16.6%;right:16.6%;height:2px;background:linear-gradient(to right,rgba(255,112,67,0.3),#ff7043,rgba(255,112,67,0.3));z-index:0}
+      .step-item{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 20px;position:relative;z-index:1}
+      .step-num{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#ff7043,#ff9a76);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:24px;box-shadow:0 0 40px rgba(255,112,67,0.4);position:relative}
+      .step-num::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,112,67,0.2);animation:stepRing 3s ease-in-out infinite}
+      @keyframes stepRing{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.1);opacity:1}}
+      .step-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:10px}
+      .step-desc{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6}
+      .step-emoji{font-size:32px}
+
+      /* PRICING */
+      .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:680px;margin:60px auto 0}
+      .price-card{border-radius:24px;padding:36px 32px;position:relative;overflow:hidden}
+      .price-card.free{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1)}
+      .price-card.pro{background:linear-gradient(135deg,rgba(255,112,67,0.12),rgba(255,154,118,0.06));border:1.5px solid rgba(255,112,67,0.4);box-shadow:0 0 60px rgba(255,112,67,0.1)}
+      .price-card.pro::before{content:'MOST POPULAR';position:absolute;top:16px;right:16px;padding:4px 12px;border-radius:20px;background:#ff7043;color:#fff;font-size:9px;font-weight:800;letter-spacing:0.1em}
+      .price-label{font-size:13px;font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.08em}
+      .price-amount{font-family:'Syne',sans-serif;font-size:44px;font-weight:900;color:#fff;margin-bottom:4px;line-height:1}
+      .price-period{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:28px}
+      .price-features{list-style:none;padding:0;margin:0 0 28px}
+      .price-features li{padding:8px 0;font-size:13px;color:rgba(255,255,255,0.7);border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:8px}
+      .price-features li span.check{color:#ff7043;font-weight:700}
+      .price-features li span.cross{color:rgba(255,255,255,0.2)}
+      .price-btn-free{width:100%;padding:14px;border-radius:50px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.7);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s}
+      .price-btn-free:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.3)}
+      .price-btn-pro{width:100%;padding:14px;border-radius:50px;border:none;background:linear-gradient(135deg,#ff7043,#ff9a76);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .3s;box-shadow:0 8px 24px rgba(255,112,67,0.4)}
+      .price-btn-pro:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(255,112,67,0.6)}
+
+      /* FINAL CTA */
+      .final-cta{text-align:center;padding:120px 20px;background:radial-gradient(ellipse at 50% 0%,rgba(255,112,67,0.15) 0%,transparent 70%),#000}
+      .final-cta-title{font-family:'Syne',sans-serif;font-size:clamp(32px,6vw,64px);font-weight:900;color:#fff;letter-spacing:-2px;margin-bottom:16px}
+      .final-cta-sub{font-size:16px;color:rgba(255,255,255,0.5);margin-bottom:40px}
+
+      /* STATS BAR */
+      .stats-bar{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;padding:40px 20px;background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05)}
+      .stat-item{text-align:center}
+      .stat-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;background:linear-gradient(135deg,#ff7043,#ff9a76);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+      .stat-label{font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;letter-spacing:0.06em;text-transform:uppercase}
+
+      /* BG GRADIENT */
+      .bg-glow{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+
+      @media(max-width:768px){
+        .transform-demo{grid-template-columns:1fr;gap:16px}
+        .demo-arrow{display:none}
+        .steps-wrap{grid-template-columns:1fr;gap:40px}
+        .steps-wrap::before{display:none}
+        .pricing-grid{grid-template-columns:1fr;max-width:360px}
+        .stats-bar{gap:30px}
+        .features-grid{grid-template-columns:1fr 1fr}
+        .hero-headline{letter-spacing:-1px}
+      }
+      @media(max-width:480px){
+        .features-grid{grid-template-columns:1fr}
+      }
+    </style>
+
+    <!-- ── HERO ── -->
+    <section class="hero-wrap" id="heroSection">
+      <canvas id="hero-canvas"></canvas>
+
+      <!-- Background glows -->
+      <div class="bg-glow" style="width:600px;height:600px;background:rgba(255,112,67,0.12);top:-200px;left:50%;transform:translateX(-50%)"></div>
+      <div class="bg-glow" style="width:400px;height:400px;background:rgba(120,40,200,0.08);bottom:0;right:-100px"></div>
+
+      <!-- Floating prompt cards -->
+      <div class="floating-cards" id="floatingCards"></div>
+
+      <div class="hero-content">
+        <div class="hero-logo" id="heroLogo">
+          <div class="hero-logo-icon">✦</div>
+          <div>
+            <div class="hero-logo-text">clarix</div>
+            <div class="hero-logo-tm">™</div>
           </div>
         </div>
-        <div class="scroller-wrap">
-          <div class="scroller-track go-right" id="langTrack">
-            <span class="lang-pill">🇮🇳 Hindi</span><span class="lang-pill">🇮🇳 Marathi</span><span class="lang-pill">🇮🇳 Gujarati</span><span class="lang-pill">🇮🇳 Tamil</span><span class="lang-pill">🇮🇳 Telugu</span><span class="lang-pill">🇬🇧 English</span><span class="lang-pill">🇮🇳 Bengali</span><span class="lang-pill">🇮🇳 Kannada</span><span class="lang-pill">🇫🇷 French</span><span class="lang-pill">🇩🇪 German</span>
-            <span class="lang-pill">🇮🇳 Hindi</span><span class="lang-pill">🇮🇳 Marathi</span><span class="lang-pill">🇮🇳 Gujarati</span><span class="lang-pill">🇮🇳 Tamil</span><span class="lang-pill">🇮🇳 Telugu</span><span class="lang-pill">🇬🇧 English</span><span class="lang-pill">🇮🇳 Bengali</span><span class="lang-pill">🇮🇳 Kannada</span><span class="lang-pill">🇫🇷 French</span><span class="lang-pill">🇩🇪 German</span>
+
+        <h1 class="hero-headline" id="heroHeadline">
+          <span class="word1">Type Rough.</span><br>
+          <span class="word2">Get Perfect.</span>
+        </h1>
+
+        <p class="hero-sub" id="heroSub">
+          India's first AI prompt engine. Write in <span>Hinglish, Hindi or English</span> —
+          get polished prompts for ChatGPT, Claude, Instagram and 25+ platforms instantly.
+        </p>
+
+        <div class="hero-ctas" id="heroCTAs">
+          <button class="cta-primary" onclick="goPage('write',document.getElementById('nav-write'));showToast('✦ Welcome! Start typing your prompt')">
+            <span>✦</span> Start Free — No Signup
+          </button>
+          <button class="cta-secondary" onclick="document.getElementById('howSection').scrollIntoView({behavior:'smooth'})">
+            See how it works ↓
+          </button>
+        </div>
+      </div>
+
+      <div class="scroll-indicator" onclick="document.getElementById('statsSection').scrollIntoView({behavior:'smooth'})">
+        <div class="scroll-dot"></div>
+        <span>Scroll</span>
+      </div>
+    </section>
+
+    <!-- ── STATS BAR ── -->
+    <div class="stats-bar" id="statsSection">
+      <div class="stat-item"><div class="stat-num" data-target="25">0</div><div class="stat-label">AI & Social Platforms</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="12">0</div><div class="stat-label">Indian Languages</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="100">0</div><div class="stat-label">Grammar Rules</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="3">0</div><div class="stat-label">Seconds to Enhance</div></div>
+    </div>
+
+    <!-- ── WHAT IS CLARIX ── -->
+    <div style="background:#000;padding:0 0 0">
+      <div class="lp-section">
+        <div style="text-align:center;margin-bottom:60px">
+          <div class="section-tag">✦ What is Clarix</div>
+          <h2 class="section-title">Your prompts,<br><span style="background:linear-gradient(135deg,#ff7043,#ff9a76);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">10x better.</span></h2>
+          <p class="section-sub" style="margin:0 auto">Type rough in any language. Clarix understands your intent and transforms it into a perfectly crafted, platform-optimised prompt in seconds.</p>
+        </div>
+
+        <div class="transform-demo">
+          <div class="demo-box">
+            <div class="demo-label bad">✗ Before Clarix</div>
+            <div class="demo-text-bad">"boss ko mail karna hai kal chutti ke liye bcoz bukhar hai plz help"</div>
+          </div>
+          <div class="demo-arrow">
+            <div class="demo-arrow-icon">✦</div>
+            <span>CLARIX AI</span>
+          </div>
+          <div class="demo-box" style="border-color:rgba(255,112,67,0.3);background:rgba(255,112,67,0.05)">
+            <div class="demo-label good">✓ After Clarix</div>
+            <div class="demo-text-good">"Write a professional sick leave email to my manager requesting leave tomorrow due to fever. Include: formal subject line, polite greeting, brief medical reason, expected return date, and professional closing."</div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- ── FEATURES ── -->
+    <div style="background:linear-gradient(180deg,#000 0%,#0a0005 100%);padding:0">
+      <div class="lp-section">
+        <div style="text-align:center;margin-bottom:0">
+          <div class="section-tag">✦ Features</div>
+          <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+        </div>
+
+        <div class="features-grid">
+          <div class="feat-card">
+            <span class="feat-icon">✦</span>
+            <div class="feat-title">AI Prompt Writer</div>
+            <div class="feat-desc">Type rough in Hinglish, Hindi or English. Get polished prompts for any AI platform instantly with grammar fixes and score.</div>
+            <div class="feat-tag">WRITE PAGE</div>
+          </div>
+          <div class="feat-card">
+            <span class="feat-icon">🖼️</span>
+            <div class="feat-title">InspireMe Gallery</div>
+            <div class="feat-desc">Browse 22 premium cinematic images. Click any to open the editor — or upload your own and Claude Vision generates the prompt.</div>
+            <div class="feat-tag">VISION AI</div>
+          </div>
+          <div class="feat-card">
+            <span class="feat-icon">🔥</span>
+            <div class="feat-title">Expert Breakdown</div>
+            <div class="feat-desc">Get a full professional output: main prompt, settings, pro upgrade version, and which platforms to use — just like a prompt expert.</div>
+            <div class="feat-tag">CLAUDE AI</div>
+          </div>
+          <div class="feat-card">
+            <span class="feat-icon">🎤</span>
+            <div class="feat-title">Voice Input</div>
+            <div class="feat-desc">Speak your prompt in any language. Clarix detects it, asks if you want to switch language, and enhances your voice input instantly.</div>
+            <div class="feat-tag">ANY LANGUAGE</div>
+          </div>
+          <div class="feat-card">
+            <span class="feat-icon">⚡</span>
+            <div class="feat-title">Create Hub</div>
+            <div class="feat-desc">One-click templates for Email, Blog, Video, 3D, Social and more. Pick your intent and the perfect prompt loads instantly.</div>
+            <div class="feat-tag">APPS PAGE</div>
+          </div>
+          <div class="feat-card">
+            <span class="feat-icon">🌐</span>
+            <div class="feat-title">25+ Platforms</div>
+            <div class="feat-desc">ChatGPT, Claude, Gemini, Grok, Instagram, LinkedIn, WhatsApp, RunwayML, Midjourney and many more — all in one place.</div>
+            <div class="feat-tag">ALL PLATFORMS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PLATFORMS ── -->
+    <div style="background:#0a0005;padding:80px 0">
+      <div style="text-align:center;margin-bottom:40px;padding:0 20px">
+        <div class="section-tag" style="display:inline-flex">✦ Platforms</div>
+        <h2 class="section-title" style="margin-top:16px">Works with every platform<br>you already use.</h2>
+      </div>
+      <div class="plat-scroller-wrap">
+        <div class="plat-scroller-track" id="platScrollTrack">
+          <div class="plat-pill-lp">🤖 ChatGPT</div>
+          <div class="plat-pill-lp">🧠 Claude</div>
+          <div class="plat-pill-lp">✨ Gemini</div>
+          <div class="plat-pill-lp">⚡ Grok</div>
+          <div class="plat-pill-lp">🔍 DeepSeek</div>
+          <div class="plat-pill-lp">📸 Instagram</div>
+          <div class="plat-pill-lp">💼 LinkedIn</div>
+          <div class="plat-pill-lp">💬 WhatsApp</div>
+          <div class="plat-pill-lp">🐦 Twitter/X</div>
+          <div class="plat-pill-lp">▶️ YouTube</div>
+          <div class="plat-pill-lp">🎨 Midjourney</div>
+          <div class="plat-pill-lp">🎬 RunwayML</div>
+          <div class="plat-pill-lp">🌐 Perplexity</div>
+          <div class="plat-pill-lp">🇮🇳 Krutrim</div>
+          <div class="plat-pill-lp">📌 Pinterest</div>
+          <div class="plat-pill-lp">🧵 Threads</div>
+          <!-- duplicate for infinite scroll -->
+          <div class="plat-pill-lp">🤖 ChatGPT</div>
+          <div class="plat-pill-lp">🧠 Claude</div>
+          <div class="plat-pill-lp">✨ Gemini</div>
+          <div class="plat-pill-lp">⚡ Grok</div>
+          <div class="plat-pill-lp">🔍 DeepSeek</div>
+          <div class="plat-pill-lp">📸 Instagram</div>
+          <div class="plat-pill-lp">💼 LinkedIn</div>
+          <div class="plat-pill-lp">💬 WhatsApp</div>
+          <div class="plat-pill-lp">🐦 Twitter/X</div>
+          <div class="plat-pill-lp">▶️ YouTube</div>
+          <div class="plat-pill-lp">🎨 Midjourney</div>
+          <div class="plat-pill-lp">🎬 RunwayML</div>
+          <div class="plat-pill-lp">🌐 Perplexity</div>
+          <div class="plat-pill-lp">🇮🇳 Krutrim</div>
+          <div class="plat-pill-lp">📌 Pinterest</div>
+          <div class="plat-pill-lp">🧵 Threads</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HOW IT WORKS ── -->
+    <div style="background:#000" id="howSection">
+      <div class="lp-section" style="text-align:center">
+        <div class="section-tag" style="display:inline-flex">✦ How it works</div>
+        <h2 class="section-title" style="margin-top:16px">Three steps.<br>Perfect prompt.</h2>
+
+        <div class="steps-wrap">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-emoji">✍️</div>
+            <div class="step-title">Type Rough</div>
+            <div class="step-desc">Write anything in Hinglish, Hindi or English. Rough is fine — voice input works too.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-emoji">✦</div>
+            <div class="step-title">Enhance with AI</div>
+            <div class="step-desc">Claude AI transforms your rough input into a perfect, platform-optimised prompt in seconds.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-emoji">🚀</div>
+            <div class="step-title">Copy & Use</div>
+            <div class="step-desc">Copy your expert prompt and paste it into any AI platform. Get results like a pro.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PRICING ── -->
+    <div style="background:linear-gradient(180deg,#000,#0a0005);padding:100px 20px">
+      <div style="text-align:center;margin-bottom:0">
+        <div class="section-tag" style="display:inline-flex">✦ Pricing</div>
+        <h2 class="section-title" style="margin-top:16px">Simple, honest pricing.</h2>
+        <p class="section-sub" style="margin:0 auto 0">Start free. Upgrade when you're ready.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card free">
+          <div class="price-label">Free</div>
+          <div class="price-amount">₹0</div>
+          <div class="price-period">Forever free</div>
+          <ul class="price-features">
+            <li><span class="check">✓</span> 10 enhancements per day</li>
+            <li><span class="check">✓</span> All AI platforms</li>
+            <li><span class="check">✓</span> Voice input</li>
+            <li><span class="check">✓</span> InspireMe gallery</li>
+            <li><span class="cross">✗</span> Expert Breakdown</li>
+            <li><span class="cross">✗</span> Unlimited usage</li>
+          </ul>
+          <button class="price-btn-free" onclick="goPage('write',document.getElementById('nav-write'))">Start Free</button>
+        </div>
+        <div class="price-card pro">
+          <div class="price-label">Pro</div>
+          <div class="price-amount">₹199</div>
+          <div class="price-period">per month</div>
+          <ul class="price-features">
+            <li><span class="check">✓</span> Unlimited enhancements</li>
+            <li><span class="check">✓</span> All AI platforms</li>
+            <li><span class="check">✓</span> Voice input</li>
+            <li><span class="check">✓</span> InspireMe + Vision AI</li>
+            <li><span class="check">✓</span> Expert Breakdown</li>
+            <li><span class="check">✓</span> Priority AI processing</li>
+          </ul>
+          <button class="price-btn-pro" onclick="activateProTrial()">Start 7-day Free Trial</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FINAL CTA ── -->
+    <div class="final-cta">
+      <div class="section-tag" style="display:inline-flex;margin-bottom:24px">✦ Get Started</div>
+      <h2 class="final-cta-title">Start writing better prompts<br>right now.</h2>
+      <p class="final-cta-sub">No signup. No credit card. Just better prompts.</p>
+      <button class="cta-primary" style="font-size:18px;padding:18px 48px" onclick="goPage('write',document.getElementById('nav-write'));showToast('✦ Let\'s write your first perfect prompt!')">
+        <span>✦</span> Try Clarix Free
+      </button>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <div style="background:#000;border-top:1px solid rgba(255,255,255,0.06);padding:32px 20px;text-align:center">
+      <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="width:28px;height:28px;background:linear-gradient(135deg,#ff7043,#ff9a76);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:800">✦</div>
+        <span style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;background:linear-gradient(135deg,#ff7043,#ff9a76);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">clarix™</span>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:8px">India's First AI Prompt Engine — by TechYaar</div>
+      <div style="display:flex;gap:20px;justify-content:center;font-size:12px">
+        <a href="terms.html" style="color:rgba(255,255,255,0.3);text-decoration:none" onmouseover="this.style.color='#ff7043'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Terms</a>
+        <a href="privacy.html" style="color:rgba(255,255,255,0.3);text-decoration:none" onmouseover="this.style.color='#ff7043'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Privacy</a>
+        <a href="mailto:hello@techyaar.in" style="color:rgba(255,255,255,0.3);text-decoration:none" onmouseover="this.style.color='#ff7043'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Contact</a>
+      </div>
+    </div>
+
   </div>
 
   <!-- WRITE PAGE -->
   <div class="page" id="page-write">
     <div class="write-wrap">
-      <div>
-        <div class="write-header">Write a prompt</div>
-        <div class="write-sub">Type anything rough — Hinglish, Hindi, English. Clarix AI enhances it instantly.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div>
+          <div class="write-header">Write a prompt</div>
+          <div class="write-sub">Type rough in any language — Clarix AI makes it perfect.</div>
+        </div>
+        <!-- Clarix Template Picker -->
+        <div style="position:relative" id="templatePickerWrap">
+          <button onclick="toggleTemplatePicker()" style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:50px;border:1.5px solid rgba(255,112,67,0.4);background:rgba(255,112,67,0.06);color:#ff7043;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s" onmouseover="this.style.background='rgba(255,112,67,0.12)'" onmouseout="this.style.background='rgba(255,112,67,0.06)'">
+            <span style="font-size:15px">✦</span> Clarix Templates <span id="tpArrow" style="font-size:10px;transition:transform .2s">▼</span>
+          </button>
+          <div id="templatePicker" style="display:none;position:absolute;top:44px;right:0;background:#fff;border:1px solid #e0e0e0;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.12);width:260px;z-index:300;overflow:hidden;max-height:360px;overflow-y:auto">
+            <div style="padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;border-bottom:1px solid #f0f0f0">Quick Templates</div>
+            <div onclick="pickTemplate('Write a professional sick leave email to my manager for tomorrow. Mention fever. Include subject line, formal greeting, brief reason, expected return date, and professional closing.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>✉️</span> Sick leave email</div>
+            <div onclick="pickTemplate('Write an engaging LinkedIn post about my recent professional achievement. Strong hook, authentic story, key learnings, end with a question to drive comments.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>💼</span> LinkedIn achievement post</div>
+            <div onclick="pickTemplate('Review this code, find all bugs, explain what is wrong, and provide the fixed version with comments.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>💻</span> Debug my code</div>
+            <div onclick="pickTemplate('Write a casual, warm and friendly WhatsApp message asking my friend if they want to meet this weekend. Keep it fun and natural.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>💬</span> WhatsApp to a friend</div>
+            <div onclick="pickTemplate('Write an engaging Instagram caption for my photo. Include 5 relevant hashtags, emojis, and a call to action. Make it authentic and shareable.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>📸</span> Instagram caption</div>
+            <div onclick="pickTemplate('Write a 1500-word SEO-optimized blog post with compelling headline, 5 sections with subheadings, expert insights, and strong CTA.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>📝</span> Write a blog post</div>
+            <div onclick="pickTemplate('Write a confident but respectful salary negotiation email for the role I applied for. Mention market research and express continued interest in the position.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>💰</span> Salary negotiation email</div>
+            <div onclick="pickTemplate('Create a cinematic video script for YouTube about [TOPIC]. Include hook (first 5 seconds), 3 main sections, B-roll suggestions, and strong subscribe CTA.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>🎬</span> Video script</div>
+            <div onclick="pickTemplate('Write a compelling elevator pitch for my startup. Include the problem, solution, market size, traction, and a clear ask. 60 seconds when spoken aloud.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>🚀</span> Startup pitch</div>
+            <div onclick="pickTemplate('Create a detailed image generation prompt for Midjourney or DALL-E. Include: subject, art style, lighting, mood, color palette, camera angle, and quality modifiers.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>🎨</span> AI image prompt</div>
+            <div onclick="pickTemplate('Create a 7-day travel itinerary for [DESTINATION]. Include day-by-day plan, top attractions, restaurant picks, transport tips, and estimated budget.')" style="padding:11px 14px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;font-size:13px;color:#333;border-bottom:none" onmouseover="this.style.background='#fff8f5'" onmouseout="this.style.background='transparent'"><span>✈️</span> Travel itinerary</div>
+          </div>
+        </div>
       </div>
       <div class="mode-tabs">
         <div class="mode-tab active" id="mode-ai" onclick="setMode('ai')">🤖 AI</div>
@@ -586,6 +990,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
         <div id="aiPills" style="display:none"></div>
         <div id="socialPills" style="display:none"></div>
       </div>
+      <!-- Clarix Template Picker -->
+      <div id="templateDropWrap" style="position:relative;margin-bottom:-8px">
+        <button id="clarixTemplateBtn" onclick="toggleTemplateDrop()" style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s">
+          <span style="font-size:16px">✦</span>
+          <span>Clarix Templates</span>
+          <span style="font-size:10px;opacity:0.6">▼</span>
+        </button>
+        <div id="templateDrop" style="display:none;position:absolute;top:44px;left:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,0.15);width:280px;z-index:300;overflow:hidden;max-height:400px;overflow-y:auto">
+          <div style="padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--hint);border-bottom:1px solid var(--border);background:var(--bg)">Quick start templates</div>
+          <div id="templateList"></div>
+        </div>
+      </div>
+
       <div class="input-card">
         <div class="input-top">
           <div class="input-label-row">
@@ -2078,6 +2495,8 @@ function goPage(name,el){
     }
   });
   window.scrollTo(0,0);
+  // Init landing animations when visiting home
+  if(name==='home') setTimeout(initHomeLanding, 100);
 }
 function toggleSidebar(){
   var sb=document.getElementById('sidebar');var isMobile=window.innerWidth<=768;
@@ -3036,6 +3455,453 @@ function initDropdowns() {
   }
 }
 
+
+// ══════════════════════════════════════════════════════
+// ── PREMIUM LANDING PAGE JS ────────────────────────────
+// ══════════════════════════════════════════════════════
+
+// ── Particle System ───────────────────────────────────
+function initParticles() {
+  var canvas = document.getElementById('particleCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  var particles = [];
+  var count = Math.min(60, Math.floor(window.innerWidth / 20));
+
+  for (var i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      dx: (Math.random() - 0.5) * 0.3,
+      dy: (Math.random() - 0.5) * 0.3,
+      opacity: Math.random() * 0.4 + 0.1,
+      color: Math.random() > 0.7 ? 'rgba(255,112,67,' : 'rgba(255,255,255,'
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + p.opacity + ')';
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+    // Draw connections
+    for (var i = 0; i < particles.length; i++) {
+      for (var j = i + 1; j < particles.length; j++) {
+        var dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(255,112,67,' + (0.06 * (1 - dist/100)) + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  window.addEventListener('resize', function() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+}
+
+// ── GSAP Hero Entrance ────────────────────────────────
+function initHeroAnimations() {
+  if (typeof gsap === 'undefined') {
+    // Fallback without GSAP
+    ['heroBadge','heroTitle','heroTagline','heroInput','heroCTAs','heroStats'].forEach(function(id, i) {
+      var el = document.getElementById(id);
+      if (el) {
+        setTimeout(function() {
+          el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, 200 + i * 150);
+      }
+    });
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero sequence
+  var tl = gsap.timeline({ delay: 0.3 });
+  tl.to('#heroBadge', { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(1.7)' })
+    .to('#heroTitle', { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.4)' }, '-=0.2')
+    .to('#heroTagline', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.3')
+    .to('#heroInput', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2')
+    .to('#heroCTAs', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2')
+    .to('#heroStats', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.1');
+
+  // Scroll reveals
+  gsap.utils.toArray('.reveal-up').forEach(function(el) {
+    gsap.to(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      },
+      opacity: 1,
+      y: 0,
+      duration: 0.7,
+      ease: 'power2.out'
+    });
+  });
+
+  // Gradient shift on clarix word
+  gsap.to('#clarixWord', {
+    backgroundPosition: '200% center',
+    duration: 4,
+    repeat: -1,
+    ease: 'linear'
+  });
+}
+
+// ── Typewriter for hero input ─────────────────────────
+function initTypewriter() {
+  var el = document.getElementById('heroTyped');
+  if (!el) return;
+  var phrases = [
+    'boss ko leave mail karo bcoz fever hai...',
+    'Write LinkedIn post about my promotion...',
+    'Instagram caption for my travel photo...',
+    'Debug my Python code and explain fixes...',
+    'Startup pitch for my AI product...',
+    'Hinglish ok, type rough here 🙏'
+  ];
+  var pi = 0, ci = 0, deleting = false, wait = 0;
+
+  function type() {
+    if (wait > 0) { wait--; setTimeout(type, 50); return; }
+    var phrase = phrases[pi];
+    if (!deleting) {
+      el.textContent = phrase.substring(0, ci + 1);
+      ci++;
+      if (ci === phrase.length) { deleting = true; wait = 40; }
+      setTimeout(type, 60);
+    } else {
+      el.textContent = phrase.substring(0, ci - 1);
+      ci--;
+      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; wait = 10; }
+      setTimeout(type, 30);
+    }
+  }
+  setTimeout(type, 1500);
+}
+
+// ── Template Picker ───────────────────────────────────
+function toggleTemplatePicker() {
+  var picker = document.getElementById('templatePicker');
+  var arrow = document.getElementById('tpArrow');
+  var isOpen = picker.style.display !== 'none';
+  picker.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+function pickTemplate(text) {
+  var ta = document.getElementById('promptInput');
+  if (ta) {
+    ta.value = text;
+    document.getElementById('charCount').textContent = text.length;
+    document.getElementById('clearBtn').style.display = 'block';
+    ta.focus();
+  }
+  document.getElementById('templatePicker').style.display = 'none';
+  document.getElementById('tpArrow').style.transform = 'rotate(0deg)';
+  showToast('✦ Template loaded — customise and Enhance!');
+}
+
+// Close template picker on outside click
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('templatePickerWrap');
+  if (wrap && !wrap.contains(e.target)) {
+    var picker = document.getElementById('templatePicker');
+    var arrow = document.getElementById('tpArrow');
+    if (picker) picker.style.display = 'none';
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+  }
+});
+
+// ── Init landing on home page visit ──────────────────
+function initHomeLanding() {
+  initParticles();
+  initHeroAnimations();
+  initTypewriter();
+}
+
+
+// ══════════════════════════════════════════════════════
+// ── PREMIUM HOME PAGE ANIMATIONS ─────────────────────
+// ══════════════════════════════════════════════════════
+
+var _homeAnimated = false;
+var _gsapLoaded = false;
+
+function loadGSAP(cb) {
+  if (window.gsap) { cb(); return; }
+  var s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
+  s.onload = function() { _gsapLoaded = true; cb(); };
+  document.head.appendChild(s);
+}
+
+function initHomePage() {
+  if (_homeAnimated) return;
+  _homeAnimated = true;
+  initHeroCanvas();
+  initFloatingCards();
+  loadGSAP(function() {
+    animateHero();
+    initScrollAnimations();
+  });
+  initStatCounters();
+}
+
+// ── Particle Canvas ───────────────────────────────────
+function initHeroCanvas() {
+  var canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var W, H;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (var i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * 1200,
+      y: Math.random() * 800,
+      r: Math.random() * 1.5 + 0.3,
+      dx: (Math.random() - 0.5) * 0.3,
+      dy: (Math.random() - 0.5) * 0.3,
+      o: Math.random() * 0.5 + 0.1,
+      c: Math.random() > 0.7 ? '#ff7043' : '#ffffff'
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.c;
+      ctx.globalAlpha = p.o;
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.x < 0 || p.x > W) p.dx *= -1;
+      if (p.y < 0 || p.y > H) p.dy *= -1;
+    });
+    ctx.globalAlpha = 1;
+    // Draw subtle connecting lines
+    for (var i = 0; i < particles.length; i++) {
+      for (var j = i + 1; j < particles.length; j++) {
+        var dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(255,112,67,' + (0.08 * (1 - dist/120)) + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── Floating prompt cards ─────────────────────────────
+var FLOAT_PROMPTS = [
+  { label: 'EMAIL', text: 'Write sick leave email to manager...' },
+  { label: 'LINKEDIN', text: 'Post about my promotion achievement...' },
+  { label: 'CHATGPT', text: 'Explain machine learning simply...' },
+  { label: 'INSTAGRAM', text: 'Caption for sunset beach photo...' },
+  { label: 'WHATSAPP', text: 'Casual message to friend for meetup...' },
+  { label: 'VIDEO', text: 'RunwayML: cinematic ocean drone shot...' },
+  { label: 'BLOG', text: 'SEO article about AI tools for SMBs...' },
+  { label: '3D ART', text: 'Blender: glass sphere with caustic light...' },
+];
+
+function initFloatingCards() {
+  var container = document.getElementById('floatingCards');
+  if (!container) return;
+  FLOAT_PROMPTS.forEach(function(p, i) {
+    var card = document.createElement('div');
+    card.className = 'float-card';
+    card.innerHTML = '<div class="fc-label">' + p.label + '</div><div class="fc-text">' + p.text + '</div>';
+    var leftPos = 5 + (i % 4) * 23 + Math.random() * 5;
+    var duration = 18 + Math.random() * 14;
+    var delay = i * 2.5;
+    card.style.cssText = 'left:' + leftPos + '%;animation-duration:' + duration + 's;animation-delay:' + delay + 's';
+    container.appendChild(card);
+  });
+}
+
+// ── GSAP Hero Animation ───────────────────────────────
+function animateHero() {
+  if (!window.gsap) return;
+  var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  tl.to('#heroLogo',     { opacity: 1, y: 0, duration: 0.8 }, 0.2)
+    .to('#heroHeadline', { opacity: 1, y: 0, duration: 1.0 }, 0.5)
+    .to('#heroSub',      { opacity: 1, y: 0, duration: 0.8 }, 0.9)
+    .to('#heroCTAs',     { opacity: 1, y: 0, duration: 0.7 }, 1.2);
+}
+
+// ── Scroll animations ─────────────────────────────────
+function initScrollAnimations() {
+  if (!window.gsap) return;
+  var elements = document.querySelectorAll('.feat-card, .step-item, .price-card, .demo-box');
+  if (!elements.length) return;
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        gsap.fromTo(entry.target,
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }
+        );
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  elements.forEach(function(el) {
+    el.style.opacity = '0';
+    observer.observe(el);
+  });
+}
+
+// ── Stats counter animation ───────────────────────────
+function initStatCounters() {
+  var stats = document.querySelectorAll('[data-target]');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var el = entry.target;
+        var target = parseInt(el.getAttribute('data-target'));
+        var start = 0;
+        var duration = 1500;
+        var startTime = null;
+        function step(ts) {
+          if (!startTime) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var val = Math.floor(progress * target);
+          el.textContent = val + (target >= 100 ? '+' : target === 3 ? 's' : '+');
+          if (progress < 1) requestAnimationFrame(step);
+          else el.textContent = target + (target >= 25 || target >= 12 || target >= 100 ? '+' : target === 3 ? 's' : '');
+        }
+        requestAnimationFrame(step);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  stats.forEach(function(s) { observer.observe(s); });
+}
+
+// ── WRITE PAGE: Clarix Template Picker ───────────────
+var CLARIX_TEMPLATES = [
+  { icon: '✉️', label: 'Sick leave email', prompt: 'Write a professional sick leave email to my manager. I have fever and need leave tomorrow. Include formal subject line, polite greeting, brief reason, expected return date, and professional closing.' },
+  { icon: '💼', label: 'LinkedIn achievement', prompt: 'Write an engaging LinkedIn post about my recent professional achievement: [ADD YOUR ACHIEVEMENT]. Strong opening hook, personal story, key lesson, end with a question to drive engagement.' },
+  { icon: '💻', label: 'Debug my code', prompt: 'Review this [LANGUAGE] code, identify all bugs, provide the corrected version, and explain each fix clearly with comments: [PASTE YOUR CODE]' },
+  { icon: '📸', label: 'Instagram caption', prompt: 'Write a captivating Instagram caption for my photo about [TOPIC]. Include a strong hook, authentic story, call to action, and 8 relevant hashtags.' },
+  { icon: '💬', label: 'WhatsApp to friend', prompt: 'Write a casual, warm and funny WhatsApp message to my friend asking if they want to meet this weekend. Keep it short, natural and add a light joke.' },
+  { icon: '🎬', label: 'Video script', prompt: 'Write a [DURATION] video script for [PLATFORM] about [TOPIC]. Include: attention-grabbing hook (first 3 seconds), main content sections, B-roll suggestions, and strong CTA.' },
+  { icon: '📝', label: 'Blog post', prompt: 'Write a 1500-word SEO-optimized blog post about [TOPIC]. Include compelling headline, engaging introduction, 5 sections with subheadings, expert insights, actionable tips, and strong CTA.' },
+  { icon: '💰', label: 'Salary negotiation', prompt: 'Write a confident but respectful email negotiating a salary of [AMOUNT] for the [ROLE] position. Mention relevant experience, market research, and continued interest in the role.' },
+  { icon: '🎨', label: 'Image prompt', prompt: 'Create a detailed AI image generation prompt for [SUBJECT/SCENE]. Include: art style, lighting, mood, camera angle, color palette, and quality modifiers for Midjourney or DALL-E.' },
+  { icon: '✈️', label: 'Travel itinerary', prompt: 'Create a detailed [DURATION]-day travel itinerary for [DESTINATION]. Include day-by-day plan, top attractions, restaurant recommendations, transport tips, and budget estimate.' },
+  { icon: '🏢', label: 'Business proposal', prompt: 'Write a professional business proposal for [SERVICE] targeting [CLIENT TYPE]. Include: executive summary, problem statement, solution, pricing, timeline, and next steps.' },
+  { icon: '🤖', label: 'AI mega prompt', prompt: 'Create a detailed mega-prompt for [AI PLATFORM] to help with [TASK]. Include role assignment, context, specific instructions, output format, tone, constraints, and examples.' },
+];
+
+var _templateDropOpen = false;
+
+function toggleTemplateDrop() {
+  var drop = document.getElementById('templateDrop');
+  var btn = document.getElementById('clarixTemplateBtn');
+  if (!drop) return;
+  _templateDropOpen = !_templateDropOpen;
+  drop.style.display = _templateDropOpen ? 'block' : 'none';
+  btn.style.borderColor = _templateDropOpen ? '#ff7043' : 'var(--border2)';
+  btn.style.color = _templateDropOpen ? '#ff7043' : 'var(--muted)';
+  if (_templateDropOpen) {
+    // Render templates
+    var list = document.getElementById('templateList');
+    if (list && !list.innerHTML) {
+      list.innerHTML = CLARIX_TEMPLATES.map(function(t, i) {
+        return '<div onclick="useTemplate(' + i + ')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border)" onmouseover="this.style.background=\'var(--ac-bg)\'" onmouseout="this.style.background=\'transparent\'">'
+          + '<span style="font-size:18px">' + t.icon + '</span>'
+          + '<span style="font-size:13px;color:var(--text);font-weight:500">' + t.label + '</span>'
+          + '</div>';
+      }).join('');
+    }
+  }
+}
+
+function useTemplate(idx) {
+  var t = CLARIX_TEMPLATES[idx];
+  if (!t) return;
+  var ta = document.getElementById('promptInput');
+  if (ta) {
+    ta.value = t.prompt;
+    document.getElementById('charCount').textContent = t.prompt.length;
+    document.getElementById('clearBtn').style.display = 'block';
+    ta.focus();
+  }
+  // Close dropdown
+  var drop = document.getElementById('templateDrop');
+  if (drop) drop.style.display = 'none';
+  _templateDropOpen = false;
+  var btn = document.getElementById('clarixTemplateBtn');
+  if (btn) { btn.style.borderColor = 'var(--border2)'; btn.style.color = 'var(--muted)'; }
+  showToast('✦ Template loaded — customise and Enhance!');
+}
+
+// Close template drop on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#templateDropWrap')) {
+    var drop = document.getElementById('templateDrop');
+    if (drop) drop.style.display = 'none';
+    _templateDropOpen = false;
+  }
+});
+
+// Override goPage to init home animations
+var _origGoPage = null;
+(function() {
+  var origGoPage = goPage;
+  goPage = function(name, el) {
+    origGoPage(name, el);
+    if (name === 'home') {
+      setTimeout(function() {
+        _homeAnimated = false;
+        initHomePage();
+      }, 50);
+    }
+  };
+})();
+
 // ── INIT ─────────────────────────────────────────────
 customPlatforms.forEach(function(entry){var parts=entry.split('|');addPlatformPill(parts[0],parts[1]||'ai');});
 renderLangOptions();
@@ -3057,6 +3923,9 @@ window.addEventListener('load',function(){
   if(!localStorage.getItem('clarix-lang-chosen')){setTimeout(function(){showLangNudge();},2000);}
   updateUsageBadge();
   initDropdowns();
+  // Init landing page animations
+  setTimeout(initHomeLanding, 200);
+  setTimeout(function(){ initHomePage(); }, 150);
 });
 </script>
 
