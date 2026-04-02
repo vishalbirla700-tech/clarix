@@ -2660,28 +2660,35 @@ function filterLibCards(query){
 // ══════════════════════════════════════════════════════
 
 var INSP_GALLERY = [
-  {cat:'cinematic',h:260,img:'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=85&auto=format&fit=crop',title:'Neon City Night',prompt:'Cinematic aerial shot of a futuristic neon city at night, rain-soaked streets reflecting colorful lights, blade runner aesthetic, 8K, anamorphic lens, film grain, ultra detailed'},
-  {cat:'cinematic',h:220,img:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&q=85&auto=format&fit=crop',title:'Mountain Epic',prompt:'Epic cinematic mountain landscape at golden hour, dramatic storm clouds, volumetric god rays, ultra wide angle, 8K, National Geographic quality'},
-  {cat:'cinematic',h:280,img:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=85&auto=format&fit=crop',title:'Portrait Drama',prompt:'Cinematic close-up portrait, dramatic side lighting, film noir aesthetic, shallow depth of field, 85mm f/1.2, moody atmosphere, award winning photography'},
-  {cat:'cinematic',h:240,img:'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=85&auto=format&fit=crop',title:'Space Epic',prompt:'Cinematic deep space scene, nebula explosion, cosmic scale, photorealistic, NASA level detail, star clusters, volumetric light, 8K ultra HD'},
-  {cat:'cinematic',h:200,img:'https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=500&q=85&auto=format&fit=crop',title:'Ocean Sunset',prompt:'Cinematic ocean sunset, golden hour, long exposure waves, dramatic clouds, teal and orange color grade, ultra wide, award winning photography'},
-  {cat:'fashion',h:300,img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&q=85&auto=format&fit=crop',title:'High Fashion',prompt:'High fashion editorial portrait, Vogue magazine cover style, luxury designer outfit, dramatic studio lighting, flawless skin, intense gaze, Hasselblad medium format, 8K'},
-  {cat:'fashion',h:250,img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=85&auto=format&fit=crop',title:'Luxury Beauty',prompt:'Luxury beauty editorial, dramatic makeup, bokeh background, professional studio lighting, fashion magazine quality, ultra sharp, 8K, award winning photography'},
-  {cat:'fashion',h:270,img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=85&auto=format&fit=crop',title:'Street Fashion',prompt:'Urban street fashion editorial, candid style, natural light, NYC backdrop, designer streetwear, editorial photography, film grain, authentic moment'},
-  {cat:'fashion',h:230,img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=85&auto=format&fit=crop',title:'Runway Glam',prompt:'Luxury runway fashion photography, dramatic lighting, designer couture gown, flowing fabric motion, editorial quality, 8K ultra detailed'},
-  {cat:'3d',h:240,img:'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=500&q=85&auto=format&fit=crop',title:'Glass Morph',prompt:'Hyperrealistic 3D glassmorphism render, floating transparent spheres, caustic light effects, pastel gradient environment, Blender Cycles, 8K, octane render quality'},
-  {cat:'3d',h:260,img:'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=85&auto=format&fit=crop',title:'Neon 3D',prompt:'Futuristic 3D neon geometric structure, dark environment, glowing edges, cyberpunk aesthetic, Blender Cycles render, 8K, Unreal Engine 5 quality'},
-  {cat:'3d',h:220,img:'https://images.unsplash.com/photo-1634193295627-1cdddf751ebf?w=500&q=85&auto=format&fit=crop',title:'Abstract 3D',prompt:'Abstract 3D art, flowing organic shapes, iridescent material, studio lighting, Blender render, 8K ultra detail, CGI award winning'},
-  {cat:'video',h:230,img:'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&q=85&auto=format&fit=crop',title:'Drone Shot',prompt:'Cinematic drone aerial footage for RunwayML: sweeping aerial view over mountains at golden hour, smooth dolly movement, 4K HDR, cinematic color grade'},
-  {cat:'video',h:260,img:'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=85&auto=format&fit=crop',title:'Film Scene',prompt:'Cinematic film scene for Pika: two characters in dramatic confrontation, rain-soaked alley, neon reflections, slow motion, 24fps film look, movie quality'},
-  {cat:'video',h:210,img:'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&q=85&auto=format&fit=crop',title:'Social Reel',prompt:'Viral Instagram reel concept: fast-paced montage of urban lifestyle, trending audio sync, color graded moody tones, 9:16 vertical format, 4K'},
-  {cat:'blog',h:220,img:'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=500&q=85&auto=format&fit=crop',title:'Blog Hero',prompt:'Write a comprehensive SEO-optimized blog article about [TOPIC]. Include compelling headline, engaging introduction, 5-7 detailed sections, expert insights, practical tips, and strong CTA. 1500-2000 words.'},
-  {cat:'blog',h:250,img:'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=500&q=85&auto=format&fit=crop',title:'Tech Article',prompt:'Write a professional technology blog post about [TECH TOPIC]. Industry context, technical explanation in simple terms, benefits, challenges, expert quotes, data statistics, actionable takeaways. SEO optimized, 1200 words.'},
-  {cat:'nature',h:250,img:'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=500&q=85&auto=format&fit=crop',title:'Rainforest',prompt:'Breathtaking aerial view of Amazon rainforest at sunrise, morning mist rising from canopy, golden light filtering through trees, drone photography, National Geographic quality, 8K'},
-  {cat:'nature',h:270,img:'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?w=500&q=85&auto=format&fit=crop',title:'Milky Way',prompt:'Stunning Milky Way over dramatic landscape, long exposure astrophotography, star trails, crystal clear night sky, remote wilderness, 8K, award winning astrophotography'},
-  {cat:'nature',h:230,img:'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=500&q=85&auto=format&fit=crop',title:'Wildlife',prompt:'Ultra realistic wildlife photography, majestic animal in natural habitat, perfect golden hour lighting, bokeh background, National Geographic style, Canon R5 quality, 8K'},
-  {cat:'cinematic',h:240,img:'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=500&q=85&auto=format&fit=crop',title:'Paint Explosion',prompt:'High speed paint explosion macro photography, vibrant color collision, dynamic composition, black background, studio strobe lighting, 8K ultra detailed, award winning'},
-  {cat:'3d',h:260,img:'https://images.unsplash.com/photo-1549490349-8643362247b5?w=500&q=85&auto=format&fit=crop',title:'Fluid Art',prompt:'Abstract fluid art, acrylic pour technique, swirling iridescent colors, macro close-up, high detail, perfect composition, museum quality artwork, 8K'}
+  // CINEMATIC
+  {cat:'cinematic',h:280,img:'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=90&auto=format&fit=crop',title:'Neon City Night',prompt:'Cinematic aerial shot of a futuristic neon city at night, rain-soaked streets reflecting colorful lights, blade runner aesthetic, 8K, anamorphic lens, film grain, ultra detailed'},
+  {cat:'cinematic',h:220,img:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&q=90&auto=format&fit=crop',title:'Mountain Epic',prompt:'Epic cinematic mountain landscape at golden hour, dramatic storm clouds, volumetric god rays, ultra wide angle, 8K, National Geographic quality'},
+  {cat:'cinematic',h:260,img:'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=500&q=90&auto=format&fit=crop',title:'Deep Space',prompt:'Cinematic deep space nebula, swirling cosmic gas clouds, vibrant purple and blue tones, thousands of stars, photorealistic, 8K astrophotography'},
+  {cat:'cinematic',h:240,img:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=90&auto=format&fit=crop',title:'Cyberpunk Circuit',prompt:'Macro photography of glowing circuit board, cyberpunk aesthetic, teal and orange color grade, extreme depth of field, 8K, award winning tech photography'},
+  // FASHION
+  {cat:'fashion',h:300,img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&q=90&auto=format&fit=crop',title:'High Fashion Editorial',prompt:'High fashion editorial portrait, Vogue magazine cover style, luxury designer outfit, dramatic studio lighting, flawless skin, intense gaze, Hasselblad medium format, 8K'},
+  {cat:'fashion',h:250,img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=90&auto=format&fit=crop',title:'Luxury Runway',prompt:'Luxury runway fashion photography, dramatic lighting, designer couture gown, flowing fabric motion, editorial quality, 8K ultra detailed, Paris Fashion Week'},
+  {cat:'fashion',h:270,img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&q=90&auto=format&fit=crop',title:'Beauty Portrait',prompt:'Ultra luxury beauty editorial portrait, dramatic makeup, bokeh background, professional studio lighting, fashion magazine quality, Vogue aesthetic, 8K'},
+  {cat:'fashion',h:230,img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=90&auto=format&fit=crop',title:'Street Style',prompt:'Urban street fashion editorial, NYC backdrop, designer streetwear, natural golden hour light, candid style, film grain, authentic editorial photography'},
+  // 3D
+  {cat:'3d',h:260,img:'https://images.unsplash.com/photo-1617791160505-6f00504e3519?w=500&q=90&auto=format&fit=crop',title:'Glass Sphere',prompt:'Hyperrealistic 3D glassmorphism render, floating transparent spheres, caustic light effects, pastel gradient environment, Blender Cycles, 8K, octane render quality'},
+  {cat:'3d',h:240,img:'https://images.unsplash.com/photo-1634193295627-1cdddf751ebf?w=500&q=90&auto=format&fit=crop',title:'Abstract 3D',prompt:'Abstract 3D art, flowing organic shapes, iridescent chrome material, studio HDRI lighting, Blender render, 8K ultra detail, CGI award winning'},
+  {cat:'3d',h:280,img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=90&auto=format&fit=crop',title:'Neon Abstract',prompt:'Futuristic 3D neon geometric structure, dark environment, glowing edges, cyberpunk aesthetic, Blender Cycles, 8K, Unreal Engine 5 quality, award winning CGI'},
+  // VIDEO
+  {cat:'video',h:240,img:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=500&q=90&auto=format&fit=crop',title:'Cinematic Ocean',prompt:'Cinematic drone aerial footage for RunwayML: sweeping view over turquoise ocean at golden hour, smooth dolly movement, 4K HDR, cinematic color grade, National Geographic style'},
+  {cat:'video',h:260,img:'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=90&auto=format&fit=crop',title:'Film Scene',prompt:'Cinematic film scene for Pika: dramatic confrontation in rain-soaked alley, neon reflections, slow motion, 24fps film look, ARRI Alexa, movie quality lighting'},
+  {cat:'video',h:220,img:'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&q=90&auto=format&fit=crop',title:'Product Reel',prompt:'Premium product showcase reel: luxury item rotating on dark background, particle effects, cinematic lighting, smooth 360 rotation, 4K, brand campaign quality'},
+  // BLOG
+  {cat:'blog',h:230,img:'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=500&q=90&auto=format&fit=crop',title:'Blog Writing',prompt:'Write a comprehensive SEO-optimized blog article about [TOPIC]. Include compelling headline, engaging introduction, 5-7 detailed sections with subheadings, expert insights, practical tips, and strong CTA. 1500-2000 words.'},
+  {cat:'blog',h:250,img:'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=500&q=90&auto=format&fit=crop',title:'Content Strategy',prompt:'Write a professional content strategy document for [BRAND/TOPIC]. Include target audience analysis, content pillars, posting schedule, platform strategy, KPIs, and 10 content ideas. Business-ready format.'},
+  // NATURE
+  {cat:'nature',h:260,img:'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=500&q=90&auto=format&fit=crop',title:'Aerial Forest',prompt:'Breathtaking aerial view of dense forest at sunrise, morning mist rising from canopy, golden light filtering through trees, drone photography, National Geographic quality, 8K'},
+  {cat:'nature',h:240,img:'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?w=500&q=90&auto=format&fit=crop',title:'Milky Way',prompt:'Stunning Milky Way galaxy over dramatic mountain landscape, long exposure astrophotography, star trails, crystal clear night sky, remote wilderness, 8K award winning'},
+  {cat:'nature',h:220,img:'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=500&q=90&auto=format&fit=crop',title:'Wildlife',prompt:'Ultra realistic wildlife photography, majestic lion in golden savanna, perfect sunset lighting, bokeh background, National Geographic style, Canon R5 quality, 8K'},
+  {cat:'nature',h:270,img:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=90&auto=format&fit=crop',title:'Tropical Beach',prompt:'Hyperrealistic tropical beach at dawn, crystal clear turquoise water, white sand, palm trees, long exposure waves, golden sunrise, drone photography, 8K HDR'},
+  // ABSTRACT
+  {cat:'cinematic',h:250,img:'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=500&q=90&auto=format&fit=crop',title:'Paint Explosion',prompt:'High speed paint explosion macro photography, vibrant color collision, dynamic composition, black background, studio strobe lighting, 8K ultra detailed, award winning'},
+  {cat:'3d',h:240,img:'https://images.unsplash.com/photo-1549490349-8643362247b5?w=500&q=90&auto=format&fit=crop',title:'Fluid Art',prompt:'Abstract fluid art, acrylic pour technique, swirling iridescent colors, macro close-up, high detail, perfect composition, museum quality artwork, 8K'}
 ];
 
 var _inspEditorChips = [];
@@ -3522,53 +3529,58 @@ function initParticles() {
 // ── GSAP Hero Entrance ────────────────────────────────
 function initHeroAnimations() {
   if (typeof gsap === 'undefined') {
-    // Fallback without GSAP
-    ['heroBadge','heroTitle','heroTagline','heroInput','heroCTAs','heroStats'].forEach(function(id, i) {
+    // Fallback without GSAP - use CSS transitions
+    var ids = ['heroBadge','heroTitle','heroTagline','heroInput','heroCTAs','heroStats'];
+    ids.forEach(function(id, i) {
       var el = document.getElementById(id);
       if (el) {
         setTimeout(function() {
-          el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
           el.style.opacity = '1';
           el.style.transform = 'translateY(0)';
-        }, 200 + i * 150);
+        }, 300 + i * 150);
       }
     });
+    // Fallback scroll reveals with IntersectionObserver
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); }});
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal-up').forEach(function(el) { observer.observe(el); });
     return;
   }
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Hero sequence
-  var tl = gsap.timeline({ delay: 0.3 });
-  tl.to('#heroBadge', { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(1.7)' })
-    .to('#heroTitle', { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.4)' }, '-=0.2')
-    .to('#heroTagline', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.3')
-    .to('#heroInput', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2')
-    .to('#heroCTAs', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2')
-    .to('#heroStats', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.1');
+  // Only animate if elements are visible
+  var badge = document.getElementById('heroBadge');
+  if (!badge) return;
 
-  // Scroll reveals
-  gsap.utils.toArray('.reveal-up').forEach(function(el) {
-    gsap.to(el, {
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 85%',
-        toggleActions: 'play none none none'
-      },
-      opacity: 1,
-      y: 0,
-      duration: 0.7,
-      ease: 'power2.out'
+  // Hero sequence
+  var tl = gsap.timeline({ delay: 0.2 });
+  tl.to(badge, { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(1.7)' });
+  var heroTitle = document.getElementById('heroTitle');
+  if (heroTitle) tl.to(heroTitle, { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.4)' }, '-=0.2');
+  var heroTagline = document.getElementById('heroTagline');
+  if (heroTagline) tl.to(heroTagline, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.3');
+  var heroInput = document.getElementById('heroInput');
+  if (heroInput) tl.to(heroInput, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2');
+  var heroCTAs = document.getElementById('heroCTAs');
+  if (heroCTAs) tl.to(heroCTAs, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2');
+  var heroStats = document.getElementById('heroStats');
+  if (heroStats) tl.to(heroStats, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.1');
+
+  // Scroll reveals - use IntersectionObserver as backup
+  if (ScrollTrigger) {
+    gsap.utils.toArray('.reveal-up').forEach(function(el) {
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
+        opacity: 1, y: 0, duration: 0.7, ease: 'power2.out'
+      });
     });
-  });
+  }
 
   // Gradient shift on clarix word
-  gsap.to('#clarixWord', {
-    backgroundPosition: '200% center',
-    duration: 4,
-    repeat: -1,
-    ease: 'linear'
-  });
+  var cw = document.getElementById('clarixWord');
+  if (cw) gsap.to(cw, { backgroundPosition: '200% center', duration: 4, repeat: -1, ease: 'linear' });
 }
 
 // ── Typewriter for hero input ─────────────────────────
