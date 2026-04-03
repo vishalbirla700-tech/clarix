@@ -521,8 +521,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
   </div>
 
   <!-- HOME PAGE — Premium Landing -->
-  <div class="page active" id="page-home" style="overflow-y:auto;background:#000;padding:0">
+  <div class="page active" id="page-home" style="background:#000;padding:0" data-page="home">
 
+    <script>document.getElementById('page-home').scrollTop=0;</script>
     <!-- HERO -->
     <section id="hero-section" style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#000">
       <div id="orb1" style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,112,67,0.15),transparent 70%);top:-100px;right:-100px;filter:blur(40px);pointer-events:none;animation:orbPulse 6s ease-in-out infinite"></div>
