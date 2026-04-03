@@ -83,8 +83,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .tb-icon-btn:hover{border-color:var(--ac);color:var(--ac)}
 
 /* ── PAGES ── */
-.page{display:none;flex:1;overflow-y:auto;flex-direction:column}
-.page.active{display:flex}.page#page-home{scroll-behavior:auto}
+.page{display:none;flex:1;overflow-y:auto;flex-direction:column;scroll-snap-type:y mandatory}
+.page.active{display:flex}#page-home{scroll-snap-type:y proximity}
 
 /* ── HOME PAGE ── */
 .home-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;}
@@ -525,7 +525,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
     <script>var _ph=document.getElementById('page-home');if(_ph){_ph.scrollTop=0;_ph.scrollLeft=0;}document.documentElement.scrollTop=0;document.body.scrollTop=0;</script>
     <!-- HERO -->
-    <section id="hero-section" style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#000;padding-top:56px;box-sizing:border-box">
+    <section id="hero-section" style="min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#000;box-sizing:border-box;scroll-snap-align:start">
       <div id="orb1" style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,112,67,0.15),transparent 70%);top:-100px;right:-100px;filter:blur(40px);pointer-events:none;animation:orbPulse 6s ease-in-out infinite"></div>
       <div id="orb2" style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(120,40,200,0.12),transparent 70%);bottom:-100px;left:-100px;filter:blur(40px);pointer-events:none;animation:orbPulse 8s ease-in-out infinite 2s"></div>
       <canvas id="particleCanvas" style="position:absolute;inset:0;pointer-events:none;z-index:1"></canvas>
