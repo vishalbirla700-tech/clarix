@@ -2,7 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<script>history.scrollRestoration='manual';window.onbeforeunload=function(){window.scrollTo(0,0);};</script>
+<script>
+history.scrollRestoration='manual';
+// Reset scroll on any overflow container immediately
+function _resetScroll(){
+  var p=document.getElementById('page-home');
+  if(p && p.scrollTop>0){p.scrollTop=0;}
+}
+// Fire at every possible moment
+document.addEventListener('DOMContentLoaded',_resetScroll);
+window.addEventListener('load',_resetScroll);
+// Also use MutationObserver as backup
+if(window.MutationObserver){
+  var _mo=new MutationObserver(function(){_resetScroll();});
+  document.addEventListener('DOMContentLoaded',function(){
+    var p=document.getElementById('page-home');
+    if(p){_mo.observe(p,{attributes:true,childList:false});}
+  });
+}
+</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ff7043'/><text y='.9em' font-size='70' x='15' fill='white'>✦</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clarix™ — India's First Prompt Engine</title>
@@ -83,7 +101,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .tb-icon-btn:hover{border-color:var(--ac);color:var(--ac)}
 
 /* ── PAGES ── */
-.page{display:none;flex:1;overflow-y:auto;flex-direction:column;scroll-snap-type:y mandatory}
+.page{display:none;flex:1;overflow-y:auto;flex-direction:column}
 .page.active{display:flex}#page-home{scroll-snap-type:y proximity}
 
 /* ── HOME PAGE ── */
