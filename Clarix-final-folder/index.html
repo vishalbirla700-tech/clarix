@@ -2330,6 +2330,9 @@ function goPage(name,el){
     }
   });
   window.scrollTo(0,0);
+  // Scroll page container to top
+  var pg = document.getElementById('page-'+name);
+  if(pg) pg.scrollTop = 0;
   // Init landing animations when visiting home
   if(name==='home') setTimeout(initHomeLanding, 100);
 }
@@ -3576,6 +3579,10 @@ window.addEventListener('load',function(){
 });
 
 function initHomeLanding() {
+  // Force scroll to top of home page
+  var homePage = document.getElementById('page-home');
+  if (homePage) { homePage.scrollTop = 0; }
+  window.scrollTo(0, 0);
   initParticles();
   initHeroAnimations();
   initTypewriter();
